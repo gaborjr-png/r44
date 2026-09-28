@@ -1,12 +1,12 @@
 {% extends "base.html.j2" %}
 {% import "_macros.html.j2" as m with context %}
-{% block title %}{{ _('Minőség', 'Quality') }}{% endblock %}
+{% block title %}{{ _('Minőségügy', 'Quality') }}{% endblock %}
 {% block content %}
 
-{{ m.page_head(_('Minőség', 'Quality'),
+{{ m.page_head(_('Minőségügy', 'Quality'),
    _('Minőségbiztosítás és környezettudatos működés', 'Quality assurance and environmental responsibility'),
    _('A hazai és nemzetközi piac növekvő elvárásainak való megfelelés érdekében kiemelt figyelmet fordítunk a minőségbiztosításra.', 'To meet the growing requirements of domestic and international markets, we place particular emphasis on quality assurance.'),
-   'meroszoba.jpg', 'milled:alu') }}
+   'meroszoba.jpg', 'manifold:alu') }}
 
 <section class="section">
   <div class="wrap">
@@ -37,7 +37,7 @@
 
 <section class="section section--tint">
   <div class="wrap split">
-    {{ m.photo('meroszoba.jpg', _('Mérőszoba', 'Measuring room'), ratio='4/3', render='turned:alu') }}
+    {{ m.photo('meroszoba.jpg', _('Mérőszoba', 'Measuring room'), ratio='4/3', render='bushing:alu') }}
     <div>
       <p class="eyebrow">{{ _('Ellenőrzés', 'Inspection') }}</p>
       <h2 class="h2">{{ _('Ellenőrzés a teljes folyamatban', 'Inspection throughout the process') }}</h2>

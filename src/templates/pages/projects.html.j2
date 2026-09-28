@@ -1,0 +1,56 @@
+{% extends "base.html.j2" %}
+{% import "_macros.html.j2" as m with context %}
+{% block title %}{{ _('Projektek', 'Projects') }}{% endblock %}
+{% block content %}
+
+{{ m.page_head(_('Projektek', 'Projects'),
+   _('Fejlesztések és pályázati projektek', 'Developments and funded projects'),
+   _('Folyamatosan fejlesztjük gépparkunkat, gyártóterületünket és gyártásirányítási rendszereinket, hogy megfeleljünk a hazai és nemzetközi beszállítói piac elvárásainak.', 'We continuously develop our machine park, production floor and production management systems to meet the requirements of the domestic and international supplier market.'),
+   'projektek.jpg', 'series:brass') }}
+
+<section class="section">
+  <div class="wrap">
+    <div class="projects">
+      <article class="project reveal">
+        <div class="project__meta">
+          <span class="project__year">2020</span>
+          <span class="project__tag">{{ _('Irinyi Terv', 'Irinyi Plan') }}</span>
+        </div>
+        <div class="project__body">
+          <h2 class="h3">{{ _('Beszállítói tevékenység fejlesztése', 'Development of supplier activities') }}</h2>
+          <p>{{ _('A projekt célja a vállalat beszállítói tevékenységének fejlesztése volt. A beruházás keretében két STAR SB-20R type G típusú CNC automata eszterga beszerzésére és egy hatékonyságnövelő gyártásirányítási rendszer bevezetésére került sor. Munkatársaink képzésen vettek részt az új gyártásirányítási rendszer használatának elsajátítására.', 'The aim of the project was to develop the company’s supplier activities. It included the purchase of two STAR SB-20R type G CNC automatic lathes and the introduction of an efficiency-boosting production management system. Our employees took part in training on the new production management system.') }}</p>
+          <dl class="specs">
+            <div><dt>{{ _('Beszerzett gépek', 'Machines purchased') }}</dt><dd>2 × STAR SB-20R type G</dd></div>
+            <div><dt>{{ _('Rendszer', 'System') }}</dt><dd>{{ _('Gyártásirányítási rendszer', 'Production management system') }}</dd></div>
+            <div><dt>{{ _('Fizikai befejezés', 'Physical completion') }}</dt><dd>{{ _('2020. március 31.', '31 March 2020') }}</dd></div>
+          </dl>
+        </div>
+      </article>
+
+      <article class="project reveal">
+        <div class="project__meta">
+          <span class="project__year">2016</span>
+          <span class="project__tag">{{ _('Uniós támogatás', 'EU funding') }}</span>
+        </div>
+        <div class="project__body">
+          <h2 class="h3">{{ _('Új, 1200 m²-es gyártócsarnok', 'New 1,200 m² production hall') }}</h2>
+          <p>{{ _('Uniós támogatással elkészült a modern, 1200 m²-es gyártócsarnok verpeléti telephelyünkön, amely a sorozatgyártási kapacitás bővítését szolgálja.', 'With EU funding, a modern 1,200 m² production hall was completed at our Verpelét site to expand series production capacity.') }}</p>
+        </div>
+      </article>
+
+      <article class="project reveal">
+        <div class="project__meta">
+          <span class="project__year">2021</span>
+          <span class="project__tag">{{ _('Fejlesztés', 'Development') }}</span>
+        </div>
+        <div class="project__body">
+          <h2 class="h3">{{ _('Hungarocopter HC-02', 'Hungarocopter HC-02') }}</h2>
+          <p>{{ _('Az első magyar fejlesztésű és gyártású kétszemélyes helikopter gyártása a Hungaro-Copter Kft.-vel közösen. A HC-02.2 2021. június 8. óta rendelkezik a tesztrepülésekhez szükséges engedélyekkel.', 'Manufacture of the first Hungarian-designed and built two-seat helicopter together with Hungaro-Copter Kft. Since 8 June 2021 the HC-02.2 has held the permits required for test flights.') }}</p>
+          <a class="link-arrow" href="{{ href('hc02') }}">{{ _('A helikopter projekt', 'The helicopter project') }}</a>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

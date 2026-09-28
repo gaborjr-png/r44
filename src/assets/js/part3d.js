@@ -1,546 +1,918 @@
 /* ==========================================================================
-   Steel Riders – real-time 3D machined parts (three.js r128)
-   - SR3D.hero(canvas, hud)   : interactive CNC turning simulation
-   - SR3D.still(kind, mat, w, h) : studio render of a part -> data URL
+   Steel Riders – real-time 3D machining (three.js r128)
+
+   SR3D.hero(canvas, hud)          CNC turning simulation driven by a real
+                                   Fanuc-style ISO program (see PROGRAM)
+   SR3D.gallery(canvas)            interactive viewer of finished parts
+   SR3D.still(kind, mat, w, h)     studio render of a part -> data URL
+
+   Lathe parts are built along +y (LatheGeometry), units mm.
+   In the machine scene the spindle axis is world +X; machine Z = world X.
    ========================================================================== */
 (function () {
   'use strict';
   if (!window.THREE) return;
   var T = window.THREE;
+  var PI = Math.PI, TAU = PI * 2;
 
-  /* ---------- Materials ---------- */
-  var MATERIALS = {
-    alu:   { color: 0xc4cad0, metalness: 1.0, roughness: 0.3 },
-    brass: { color: 0xc9912f, metalness: 1.0, roughness: 0.24 },
-    pom:   { color: 0x2a2d31, metalness: 0.0, roughness: 0.42 },
-    steel: { color: 0x9aa3ab, metalness: 1.0, roughness: 0.34 }
-  };
   function lin(hex) { return new T.Color(hex).convertSRGBToLinear(); }
-  function material(key) {
-    var m = MATERIALS[key] || MATERIALS.alu;
-    return new T.MeshStandardMaterial({ color: lin(m.color), metalness: m.metalness, roughness: m.roughness, envMapIntensity: 1.0 });
+  function v2(r, y) { return new T.Vector2(Math.max(r, 0.0005), y); }
+  function clamp(x, a, b) { return x < a ? a : x > b ? b : x; }
+  function ease(t) { return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; }
+  function rand(seed) { var s = seed || 1; return function () { s = (s * 16807) % 2147483647; return (s - 1) / 2147483646; }; }
+
+  /* ======================================================================
+     Procedural surface maps
+     ====================================================================== */
+  var maps = null;
+  function surfaceMaps() {
+    if (maps) return maps;
+    var R = rand(7);
+    function tex(data, w, h) {
+      var t = new T.DataTexture(data, w, h, T.RGBAFormat);
+      t.wrapS = t.wrapT = T.RepeatWrapping;
+      t.magFilter = T.LinearFilter;
+      t.minFilter = T.LinearMipmapLinearFilter;
+      t.generateMipmaps = true;
+      t.anisotropy = 8;
+      t.needsUpdate = true;
+      return t;
+    }
+    // Turned surface: circumferential feed marks (ridges across v)
+    var W = 16, H = 512, G = 40, x, y, i;
+    var n = new Uint8Array(W * H * 4), r = new Uint8Array(W * H * 4);
+    var rowNoise = [];
+    for (y = 0; y < H; y++) rowNoise.push((R() - 0.5) * 0.35);
+    for (y = 0; y < H; y++) {
+      var ph = (y / H) * G * TAU;
+      var slope = Math.sin(ph) * 0.42 + rowNoise[y] * 0.5 + Math.sin(ph * 0.5 + 1.3) * 0.06;
+      for (x = 0; x < W; x++) {
+        i = (y * W + x) * 4;
+        var nx = (R() - 0.5) * 0.04, ny = slope, l = Math.sqrt(nx * nx + ny * ny + 1);
+        n[i] = (nx / l * 0.5 + 0.5) * 255; n[i + 1] = (ny / l * 0.5 + 0.5) * 255; n[i + 2] = (1 / l * 0.5 + 0.5) * 255; n[i + 3] = 255;
+        var rough = 0.72 + 0.22 * Math.abs(Math.cos(ph)) + rowNoise[y] * 0.3;
+        r[i] = r[i + 1] = r[i + 2] = clamp(rough, 0, 1) * 255; r[i + 3] = 255;
+      }
+    }
+    // Milled / faced surface: fine lines with fly-cut arcs
+    var MW = 256, MH = 256;
+    var mn = new Uint8Array(MW * MH * 4), mr = new Uint8Array(MW * MH * 4);
+    var line = []; for (y = 0; y < MH; y++) line.push(R() - 0.5);
+    for (y = 0; y < MH; y++) {
+      for (x = 0; x < MW; x++) {
+        i = (y * MW + x) * 4;
+        var arc = Math.sin(Math.sqrt(x * x + (y + 400) * (y + 400)) / 6) * 0.12;
+        var s = line[y] * 0.28 + arc + (R() - 0.5) * 0.05, L2 = Math.sqrt(1 + s * s);
+        mn[i] = 128; mn[i + 1] = (s / L2 * 0.5 + 0.5) * 255; mn[i + 2] = (1 / L2 * 0.5 + 0.5) * 255; mn[i + 3] = 255;
+        mr[i] = mr[i + 1] = mr[i + 2] = clamp(0.8 + line[y] * 0.25 + arc, 0, 1) * 255; mr[i + 3] = 255;
+      }
+    }
+    maps = { turnN: tex(n, W, H), turnR: tex(r, W, H), millN: tex(mn, MW, MH), millR: tex(mr, MW, MH) };
+    return maps;
   }
 
-  /* ---------- Studio environment (softbox reflections) ---------- */
-  function studioEnv(renderer) {
+  /* ======================================================================
+     Materials – base colours from measured metal reflectance (sRGB)
+     ====================================================================== */
+  var MAT = {
+    brass: { color: 0xe3c378, metalness: 1, roughness: 0.2 },
+    alu:   { color: 0xdfe2e5, metalness: 1, roughness: 0.26 },
+    steel: { color: 0xc6c9cc, metalness: 1, roughness: 0.2 },
+    pom:   { color: 0x1d1f22, metalness: 0, roughness: 0.36 }
+  };
+  function partMaterial(key, kind, repeatV) {
+    var m = MAT[key] || MAT.alu, mp = surfaceMaps();
+    var mat = new T.MeshStandardMaterial({ color: lin(m.color), metalness: m.metalness, roughness: m.roughness, envMapIntensity: 1 });
+    var nMap, rMap;
+    if (kind === 'mill') {
+      nMap = mp.millN.clone(); rMap = mp.millR.clone();
+      nMap.repeat.set(1 / 30, 1 / 30);
+    } else {
+      nMap = mp.turnN.clone(); rMap = mp.turnR.clone();
+      nMap.repeat.set(1, repeatV || 14);
+    }
+    rMap.repeat.copy(nMap.repeat);
+    nMap.needsUpdate = rMap.needsUpdate = true;
+    mat.normalMap = nMap;
+    mat.roughnessMap = rMap;
+    mat.normalScale = new T.Vector2(0.55, 0.55);
+    if (key === 'pom') mat.normalScale.set(0.25, 0.25);
+    return mat;
+  }
+  function setPartColor(mat, key) {
+    var m = MAT[key];
+    mat.color.copy(lin(m.color)); mat.metalness = m.metalness; mat.roughness = m.roughness;
+    if (mat.normalScale) mat.normalScale.setScalar(key === 'pom' ? 0.25 : 0.55);
+    mat.needsUpdate = true;
+  }
+  function plain(hex, metal, rough) { return new T.MeshStandardMaterial({ color: lin(hex), metalness: metal, roughness: rough }); }
+
+  /* ======================================================================
+     Machine-interior environment for reflections (HDR values > 1)
+     ====================================================================== */
+  function environment(renderer) {
     var pm = new T.PMREMGenerator(renderer);
     var env = new T.Scene();
-    env.background = new T.Color(0x0f1113);
-    var panel = function (w, h, x, y, z, ry, rx, v) {
-      var mesh = new T.Mesh(new T.PlaneGeometry(w, h), new T.MeshBasicMaterial({ color: new T.Color(v, v, v), side: T.DoubleSide }));
-      mesh.position.set(x, y, z); mesh.rotation.y = ry || 0; mesh.rotation.x = rx || 0;
-      env.add(mesh);
-    };
-    panel(10, 1.4, 0, 7, 0, 0, Math.PI / 2, 2.6);      // top strip
-    panel(1.6, 8, -8, 1, 2, Math.PI / 2, 0, 1.8);      // left softbox
-    panel(1.2, 8, 8, 1, -2, -Math.PI / 2, 0, 1.1);     // right strip
-    panel(12, 1.2, 0, -2, -8, 0, 0, 0.35);             // back fill
-    panel(3, 0.8, 3, 4, 7, Math.PI, 0, 0.9);           // front kicker
-    var tex = pm.fromScene(env, 0.03).texture;
+    var dome = new T.SphereGeometry(40, 32, 16), cols = [], pos = dome.attributes.position;
+    for (var i = 0; i < pos.count; i++) {
+      var y = pos.getY(i) / 40;
+      var c = y > 0 ? 0.05 + y * 0.18 : 0.02 + (y + 1) * 0.03;
+      cols.push(c * 0.95, c, c * 1.06);
+    }
+    dome.setAttribute('color', new T.Float32BufferAttribute(cols, 3));
+    env.add(new T.Mesh(dome, new T.MeshBasicMaterial({ vertexColors: true, side: T.BackSide })));
+    function panel(w, h, x, y, z, rx, ry, col) {
+      var m = new T.Mesh(new T.PlaneGeometry(w, h), new T.MeshBasicMaterial({ color: col, side: T.DoubleSide }));
+      m.position.set(x, y, z); m.rotation.set(rx || 0, ry || 0, 0); env.add(m);
+    }
+    panel(30, 3, 0, 18, -4, PI / 2, 0, new T.Color(6.0, 6.2, 6.6));       // LED bar on the machine roof
+    panel(4, 14, -22, 4, 6, 0, PI / 2, new T.Color(3.2, 3.1, 3.0));        // left softbox
+    panel(2.2, 16, 24, 2, -6, 0, -PI / 2, new T.Color(1.8, 1.9, 2.1));     // right strip
+    panel(18, 1.2, 0, -2, -26, 0, 0, new T.Color(0.9, 0.85, 0.8));         // door window
+    panel(6, 1.6, 8, 10, 24, 0, PI, new T.Color(2.2, 2.0, 1.7));           // warm kicker
+    var t = pm.fromScene(env, 0.02).texture;
     pm.dispose();
-    return tex;
+    return t;
   }
 
-  /* ---------- Part profiles (radius as a function of axial position) ----------
-     Units: mm. Axis along +y, from 0 (chuck side) to L (free end). */
-  var PART = {
-    L: 64, stock: 15,
-    // Outer finished radius at axial position y
-    outer: function (y) {
-      var r;
-      if (y < 6) r = 9;                                 // cut-off side
-      else if (y < 20) r = 12.5;                        // bearing seat
-      else if (y < 22) r = 12.5 - (y - 20) * 1.1;       // chamfer down
-      else if (y < 26) r = 9.2;                         // groove
-      else if (y < 38) r = 13.5;                        // collar
-      else if (y < 40) r = 13.5 - (y - 38) * 1.2;       // chamfer
-      else if (y < 58) {                                // M20 thread
-        var p = (y - 40) / 1.5;
-        r = 10 - 0.55 * Math.abs(((p % 1) + 1) % 1 - 0.5) * 2;
-      }
-      else if (y < 62) r = 9.2;
-      else r = 9.2 - (y - 62) * 0.9;                    // end chamfer
-      return r;
-    },
-    bore: 5.2,        // through-bore radius
-    boreDepth: 64
-  };
-
-  // Build LatheGeometry points for a solid of revolution with optional bore.
-  // radiusAt(y) outer, boreR / boreDepth inner. Duplicated corner points keep
-  // edges crisp (degenerate triangles do not affect vertex normals).
-  function lathePoints(radiusAt, L, boreR, boreDepth, samples) {
-    var pts = [], i, y, r;
-    var bd = Math.min(boreDepth, L);
-    var start = boreR > 0 && bd >= L ? boreR : 0.0001;
-    // bottom face (y = 0)
-    pts.push(new T.Vector2(start, 0));
-    pts.push(new T.Vector2(radiusAt(0), 0));
-    pts.push(new T.Vector2(radiusAt(0), 0));
-    for (i = 0; i <= samples; i++) {
-      y = (i / samples) * L;
-      r = radiusAt(y);
-      pts.push(new T.Vector2(r, y));
-    }
-    pts.push(new T.Vector2(radiusAt(L), L));
-    // top face
-    if (boreR > 0 && bd > 0) {
-      pts.push(new T.Vector2(boreR, L));
-      pts.push(new T.Vector2(boreR, L));
-      pts.push(new T.Vector2(boreR, L - bd));
-      if (bd < L) {
-        pts.push(new T.Vector2(boreR, L - bd));
-        // drill point (118°)
-        pts.push(new T.Vector2(0.0001, L - bd - boreR * 0.6));
-      }
-    } else {
-      pts.push(new T.Vector2(0.0001, L));
-    }
-    // LatheGeometry wants points ordered; the list above traces the section.
-    return pts;
+  function makeRenderer(canvas, still) {
+    var r = new T.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true, preserveDrawingBuffer: !!still, powerPreference: 'high-performance' });
+    r.setPixelRatio(still ? 1 : Math.min(window.devicePixelRatio || 1, 1.75));
+    r.outputEncoding = T.sRGBEncoding;
+    r.toneMapping = T.ACESFilmicToneMapping;
+    r.toneMappingExposure = still ? 1.0 : 1.35;
+    r.physicallyCorrectLights = true;
+    r.shadowMap.enabled = true;
+    r.shadowMap.type = T.PCFSoftShadowMap;
+    return r;
+  }
+  function studioLights(scene) {
+    var key = new T.DirectionalLight(0xfff4e6, 2.2);
+    key.position.set(-60, 110, 90);
+    key.castShadow = true;
+    key.shadow.mapSize.set(2048, 2048);
+    var c = key.shadow.camera; c.left = -140; c.right = 140; c.top = 140; c.bottom = -140; c.near = 10; c.far = 500;
+    key.shadow.bias = -0.0004; key.shadow.normalBias = 0.6; key.shadow.radius = 4;
+    scene.add(key);
+    var rim = new T.DirectionalLight(0xcfe0ff, 1.1); rim.position.set(90, 30, -80); scene.add(rim);
+    scene.add(new T.HemisphereLight(0xdfe6ee, 0x0b0c0d, 0.25));
+    return key;
   }
 
-  function turnedGeometry(radiusAt, L, boreR, boreDepth, segs) {
-    var g = new T.LatheGeometry(lathePoints(radiusAt, L, boreR, boreDepth, 220), segs || 96);
+  /* ======================================================================
+     Geometry helpers
+     ====================================================================== */
+  function crisp(vs) {                         // double interior vertices -> sharp edges
+    var out = [];
+    for (var i = 0; i < vs.length; i++) { out.push(vs[i]); if (i > 0 && i < vs.length - 1) out.push(vs[i]); }
+    return out;
+  }
+  // Closed section from outer [r,y] (ascending y) and optional inner [r,y]
+  function revolve(outer, inner, segs) {
+    var P = [], i, y0 = outer[0][1], y1 = outer[outer.length - 1][1];
+    P.push(v2(inner ? inner[0][0] : 0, inner ? inner[0][1] : y0));
+    P.push(v2(outer[0][0], y0));
+    for (i = 0; i < outer.length; i++) P.push(v2(outer[i][0], outer[i][1]));
+    P.push(v2(outer[outer.length - 1][0], y1));
+    if (inner) {
+      P.push(v2(inner[inner.length - 1][0], inner[inner.length - 1][1]));
+      for (i = inner.length - 1; i >= 0; i--) P.push(v2(inner[i][0], inner[i][1]));
+    } else P.push(v2(0, y1));
+    var g = new T.LatheGeometry(P, segs || 128);
     g.computeVertexNormals();
     return g;
   }
-
-  /* Milled aluminium block with through holes and a counterbored pocket */
-  function milledGeometry() {
-    var w = 80, h = 56, rr = 4;
+  function threadPts(r, y0, y1, pitch, depth, per) {
+    var pts = [], steps = Math.round((y1 - y0) / pitch * (per || 10));
+    for (var i = 0; i <= steps; i++) {
+      var y = y0 + (y1 - y0) * i / steps, f = ((y - y0) / pitch) % 1;
+      var tri = 1 - Math.abs(f - 0.5) * 2;
+      pts.push([r - depth * clamp(tri * 1.25 - 0.12, 0, 1), y]);
+    }
+    return pts;
+  }
+  function roundedRect(w, h, rr) {
     var s = new T.Shape();
-    s.moveTo(-w / 2 + rr, -h / 2);
-    s.lineTo(w / 2 - rr, -h / 2); s.quadraticCurveTo(w / 2, -h / 2, w / 2, -h / 2 + rr);
+    s.moveTo(-w / 2 + rr, -h / 2); s.lineTo(w / 2 - rr, -h / 2); s.quadraticCurveTo(w / 2, -h / 2, w / 2, -h / 2 + rr);
     s.lineTo(w / 2, h / 2 - rr); s.quadraticCurveTo(w / 2, h / 2, w / 2 - rr, h / 2);
     s.lineTo(-w / 2 + rr, h / 2); s.quadraticCurveTo(-w / 2, h / 2, -w / 2, h / 2 - rr);
     s.lineTo(-w / 2, -h / 2 + rr); s.quadraticCurveTo(-w / 2, -h / 2, -w / 2 + rr, -h / 2);
-    var holes = [[-30, -18, 3.4], [30, -18, 3.4], [-30, 18, 3.4], [30, 18, 3.4], [0, 0, 11]];
-    holes.forEach(function (c) {
-      var p = new T.Path(); p.absarc(c[0], c[1], c[2], 0, Math.PI * 2, true); s.holes.push(p);
-    });
-    // slot
-    var sl = new T.Path();
-    sl.moveTo(-18, 14); sl.lineTo(-6, 14); sl.absarc(-6, 18, 4, -Math.PI / 2, Math.PI / 2, false);
-    sl.lineTo(-18, 22); sl.absarc(-18, 18, 4, Math.PI / 2, Math.PI * 1.5, false);
-    s.holes.push(sl);
-    var g = new T.ExtrudeGeometry(s, { depth: 18, bevelEnabled: true, bevelThickness: 0.8, bevelSize: 0.8, bevelSegments: 2, curveSegments: 48 });
-    g.center();
+    return s;
+  }
+  function circle(x, y, r) { var p = new T.Path(); p.absarc(x, y, r, 0, TAU, true); return p; }
+  function extrude(shape, depth, bevel) {
+    var g = new T.ExtrudeGeometry(shape, { depth: depth, bevelEnabled: !!bevel, bevelThickness: bevel || 0, bevelSize: bevel || 0, bevelSegments: 2, curveSegments: 64 });
+    g.computeVertexNormals();
     return g;
   }
+  function shadowed(obj) { obj.traverse(function (o) { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } }); return obj; }
 
-  /* Small hex-collar brass fitting (for series still) */
-  function fittingRadius(y) {
-    if (y < 8) return 5 - 0.3 * Math.abs((((y / 1) % 1) + 1) % 1 - 0.5) * 2;
-    if (y < 9) return 5 + (y - 8) * 2.5;
-    if (y < 15) return 7.6;
-    if (y < 16) return 7.6 - (y - 15) * 2;
-    if (y < 26) return 4.2;
-    return 4.2 - (y - 26) * 1.2;
+  /* ======================================================================
+     The simulated part: brass bushing – M20x1.5 thread, relief groove,
+     O-ring groove, bearing seat D25, collar D30, through bore D10.
+     Machine coordinates: Z0 = finished end face, part length 50.
+     Model y = Z + 66 (y 0..13 = bar stock held in the chuck).
+     ====================================================================== */
+  var SIM = { L: 66, stock: 16, bore: 5, z0: 66 };
+  function zOf(y) { return y - SIM.z0; }
+  function yOf(z) { return z + SIM.z0; }
+  function contour(z) {                        // G71/G70 profile N30..N40
+    if (z > 0) return 0;
+    if (z >= -1) return 9 + (-z);              // X18 Z0 -> X20 Z-1
+    if (z >= -19) return 10;                   // D20
+    if (z >= -19.5) return 12 + (-19 - z);     // X24 -> X25 Z-19.5
+    if (z >= -34) return 12.5;                 // D25
+    if (z >= -34.5) return 14.5 + (-34 - z);   // X29 -> X30 Z-34.5
+    if (z >= -53) return 15;                   // D30
+    return SIM.stock;
   }
-
-  /* ---------- Renderer helpers ---------- */
-  function makeRenderer(canvas, w, h) {
-    var r = new T.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true, preserveDrawingBuffer: !!canvas.__still });
-    r.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
-    r.setSize(w, h, false);
-    r.outputEncoding = T.sRGBEncoding;
-    r.toneMapping = T.ACESFilmicToneMapping;
-    r.toneMappingExposure = 0.92;
-    r.physicallyCorrectLights = true;
+  function threadForm(z, frac) {               // M20x1.5, thread depth 0.92
+    if (z > -1 || z < -16) return 10;
+    var f = ((-z) / 1.5) % 1, tri = 1 - Math.abs(f - 0.5) * 2;
+    return 10 - 0.92 * frac * clamp(tri * 1.25 - 0.12, 0, 1);
+  }
+  function finalRadius(z) {
+    var r = contour(z);
+    if (z <= -16 && z >= -19) r = 8.4;         // thread relief D16.8
+    if (z <= -26 && z >= -28.5) r = 10.7;      // O-ring groove D21.4
+    if (z <= -1 && z > -16) r = threadForm(z, 1);
     return r;
   }
 
-  function addLights(scene) {
-    var key = new T.DirectionalLight(0xffffff, 1.1); key.position.set(-40, 60, 80); scene.add(key);
-    var rim = new T.DirectionalLight(0xc9d6e2, 0.8); rim.position.set(60, -20, -60); scene.add(rim);
-    scene.add(new T.AmbientLight(0xffffff, 0.05));
-  }
-
-  /* ======================================================================
-     Still renders
-     ====================================================================== */
-  var stillCtx = null;
-  function stillRenderer() {
-    if (stillCtx) return stillCtx;
-    var c = document.createElement('canvas'); c.__still = true;
-    var r = makeRenderer(c, 1200, 900);
-    r.setPixelRatio(1);
-    r.setClearColor(0x161d24, 1);
-    stillCtx = { canvas: c, renderer: r, env: studioEnv(r) };
-    return stillCtx;
-  }
-
-  function still(kind, mat, w, h) {
-    var ctx = stillRenderer();
-    ctx.renderer.setSize(w, h, false);
-    var scene = new T.Scene();
-    scene.environment = ctx.env;
-    addLights(scene);
-    var cam = new T.PerspectiveCamera(24, w / h, 1, 2000);
-    var group = new T.Group(); scene.add(group);
-    var m = material(mat);
-
-    if (kind === 'milled') {
-      var blk = new T.Mesh(milledGeometry(), m);
-      blk.rotation.set(-0.95, 0, 0.5);
-      group.add(blk);
-      cam.position.set(0, 20, 210);
-    } else if (kind === 'series') {
-      var fg = turnedGeometry(fittingRadius, 28, 2.4, 28, 64);
-      var inst = new T.InstancedMesh(fg, m, 42);
-      var d = new T.Object3D(), k = 0;
-      for (var row = 0; row < 6; row++) {
-        for (var col = 0; col < 7; col++) {
-          d.position.set((col - 3) * 26 + (row % 2) * 13, 0, (row - 3) * 26);
-          d.rotation.set(Math.PI / 2, 0, 0.25 + (k % 5) * 0.4);
-          d.updateMatrix(); inst.setMatrixAt(k++, d.matrix);
-        }
-      }
-      group.add(inst);
-      group.rotation.x = 0.7;
-      cam.position.set(0, 30, 320);
-    } else if (kind === 'shaft') {
-      var sg = turnedGeometry(PART.outer, PART.L, 0, 0, 128);
-      var sh = new T.Mesh(sg, m);
-      sh.position.y = -PART.L / 2;
-      group.add(sh);
-      group.rotation.set(0.35, 0.3, -Math.PI / 2 + 0.22);
-      cam.position.set(0, 0, 175);
-    } else { // 'turned' hollow part, three-quarter view
-      var tg = turnedGeometry(PART.outer, PART.L, PART.bore, PART.boreDepth, 128);
-      var tp = new T.Mesh(tg, m);
-      tp.position.y = -PART.L / 2;
-      group.add(tp);
-      group.rotation.set(0.55, 0.2, -Math.PI / 2 + 0.55);
-      cam.position.set(0, 0, 165);
-    }
-    cam.lookAt(0, 0, 0);
-    ctx.renderer.render(scene, cam);
-    var url = ctx.canvas.toDataURL('image/jpeg', 0.9);
-    scene.traverse(function (o) { if (o.geometry) o.geometry.dispose(); });
-    m.dispose();
-    return url;
-  }
-
-  /* ======================================================================
-     Hero: CNC turning simulation
-     ====================================================================== */
-  var OPS = [
-    // [key, duration seconds]
-    ['face', 1.2], ['rough', 5.2], ['drill', 2.4], ['finish', 3.4],
-    ['groove', 1.4], ['thread', 2.6], ['cutoff', 1.6], ['inspect', 6.0]
+  /* ISO program (Fanuc 0i-TF syntax) – each line tagged with its operation */
+  var PROGRAM = [
+    ['', '%'],
+    ['', 'O4471 (SR-4471 PERSELY CUZN39PB3)'],
+    ['', '(NYERS D32 RUD - KESZ HOSSZ 50)'],
+    ['', 'G21 G40 G99 G18'],
+    ['', 'G28 U0. W0.'],
+    ['face', 'N10 (HOMLOKESZTERGALAS)'],
+    ['face', 'T0101 (PCLNL2525M12 CNMG120408)'],
+    ['face', 'G50 S3500'],
+    ['face', 'G96 S260 M03'],
+    ['face', 'G00 X34. Z0. M08'],
+    ['face', 'G01 X-1.6 F0.15'],
+    ['face', 'G00 Z2.'],
+    ['rough', 'N20 (NAGYOLAS G71)'],
+    ['rough', 'G00 X34. Z2.'],
+    ['rough', 'G71 U1.5 R0.5'],
+    ['rough', 'G71 P30 Q40 U0.4 W0.1 F0.25'],
+    ['rough', 'N30 G00 X18.'],
+    ['rough', 'G01 Z0.'],
+    ['rough', 'X20. Z-1.'],
+    ['rough', 'Z-19.'],
+    ['rough', 'X24.'],
+    ['rough', 'X25. Z-19.5'],
+    ['rough', 'Z-34.'],
+    ['rough', 'X29.'],
+    ['rough', 'X30. Z-34.5'],
+    ['rough', 'Z-53.'],
+    ['rough', 'N40 X34.'],
+    ['rough', 'G28 U0. W0.'],
+    ['drill', 'N50 (FURAS D10 G74)'],
+    ['drill', 'T0303 (FURO D10.0 HM)'],
+    ['drill', 'G97 S2400 M03'],
+    ['drill', 'G00 X0. Z3.'],
+    ['drill', 'G74 R0.5'],
+    ['drill', 'G74 Z-53. Q8000 F0.12'],
+    ['drill', 'G00 Z5.'],
+    ['drill', 'G28 U0. W0.'],
+    ['finish', 'N60 (SIMITAS G70)'],
+    ['finish', 'T0202 (SVJBL2525M16 VBMT160404)'],
+    ['finish', 'G96 S320 M03'],
+    ['finish', 'G00 X34. Z2.'],
+    ['finish', 'G70 P30 Q40 F0.08'],
+    ['finish', 'G28 U0. W0.'],
+    ['groove', 'N70 (BESZURAS)'],
+    ['groove', 'T0404 (BESZURO B2.5)'],
+    ['groove', 'G96 S150 M03'],
+    ['groove', 'G00 X22. Z-18.5'],
+    ['groove', 'G01 X16.8 F0.05'],
+    ['groove', 'G00 X22.'],
+    ['groove', 'Z-16.5'],
+    ['groove', 'G01 X16.8'],
+    ['groove', 'G00 X27.'],
+    ['groove', 'Z-28.5'],
+    ['groove', 'G01 X21.4 F0.05'],
+    ['groove', 'G04 P300'],
+    ['groove', 'G00 X27.'],
+    ['groove', 'G28 U0. W0.'],
+    ['thread', 'N80 (MENETVAGAS M20X1.5)'],
+    ['thread', 'T0505 (16ER 1.5ISO)'],
+    ['thread', 'G97 S1200 M03'],
+    ['thread', 'G00 X22. Z4.'],
+    ['thread', 'G76 P010060 Q50 R0.02'],
+    ['thread', 'G76 X18.16 Z-16. P920 Q250 F1.5'],
+    ['thread', 'G28 U0. W0.'],
+    ['cutoff', 'N90 (LESZURAS)'],
+    ['cutoff', 'T0606 (LESZURO B3.0)'],
+    ['cutoff', 'G50 S2500'],
+    ['cutoff', 'G96 S140 M03'],
+    ['cutoff', 'G00 X34. Z-53.'],
+    ['cutoff', 'G01 X8. F0.06'],
+    ['cutoff', 'G00 X34. M09'],
+    ['inspect', 'G28 U0. W0. M05'],
+    ['inspect', 'M30'],
+    ['inspect', '%']
   ];
-  var OPS_TOTAL = OPS.reduce(function (a, o) { return a + o[1]; }, 0);
 
+  // [op, seconds, turret station, 'css'|'rpm', S, F]
+  var OPS = [
+    ['face',    3.0, 0, 'css', 260, 0.15],
+    ['rough',   8.5, 0, 'css', 260, 0.25],
+    ['drill',   6.0, 2, 'rpm', 2400, 0.12],
+    ['finish',  5.5, 1, 'css', 320, 0.08],
+    ['groove',  4.5, 3, 'css', 150, 0.05],
+    ['thread',  6.0, 4, 'rpm', 1200, 1.5],
+    ['cutoff',  3.5, 5, 'css', 140, 0.06],
+    ['inspect', 7.0, -1, 'rpm', 0, 0]
+  ];
+  var INDEX_T = 0.9;
+  var TOTAL = OPS.reduce(function (a, o) { return a + o[1]; }, 0);
+  var TOOL_NAMES = ['T0101', 'T0202', 'T0303', 'T0404', 'T0505', 'T0606'];
+
+  /* ======================================================================
+     Tools (tip at local origin, shank along +Y toward the turret)
+     ====================================================================== */
+  var TM = null;
+  function toolMats() {
+    if (TM) return TM;
+    TM = {
+      holder: plain(0x4a5058, 0.9, 0.32), carbide: plain(0x45484d, 0.8, 0.28), tin: plain(0xd9b45a, 1, 0.26),
+      screw: plain(0x6b7077, 1, 0.3), drill: plain(0x7a7888, 1, 0.22), turret: plain(0x6a727b, 0.5, 0.45), face: plain(0xb4bac0, 1, 0.3)
+    };
+    return TM;
+  }
+  function rhombus(len, ang) {
+    var a = ang * PI / 180, s = new T.Shape(), dx = Math.cos(a / 2) * len, dy = Math.sin(a / 2) * len;
+    s.moveTo(0, 0); s.lineTo(dx, dy); s.lineTo(2 * dx, 0); s.lineTo(dx, -dy); s.lineTo(0, 0);
+    return s;
+  }
+  function insertTool(shape, tilt, coated) {
+    var M = toolMats(), g = new T.Group();
+    var shank = new T.Mesh(new T.BoxGeometry(12, 30, 12), M.holder); shank.position.set(8, 24, 0); g.add(shank);
+    var head = new T.Mesh(new T.BoxGeometry(15, 10, 12), M.holder); head.position.set(7, 7, 0); head.rotation.z = -0.2; g.add(head);
+    var ins = new T.Group();
+    var body = new T.Mesh(extrude(shape, 4.2, 0.3), coated ? M.tin : M.carbide); body.position.z = -2.1; ins.add(body);
+    ins.rotation.z = PI / 2 - tilt; ins.position.y = 0.2; g.add(ins);
+    var screw = new T.Mesh(new T.CylinderGeometry(1.8, 1.8, 1.4, 16), M.screw); screw.rotation.x = PI / 2; screw.position.set(3.2, 5.2, 2.3); g.add(screw);
+    return g;
+  }
+  function bladeTool(width, coated) {
+    var M = toolMats(), g = new T.Group();
+    var blade = new T.Mesh(new T.BoxGeometry(width * 0.75, 26, 18), M.holder); blade.position.set(0, 15, 0); g.add(blade);
+    var tip = new T.Mesh(new T.BoxGeometry(width, 4, 7), coated ? M.tin : M.carbide); tip.position.set(0, 2, 0); g.add(tip);
+    var block = new T.Mesh(new T.BoxGeometry(16, 14, 20), M.holder); block.position.set(0, 32, 0); g.add(block);
+    return g;
+  }
+  function threadingTool() {
+    var M = toolMats(), g = new T.Group();
+    var s = new T.Shape(); s.moveTo(0, 0); s.lineTo(4, 7); s.lineTo(-4, 7); s.lineTo(0, 0);
+    var ins = new T.Mesh(extrude(s, 3.4, 0.2), M.tin); ins.position.z = -1.7; g.add(ins);
+    var shank = new T.Mesh(new T.BoxGeometry(12, 30, 12), M.holder); shank.position.set(0, 23, 0); g.add(shank);
+    return g;
+  }
+  // Twist drill D10: tip at origin, body along +X
+  function twistDrill() {
+    var M = toolMats(), g = new T.Group();
+    var len = 62, geo = new T.CylinderGeometry(5, 5, len, 48, 160, false), p = geo.attributes.position;
+    for (var i = 0; i < p.count; i++) {
+      var x = p.getX(i), y = p.getY(i), z = p.getZ(i), rr = Math.sqrt(x * x + z * z);
+      if (rr < 0.01) continue;
+      var yy = len / 2 - y;                               // 0 at tip
+      var a = Math.atan2(z, x), twist = yy / 12 * TAU / 2.8;
+      var flute = Math.pow(Math.max(0, Math.cos(2 * (a - twist))), 3);
+      var fl = yy < 42 ? 1 : clamp((48 - yy) / 6, 0, 1);
+      var k = (1 - 0.46 * flute * fl) * (yy < 3 ? clamp(yy / 3, 0.18, 1) : 1);
+      p.setX(i, x * k); p.setZ(i, z * k);
+    }
+    geo.computeVertexNormals();
+    var body = new T.Mesh(geo, M.drill);
+    body.rotation.z = -PI / 2; body.position.x = len / 2; g.add(body); // tip (+y end) -> -x
+    var holder = new T.Mesh(new T.CylinderGeometry(9, 9, 22, 32), M.holder); holder.rotation.z = PI / 2; holder.position.x = len + 6; g.add(holder);
+    return g;
+  }
+  var TURRET_R = 30, TIP_R = 60, DRILL_OFF = 38, DRILL_AHEAD = 58;
+  function buildTurret() {
+    var M = toolMats(), turret = new T.Group();
+    var body = new T.Mesh(new T.CylinderGeometry(TURRET_R, TURRET_R, 30, 8), M.turret); body.rotation.z = PI / 2; body.position.x = 21; turret.add(body);
+    var face = new T.Mesh(new T.CylinderGeometry(TURRET_R - 6, TURRET_R - 6, 2, 8), M.face); face.rotation.z = PI / 2; face.position.x = 3.5; turret.add(face);
+    for (var s = 0; s < 8; s++) {
+      var st = new T.Group(); st.rotation.x = s * TAU / 8;
+      var tool = s === 0 ? insertTool(rhombus(7, 80), 0.6) : s === 1 ? insertTool(rhombus(9, 35), 0.25) :
+        s === 3 ? bladeTool(2.5) : s === 4 ? threadingTool() : s === 5 ? bladeTool(3, true) : null;
+      if (tool) { tool.position.set(0, -TIP_R, 0); st.add(tool); }
+      if (s === 2) { var d = twistDrill(); d.position.set(-DRILL_AHEAD, -DRILL_OFF, 0); st.add(d); }
+      var blk = new T.Mesh(new T.BoxGeometry(22, 10, 22), M.holder); blk.position.set(10, -TURRET_R - 3, 0); st.add(blk);
+      turret.add(st);
+    }
+    return shadowed(turret);
+  }
+  function chipGeometry(turns, radius, length, thick) {
+    var pts = [], n = Math.max(8, Math.round(turns * 14));
+    for (var i = 0; i <= n; i++) {
+      var t = i / n, a = t * turns * TAU, rr = radius * (1 - t * 0.35);
+      pts.push(new T.Vector3(Math.cos(a) * rr, t * length, Math.sin(a) * rr));
+    }
+    return new T.TubeGeometry(new T.CatmullRomCurve3(pts), n, thick, 5, false);
+  }
+
+  /* ======================================================================
+     HERO – CNC turning simulation
+     ====================================================================== */
   function hero(canvas, hud) {
     var wrap = canvas.parentElement;
-    var W = wrap.clientWidth, H = wrap.clientHeight;
-    var renderer = makeRenderer(canvas, W, H);
+    var renderer = makeRenderer(canvas);
     var scene = new T.Scene();
-    scene.environment = studioEnv(renderer);
-    addLights(scene);
-    var cam = new T.PerspectiveCamera(26, W / H, 1, 3000);
-    cam.position.set(0, 8, 190);
-    cam.lookAt(0, 4, 0);
+    scene.environment = environment(renderer);
+    var keyLight = studioLights(scene);
+    var cam = new T.PerspectiveCamera(30, 1, 5, 4000);
+    var rig = new T.Group(); scene.add(rig);
 
-    // World: spindle axis along X. Part group rotates around X (spindle).
-    var rig = new T.Group(); scene.add(rig);          // orbit (user drag)
-    rig.position.x = 8;
-    var spindle = new T.Group(); rig.add(spindle);
-    spindle.rotation.order = 'ZYX';                    // spin about lathe axis first
-    spindle.rotation.z = -Math.PI / 2;                 // lathe y-axis -> world +x
-    spindle.position.x = -PART.L / 2 + 6;
+    var back = new T.Mesh(new T.PlaneGeometry(1200, 600), plain(0x252a30, 0.4, 0.7)); back.position.set(0, 60, -130); back.receiveShadow = true; rig.add(back);
+    var tray = new T.Mesh(new T.PlaneGeometry(1200, 500), plain(0x121416, 0.2, 0.85)); tray.rotation.x = -PI / 2; tray.position.y = -58; tray.receiveShadow = true; rig.add(tray);
 
-    var matKey = 'brass';
-    var partMat = material(matKey);
-    var partMesh = new T.Mesh(new T.BufferGeometry(), partMat);
-    spindle.add(partMesh);
+    var spindle = new T.Group();
+    spindle.rotation.order = 'ZYX';
+    spindle.rotation.z = -PI / 2;
+    spindle.position.x = -SIM.z0;
+    rig.add(spindle);
 
-    // Chuck jaws (stylised)
-    var chuckMat = new T.MeshStandardMaterial({ color: lin(0x3a4046), metalness: 0.9, roughness: 0.45 });
-    var chuck = new T.Mesh(new T.CylinderGeometry(30, 30, 16, 64), chuckMat);
-    chuck.position.y = -9; spindle.add(chuck);
+    var chuck = new T.Mesh(revolve(crisp([[46, -34], [52, -30], [52, -8], [48, -2], [30, 0]]), [[12, -34], [12, 0]], 96), plain(0x8a9098, 1, 0.3));
+    spindle.add(chuck);
+    var nose = new T.Mesh(new T.CylinderGeometry(40, 40, 30, 64), plain(0x3d434a, 0.6, 0.5)); nose.position.y = -50; spindle.add(nose);
+    var jawMat = plain(0x7d838a, 1, 0.3);
     for (var j = 0; j < 3; j++) {
-      var jaw = new T.Mesh(new T.BoxGeometry(7, 10, 12), chuckMat);
-      var a = j * Math.PI * 2 / 3;
-      jaw.position.set(Math.cos(a) * 18.6, 2, Math.sin(a) * 18.6);
-      jaw.rotation.y = -a;
+      var a = j * TAU / 3, jaw = new T.Group();
+      var j1 = new T.Mesh(new T.BoxGeometry(14, 11, 12), jawMat); j1.position.set(0, 5.5, 0); jaw.add(j1);
+      var j2 = new T.Mesh(new T.BoxGeometry(14, 6, 12), jawMat); j2.position.set(0, 3, 11); jaw.add(j2);
+      jaw.position.set(Math.cos(a) * (SIM.stock + 6), 0, Math.sin(a) * (SIM.stock + 6));
+      jaw.rotation.y = -a + PI / 2;
       spindle.add(jaw);
     }
+    shadowed(spindle);
 
-    // Tool: holder + insert
-    var tool = new T.Group();
-    var holder = new T.Mesh(new T.BoxGeometry(5, 34, 6), new T.MeshStandardMaterial({ color: lin(0x23282d), metalness: 0.7, roughness: 0.45 }));
-    holder.position.y = 19; holder.rotation.z = 0.12;
-    var insertGeo = new T.CylinderGeometry(0, 4.5, 3, 3); // triangular insert
-    var insert = new T.Mesh(insertGeo, new T.MeshStandardMaterial({ color: 0xc9a45c, metalness: 0.9, roughness: 0.3 }));
-    insert.rotation.x = Math.PI / 2;
-    insert.position.y = 1.5;
-    tool.add(holder); tool.add(insert);
-    rig.add(tool);
+    var matKey = 'brass';
+    var workMat = partMaterial(matKey, 'turn', 30);
+    var work = new T.Mesh(new T.BufferGeometry(), workMat); work.castShadow = work.receiveShadow = true; spindle.add(work);
+    var finished = new T.Mesh(new T.BufferGeometry(), workMat); finished.castShadow = true; finished.visible = false; rig.add(finished);
+    finished.rotation.order = 'ZYX';
 
-    // Drill (for bore op)
-    var drill = new T.Mesh(new T.CylinderGeometry(PART.bore, PART.bore, 70, 24), new T.MeshStandardMaterial({ color: 0x8e979f, metalness: 1, roughness: 0.3 }));
-    drill.rotation.z = Math.PI / 2;
-    drill.visible = false;
-    rig.add(drill);
+    // Tool side (turret, coolant nozzle) is tilted back like a slant-bed lathe
+    var slide = new T.Group(); slide.rotation.x = -0.95; rig.add(slide);
+    var turret = buildTurret(); slide.add(turret);
 
-    // Chips (instanced particles)
-    var CHIPS = 160;
-    var chipGeo = new T.BoxGeometry(0.3, 1.6, 0.6);
-    var chipMat = material(matKey);
-    var chips = new T.InstancedMesh(chipGeo, chipMat, CHIPS);
-    chips.instanceMatrix.setUsage(T.DynamicDrawUsage);
-    rig.add(chips);
-    var chipState = [];
-    for (var c = 0; c < CHIPS; c++) chipState.push({ life: 0, p: new T.Vector3(), v: new T.Vector3(), r: new T.Euler(), s: 1 });
-    var dummy = new T.Object3D();
-    var chipCursor = 0;
+    var DROPS = 280, cg = new T.BufferGeometry(), cpos = new Float32Array(DROPS * 3);
+    cg.setAttribute('position', new T.BufferAttribute(cpos, 3));
+    var coolant = new T.Points(cg, new T.PointsMaterial({ color: 0xd8ecf7, size: 1.4, transparent: true, opacity: 0.5, depthWrite: false }));
+    coolant.frustumCulled = false; rig.add(coolant);
+    var drops = []; for (var d = 0; d < DROPS; d++) drops.push({ life: 0, p: new T.Vector3(), v: new T.Vector3() });
+    var nozzle = new T.Mesh(new T.CylinderGeometry(1.4, 2.4, 28, 12), plain(0x5b6168, 0.9, 0.35)); slide.add(nozzle);
+    var tipW = new T.Vector3(), nozW = new T.Vector3();
 
-    /* ----- Machining state ----- */
-    var N = 180;                           // axial samples
-    var radius = new Float32Array(N + 1);  // current outer radius at sample i
-    var boreDepth = 0;
-    var cutLen = PART.L;                   // remaining length on the chuck side
-    function resetStock() {
-      for (var i = 0; i <= N; i++) radius[i] = PART.stock;
-      boreDepth = 0;
+    var CHIPS = 240;
+    var chipGeos = { brass: chipGeometry(1.1, 1.3, 1.6, 0.22), alu: chipGeometry(3.2, 1.8, 6, 0.2), pom: chipGeometry(4.5, 2.2, 9, 0.3) };
+    var chipMat = plain(MAT.brass.color, 1, 0.28);
+    var chips = new T.InstancedMesh(chipGeos.brass, chipMat, CHIPS);
+    chips.instanceMatrix.setUsage(T.DynamicDrawUsage); chips.castShadow = true; chips.frustumCulled = false; rig.add(chips);
+    var chipS = []; for (var c = 0; c < CHIPS; c++) chipS.push({ life: 0, rest: false, p: new T.Vector3(), v: new T.Vector3(), r: new T.Euler(), w: new T.Vector3(), s: 1 });
+    var dummy = new T.Object3D(), chipCur = 0;
+
+    /* stock state */
+    var N = 264, rad = new Float32Array(N + 1), boreDepth = 0, threadFrac = 0, cutDone = false, dirty = true;
+    function reset() {
+      for (var i = 0; i <= N; i++) rad[i] = SIM.stock;
+      boreDepth = 0; threadFrac = 0; cutDone = false; dirty = true;
+      finished.visible = false;
+      for (var k = 0; k < CHIPS; k++) chipS[k].life = 0;
     }
-    function rAt(y) {
-      var f = Math.max(0, Math.min(N, (y / PART.L) * N));
-      var i = Math.floor(f), t = f - i;
-      return i >= N ? radius[N] : radius[i] * (1 - t) + radius[i + 1] * t;
+    function yAt(i) { return i / N * SIM.L; }
+    function cutTo(zA, zB, fn) {
+      var hi = yOf(Math.max(zA, zB)), lo = yOf(Math.min(zA, zB));
+      for (var i = 0; i <= N; i++) {
+        var y = yAt(i);
+        if (y <= hi && y >= lo) { var nr = Math.min(rad[i], fn(zOf(y))); if (nr < rad[i] - 1e-4) { rad[i] = nr; dirty = true; } }
+      }
     }
-    function rebuild() {
-      var g = turnedGeometry(rAt, PART.L, PART.bore, boreDepth, 96);
-      partMesh.geometry.dispose();
-      partMesh.geometry = g;
+    function buildWork() {
+      if (!dirty) return; dirty = false;
+      var P = [v2(0, 0), v2(rad[0], 0)], i;
+      for (i = 0; i <= N; i++) P.push(v2(rad[i], yAt(i)));
+      P.push(v2(rad[N], SIM.L));
+      if (boreDepth > 0.05) {
+        var yb = SIM.L - Math.min(boreDepth, SIM.L - 2);
+        P.push(v2(SIM.bore, SIM.L)); P.push(v2(SIM.bore, SIM.L)); P.push(v2(SIM.bore, yb)); P.push(v2(SIM.bore, yb)); P.push(v2(0, yb - SIM.bore * 0.6));
+      } else P.push(v2(0, SIM.L));
+      var g = new T.LatheGeometry(P, 96); g.computeVertexNormals();
+      work.geometry.dispose(); work.geometry = g;
+    }
+    function buildFinished() {
+      var outer = [], a = yOf(-50);
+      for (var i = 0; i <= N; i++) { var y = yAt(i); if (y >= a - 1e-6) outer.push([rad[i], y - a]); }
+      finished.geometry.dispose();
+      finished.geometry = revolve(outer, [[SIM.bore, 0], [SIM.bore, SIM.L - a]], 128);
+      // the remaining bar stays in the chuck
+      cutTo(-50, 1, function () { return 0.0005; });
+      boreDepth = 0; dirty = true;
     }
 
-    /* ----- Timeline ----- */
-    var clock = 0, playing = true, lastOp = '';
-    var ROUGH_PASSES = 3;
     function opAt(t) {
       var acc = 0;
-      for (var i = 0; i < OPS.length; i++) {
-        if (t < acc + OPS[i][1]) return { key: OPS[i][0], p: (t - acc) / OPS[i][1], i: i };
-        acc += OPS[i][1];
+      for (var i = 0; i < OPS.length; i++) { if (t < acc + OPS[i][1]) return { i: i, local: t - acc }; acc += OPS[i][1]; }
+      return { i: OPS.length - 1, local: OPS[OPS.length - 1][1] - 0.001 };
+    }
+    // tool tip in machine coords (X diameter, Z) for op & progress; removes material
+    function path(key, p) {
+      var X = 34, Z = 2, cut = false;
+      if (key === 'face') { X = 34 - p * 35.6; Z = 0; cut = X < 32 && X > 0; }
+      else if (key === 'rough') {
+        var levels = [29, 26, 23, 20.4], n = levels.length + 1;
+        var k = Math.min(n - 1, Math.floor(p * n)), q = p * n - k;
+        if (k < levels.length) {
+          var L = levels[k], zEnd = -53;
+          for (var zz = 0; zz >= -53; zz -= 0.25) { if ((contour(zz) + 0.2) * 2 >= L) { zEnd = zz; break; } }
+          Z = 1 - q * (1 - zEnd); X = L;
+          cutTo(1, Z, function (z) { return Math.max(L / 2, contour(z) + 0.2); });
+        } else {
+          Z = 1 - q * 54; X = (contour(Math.min(Z, 0)) + 0.2) * 2;
+          cutTo(1, Z, function (z) { return contour(z) + 0.2; });
+        }
+        cut = true;
+      } else if (key === 'drill') {
+        var depth = 53 * clamp(p / 0.88, 0, 1), peck = (depth % 8) / 8;
+        var retract = (peck < 0.1 && depth > 1 && p < 0.88) ? 1.5 * (1 - peck / 0.1) : 0;
+        Z = 3 - Math.min(depth + 3, 56) + retract; X = 0;
+        if (p >= 0.88) Z = -53 + (p - 0.88) / 0.12 * 60;
+        if (depth > boreDepth + 0.05) { boreDepth = depth; dirty = true; }
+        cut = p < 0.88 && Z < 0;
+      } else if (key === 'finish') {
+        Z = 1 - p * 54; X = contour(Math.min(Z, 0)) * 2;
+        cutTo(1, Z, function (z) { return contour(z); });
+        cut = Z < 0;
+      } else if (key === 'groove') {
+        var g;
+        if (p < 0.5) {
+          g = p / 0.5;
+          var pl = g < 0.5 ? g / 0.5 : (g - 0.5) / 0.5;
+          Z = g < 0.5 ? -18.5 : -16.5;
+          X = 22 - Math.sin(pl * PI) * (22 - 16.8);
+          var r1 = X / 2, zl = Z;
+          cutTo(zl, zl - 2.5, function (z) { return Math.max(r1, 8.4); });
+        } else {
+          g = (p - 0.5) / 0.5;
+          Z = -28.5 + 2.5; X = 27 - Math.sin(g * PI) * (27 - 21.4);
+          var r2 = X / 2;
+          cutTo(-26, -28.5, function () { return Math.max(r2, 10.7); });
+        }
+        cut = X < 20 && X > 16.9 || (p >= 0.5 && X < 25);
+      } else if (key === 'thread') {
+        var passes = 9, kk = Math.min(passes - 1, Math.floor(p * passes)), qq = p * passes - kk;
+        var reach = Math.min(1, qq * 1.25);
+        Z = 4 - reach * 20;
+        X = qq > 0.8 ? 22 : 20 - 1.84 * Math.sqrt((kk + 1) / passes);
+        var f = Math.sqrt((kk + (qq > 0.8 ? 1 : 0)) / passes + (qq <= 0.8 ? reach / passes : 0));
+        if (f > threadFrac) {
+          threadFrac = f;
+          var zHead = Z, tf = threadFrac;
+          cutTo(-1, Math.max(-16, zHead), function (z) { return threadForm(z, tf); });
+        }
+        cut = qq <= 0.8 && Z < -1 && Z > -16;
+      } else if (key === 'cutoff') {
+        var cp = clamp(p / 0.85, 0, 1);
+        X = 34 - cp * 26; Z = -50;
+        var r3 = X / 2;
+        cutTo(-50, -53, function () { return Math.max(r3, SIM.bore + 0.001); });
+        if (cp >= 1 && !cutDone) { cutDone = true; buildFinished(); }
+        if (p > 0.85) X = 8 + (p - 0.85) / 0.15 * 26;
+        cut = cp < 1 && X < 32;
       }
-      return { key: 'inspect', p: 1, i: OPS.length - 1 };
+      return { X: X, Z: Z, cut: cut };
     }
 
-    var toolPos = new T.Vector3(), cutting = false;
-    // Map lathe (y along axis, r radial) to rig coordinates (x along axis, y up)
-    function lathe2rig(y, r) { return new T.Vector3(spindle.position.x + y, r, 0); }
+    /* interaction */
+    var yaw = 0.3, pitch = 0.2, tYaw = yaw, tPitch = pitch, drag = false, lx = 0, ly = 0, idle = 0;
+    canvas.addEventListener('pointerdown', function (e) { drag = true; lx = e.clientX; ly = e.clientY; canvas.setPointerCapture(e.pointerId); });
+    canvas.addEventListener('pointermove', function (e) {
+      if (!drag) return;
+      tYaw += (e.clientX - lx) * 0.006; tPitch = clamp(tPitch + (e.clientY - ly) * 0.004, -0.05, 0.75); tYaw = clamp(tYaw, -1.2, 1.4);
+      lx = e.clientX; ly = e.clientY; idle = 0;
+    });
+    function up() { drag = false; }
+    canvas.addEventListener('pointerup', up); canvas.addEventListener('pointercancel', up);
+    function resize() { var W = wrap.clientWidth, H = wrap.clientHeight; renderer.setSize(W, H, false); cam.aspect = W / H; cam.updateProjectionMatrix(); }
+    window.addEventListener('resize', resize);
+    var visible = true;
+    if ('IntersectionObserver' in window) new IntersectionObserver(function (e) { visible = e[0].isIntersecting; }).observe(canvas);
 
-    function simulate(op) {
-      var i, y, target;
-      cutting = false;
-      drill.visible = false;
-      switch (op.key) {
-        case 'face': {
-          // face the free end slightly: trim last 1 mm down to stock
-          y = PART.L;
-          target = PART.stock * (1 - op.p);
-          toolPos.copy(lathe2rig(y + 0.5, Math.max(target, 0.5)));
-          cutting = op.p < 0.98;
-          break;
+    var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var t = 0, playing = true, last = performance.now(), spin = 0, rpmNow = 0, lastOp = -1, lastLine = -1, dropT = 0;
+    var turretAngle = 0, turretPos = new T.Vector3(120, 160, 0), tip = new T.Vector3(), target = new T.Vector3(-6, 16, 0);
+    var home = new T.Vector3(100, 160, 0);
+    reset();
+
+    function frame(now, forced) {
+      if (!forced) requestAnimationFrame(frame);
+      var dt = forced || Math.min(0.05, (now - last) / 1000); last = now;
+      if (!forced && (!visible || document.hidden)) return;
+      if (playing && !reduce) t += dt;
+      if (t >= TOTAL) { t = 0; reset(); }
+
+      var o = opAt(t), op = OPS[o.i], key = op[0], station = op[2];
+      if (o.i === 0 && o.local < 0.05 && rad[0] < SIM.stock) reset();
+      var inIndex = station >= 0 && o.local < INDEX_T;
+      var p = station >= 0 ? clamp((o.local - INDEX_T) / (op[1] - INDEX_T), 0, 1) : o.local / op[1];
+
+      var X = 90, Z = 40, cut = false;
+      if (station >= 0 && !inIndex) { var pp = path(key, p); X = pp.X; Z = pp.Z; cut = pp.cut; }
+      if (key === 'inspect' && !cutDone) { cutDone = true; buildFinished(); }
+
+      // turret: retract, index, approach
+      if (station >= 0) {
+        var goal = -station * TAU / 8;
+        if (inIndex) {
+          turretPos.lerp(home, 0.14);
+          var ip = ease(clamp((o.local - 0.2) / (INDEX_T - 0.35), 0, 1));
+          turretAngle = turretAngle + (goal - turretAngle) * ip * 0.35;
+        } else {
+          turretAngle = goal;
+          var tgt = station === 2 ? new T.Vector3(Z + DRILL_AHEAD, DRILL_OFF + X / 2, 0) : new T.Vector3(Z, X / 2 + TIP_R, 0);
+          turretPos.lerp(tgt, 0.5);
         }
-        case 'rough': {
-          var pass = Math.min(ROUGH_PASSES - 1, Math.floor(op.p * ROUGH_PASSES));
-          var pp = op.p * ROUGH_PASSES - pass;
-          var level = PART.stock - (pass + 1) * ((PART.stock - 13.8) / ROUGH_PASSES + 0.35);
-          y = PART.L - pp * (PART.L - 4);
-          for (i = 0; i <= N; i++) {
-            var yi = (i / N) * PART.L;
-            if (yi >= y) radius[i] = Math.min(radius[i], Math.max(PART.outer(yi) + 0.6, level));
-          }
-          toolPos.copy(lathe2rig(y, Math.max(PART.outer(y) + 0.6, level)));
-          cutting = true;
-          break;
-        }
-        case 'drill': {
-          boreDepth = op.p < 0.85 ? (op.p / 0.85) * PART.boreDepth : PART.boreDepth;
-          drill.visible = op.p < 0.95;
-          var dx = spindle.position.x + PART.L - boreDepth + 35 + (op.p >= 0.85 ? (op.p - 0.85) * 400 : 0);
-          drill.position.set(dx, 0, 0);
-          toolPos.copy(lathe2rig(PART.L + 30, 30));
-          cutting = op.p < 0.85;
-          break;
-        }
-        case 'finish': {
-          y = PART.L - op.p * (PART.L - 4);
-          for (i = 0; i <= N; i++) {
-            var yf = (i / N) * PART.L;
-            if (yf >= y && (yf < 22 || yf > 26) && (yf < 40 || yf > 58)) radius[i] = PART.outer(yf);
-            else if (yf >= y && yf >= 40 && yf <= 58) radius[i] = Math.min(radius[i], 10);
-            else if (yf >= y) radius[i] = Math.min(radius[i], 12.5);
-          }
-          toolPos.copy(lathe2rig(y, rAt(y)));
-          cutting = true;
-          break;
-        }
-        case 'groove': {
-          var depth = 12.5 - (12.5 - 9.2) * Math.min(1, op.p * 1.3);
-          for (i = 0; i <= N; i++) {
-            var yg = (i / N) * PART.L;
-            if (yg >= 22 && yg <= 26) radius[i] = Math.max(PART.outer(yg), Math.min(radius[i], depth));
-          }
-          toolPos.copy(lathe2rig(24, depth));
-          cutting = op.p < 0.8;
-          break;
-        }
-        case 'thread': {
-          var tp = Math.min(1, op.p * 1.1);
-          y = 58 - tp * 18;
-          for (i = 0; i <= N; i++) {
-            var yt = (i / N) * PART.L;
-            if (yt >= 40 && yt <= 58 && yt >= y) radius[i] = PART.outer(yt);
-          }
-          toolPos.copy(lathe2rig(y, rAt(y)));
-          cutting = tp < 1;
-          break;
-        }
-        case 'cutoff': {
-          var co = Math.min(1, op.p * 1.15);
-          var cr = 9 - co * 9;
-          for (i = 0; i <= N; i++) {
-            var yc = (i / N) * PART.L;
-            if (yc <= 2.5) radius[i] = Math.max(PART.bore + 0.01, Math.min(radius[i], Math.max(cr, 0)));
-          }
-          toolPos.copy(lathe2rig(1.2, Math.max(cr, PART.bore)));
-          cutting = co < 1;
-          break;
-        }
-        default: {
-          toolPos.copy(lathe2rig(PART.L + 30, 32));
-        }
+      } else turretPos.lerp(home, 0.06);
+      turret.position.copy(turretPos);
+      turret.rotation.x = turretAngle;
+
+      buildWork();
+
+      var rpm = 0;
+      if (station >= 0 && !inIndex) rpm = op[3] === 'css' ? Math.min(op[4] * 1000 / (PI * Math.max(X, 8)), key === 'cutoff' ? 2500 : 3500) : op[4];
+      rpmNow += (rpm - rpmNow) * 0.06;
+      spin += dt * (rpmNow > 20 ? 7 + rpmNow / 900 : rpmNow / 400);
+      spindle.rotation.y = spin;
+
+      if (key === 'inspect') {
+        finished.visible = true;
+        dropT = Math.min(1, dropT + dt * 0.6);
+        var e = ease(dropT);
+        finished.rotation.z = -PI / 2;
+        finished.rotation.y += dt * 0.6;
+        finished.position.set(-50 + e * 6, -e * 4 + Math.sin(t * 1.5) * 0.8 * e, e * 34);
+      } else { dropT = 0; finished.visible = false; }
+
+      var coolOn = station >= 0 && !inIndex;
+      tip.set(Z, station === 2 ? 0 : X / 2, 0);
+      nozzle.visible = coolOn;
+      nozzle.position.set(tip.x + 16, tip.y + 30, 16);
+      nozzle.lookAt(tip.x, tip.y, tip.z); nozzle.rotateX(PI / 2);
+      slide.updateMatrixWorld();
+      tipW.copy(tip).applyMatrix4(slide.matrix);
+      nozW.copy(nozzle.position).applyMatrix4(slide.matrix);
+      updateCoolant(dt, coolOn && cut);
+      if (cut) emitChips(dt, key);
+      updateChips(dt);
+
+      idle += dt;
+      if (!drag && idle > 5) tYaw = 0.3 + Math.sin(t * 0.12) * 0.3;
+      yaw += (tYaw - yaw) * 0.07; pitch += (tPitch - pitch) * 0.07;
+      var dist = cam.aspect < 1 ? 440 : 285;
+      cam.position.set(target.x + Math.sin(yaw) * dist * Math.cos(pitch), target.y + Math.sin(pitch) * dist, target.z + Math.cos(yaw) * dist * Math.cos(pitch));
+      cam.lookAt(target);
+      keyLight.position.set(cam.position.x * 0.3 - 60, 140, cam.position.z * 0.3 + 80);
+
+      if (hud) {
+        if (o.i !== lastOp) { lastOp = o.i; if (hud.op) hud.op(key, o.i); }
+        var idx = []; for (var q = 0; q < PROGRAM.length; q++) if (PROGRAM[q][0] === key) idx.push(q);
+        var frac = key === 'inspect' ? p : (inIndex ? 0.05 : 0.2 + p * 0.8);
+        var li = idx[Math.min(idx.length - 1, Math.floor(frac * idx.length))];
+        if (o.i === 0 && o.local < 0.5) li = Math.floor(o.local / 0.5 * 5);
+        if (li !== lastLine) { lastLine = li; if (hud.line) hud.line(li); }
+        if (hud.dro) hud.dro({
+          x: station >= 0 && !inIndex ? X : 200, z: station >= 0 && !inIndex ? Z : 150, s: Math.round(rpmNow),
+          f: station >= 0 ? op[5] : 0, t: station >= 0 ? TOOL_NAMES[station] : 'T0000', m: coolOn ? 'M08' : 'M09', p: t / TOTAL
+        });
       }
+      renderer.render(scene, cam);
     }
 
-    function emitChip(dt) {
-      if (!cutting) return;
-      var n = Math.min(6, Math.ceil(dt * 90));
+    function emitChips(dt, key) {
+      var n = Math.min(4, Math.ceil(dt * 70));
       for (var k = 0; k < n; k++) {
-        var s = chipState[chipCursor];
-        chipCursor = (chipCursor + 1) % CHIPS;
-        s.life = 0.9 + Math.random() * 0.6;
-        s.p.copy(toolPos).add(new T.Vector3(0, 0.5, 2));
-        s.v.set((Math.random() - 0.3) * 30, 18 + Math.random() * 30, 20 + Math.random() * 30);
+        var s = chipS[chipCur]; chipCur = (chipCur + 1) % CHIPS;
+        s.life = 7; s.rest = false;
+        s.p.set(tipW.x + (Math.random() - 0.5) * 2, tipW.y + 1.5, tipW.z + (Math.random() - 0.2) * 3);
+        if (key === 'drill') s.v.set(25 + Math.random() * 25, 10 + Math.random() * 20, (Math.random() - 0.5) * 40);
+        else s.v.set(10 + Math.random() * 25, 25 + Math.random() * 35, 30 + Math.random() * 40);
         s.r.set(Math.random() * 6, Math.random() * 6, Math.random() * 6);
-        s.s = 0.6 + Math.random() * 0.9;
+        s.w.set((Math.random() - 0.5) * 30, (Math.random() - 0.5) * 30, (Math.random() - 0.5) * 30);
+        s.s = 0.7 + Math.random() * 0.6;
       }
     }
     function updateChips(dt) {
       for (var k = 0; k < CHIPS; k++) {
-        var s = chipState[k];
+        var s = chipS[k];
         if (s.life > 0) {
           s.life -= dt;
-          s.v.y -= 120 * dt;
-          s.p.addScaledVector(s.v, dt);
-          s.r.x += dt * 12; s.r.y += dt * 9;
-          dummy.position.copy(s.p);
-          dummy.rotation.copy(s.r);
-          dummy.scale.setScalar(s.life > 0 ? s.s : 0);
-        } else {
-          dummy.scale.setScalar(0);
-        }
-        dummy.updateMatrix();
-        chips.setMatrixAt(k, dummy.matrix);
+          if (!s.rest) {
+            s.v.y -= 160 * dt; s.v.multiplyScalar(1 - dt * 0.6);
+            s.p.addScaledVector(s.v, dt);
+            s.r.x += s.w.x * dt; s.r.y += s.w.y * dt; s.r.z += s.w.z * dt;
+            if (s.p.y < -56.5) { s.p.y = -56.5; s.rest = true; }
+          }
+          dummy.position.copy(s.p); dummy.rotation.copy(s.r);
+          dummy.scale.setScalar(s.s * Math.min(1, s.life));
+        } else dummy.scale.setScalar(0);
+        dummy.updateMatrix(); chips.setMatrixAt(k, dummy.matrix);
       }
       chips.instanceMatrix.needsUpdate = true;
     }
-
-    /* ----- Interaction: drag to orbit ----- */
-    var rotY = -0.45, rotX = 0.28, tRotY = rotY, tRotX = rotX, dragging = false, lx = 0, ly = 0, idle = 0;
-    canvas.addEventListener('pointerdown', function (e) { dragging = true; lx = e.clientX; ly = e.clientY; canvas.setPointerCapture(e.pointerId); });
-    canvas.addEventListener('pointermove', function (e) {
-      if (!dragging) return;
-      tRotY += (e.clientX - lx) * 0.008; tRotX += (e.clientY - ly) * 0.005;
-      tRotX = Math.max(-0.6, Math.min(0.9, tRotX));
-      lx = e.clientX; ly = e.clientY; idle = 0;
-    });
-    canvas.addEventListener('pointerup', function () { dragging = false; });
-    canvas.addEventListener('pointercancel', function () { dragging = false; });
-
-    /* ----- Resize / visibility ----- */
-    function resize() {
-      W = wrap.clientWidth; H = wrap.clientHeight;
-      renderer.setSize(W, H, false);
-      cam.aspect = W / H;
-      cam.position.z = W / H < 1 ? 250 : 190;
-      cam.updateProjectionMatrix();
-    }
-    window.addEventListener('resize', resize);
-    var visible = true;
-    if ('IntersectionObserver' in window) {
-      new IntersectionObserver(function (en) { visible = en[0].isIntersecting; }, { threshold: 0 }).observe(canvas);
-    }
-
-    /* ----- Main loop ----- */
-    var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
-    var spin = 0, last = performance.now(), partFree = 0, builtFinal = false;
-    resetStock();
-
-    function frame(now) {
-      requestAnimationFrame(frame);
-      var dt = Math.min(0.05, (now - last) / 1000); last = now;
-      if (!visible || document.hidden) return;
-
-      if (playing && !reduce) clock += dt;
-      if (clock >= OPS_TOTAL) { clock = 0; resetStock(); partFree = 0; spindle.position.set(-PART.L / 2 + 6, 0, 0); }
-      var op = opAt(clock);
-      if (op.i === 0 && op.p < 0.02) resetStock();
-      simulate(op);
-      if (op.key !== 'inspect' || !builtFinal) { rebuild(); builtFinal = op.key === 'inspect'; }
-
-      // Spindle speed: fast while machining, slow showcase during inspection
-      var rpm = op.key === 'inspect' ? 0.6 : (op.key === 'drill' ? 9 : 14);
-      spin += dt * rpm;
-      spindle.rotation.y = spin;   // around lathe axis (local y)
-
-      // after cut-off the part drops free and floats to the centre
-      if (op.key === 'inspect') {
-        partFree = Math.min(1, partFree + dt * 0.8);
-        var e = 1 - Math.pow(1 - partFree, 3);
-        spindle.position.x = (-PART.L / 2 + 6) - e * 6;
-        chuck.visible = e < 0.3;
-      } else {
-        chuck.visible = true;
+    function updateCoolant(dt, on) {
+      var src = nozW;
+      for (var k = 0; k < DROPS; k++) {
+        var d = drops[k];
+        if (d.life <= 0 && on && Math.random() < 0.5) {
+          d.life = 0.5 + Math.random() * 0.4; d.p.copy(src);
+          d.v.copy(tipW).sub(src).normalize().multiplyScalar(170 + Math.random() * 40);
+          d.v.x += (Math.random() - 0.5) * 10; d.v.z += (Math.random() - 0.5) * 10;
+        }
+        if (d.life > 0) {
+          d.life -= dt; d.v.y -= 220 * dt; d.p.addScaledVector(d.v, dt);
+          if (d.p.distanceTo(tipW) < 4) d.v.set((Math.random() - 0.5) * 70, 15 + Math.random() * 30, 30 + Math.random() * 50);
+          cpos[k * 3] = d.p.x; cpos[k * 3 + 1] = d.p.y; cpos[k * 3 + 2] = d.p.z;
+        } else { cpos[k * 3] = 0; cpos[k * 3 + 1] = -999; cpos[k * 3 + 2] = 0; }
       }
-
-      // tool follows target smoothly
-      tool.position.lerp(toolPos, 0.35);
-      tool.visible = op.key !== 'inspect' && op.key !== 'drill';
-
-      emitChip(dt);
-      updateChips(dt);
-
-      idle += dt;
-      if (!dragging && idle > 3) tRotY += dt * 0.08;
-      rotY += (tRotY - rotY) * 0.08; rotX += (tRotX - rotX) * 0.08;
-      rig.rotation.set(rotX, rotY, 0);
-
-      if (hud && op.key !== lastOp) { lastOp = op.key; hud(op.key, op.i, OPS.length); }
-      if (hud && hud.progress) hud.progress(clock / OPS_TOTAL);
-
-      renderer.render(scene, cam);
+      cg.attributes.position.needsUpdate = true;
     }
-    resize();
-    if (reduce) { clock = OPS_TOTAL - 0.01; }
-    requestAnimationFrame(frame);
 
+    resize();
+    if (reduce) t = TOTAL - 3;
+    requestAnimationFrame(frame);
     return {
-      setMaterial: function (key) {
-        matKey = key;
-        var m = MATERIALS[key];
-        [partMat, chipMat].forEach(function (mm) { mm.color.copy(lin(m.color)); mm.metalness = m.metalness; mm.roughness = m.roughness; mm.needsUpdate = true; });
+      setMaterial: function (k) {
+        matKey = k; setPartColor(workMat, k);
+        chipMat.color.copy(lin(MAT[k].color)); chipMat.metalness = MAT[k].metalness; chipMat.roughness = k === 'pom' ? 0.4 : 0.28;
+        chips.geometry = chipGeos[k] || chipGeos.brass;
       },
-      restart: function () { clock = 0; resetStock(); partFree = 0; playing = true; },
-      toggle: function () { playing = !playing; return playing; }
+      step: function (sec) { for (var k = 0; k < sec / 0.05; k++) frame(performance.now(), 0.05); },
+      toggle: function () { playing = !playing; return playing; },
+      restart: function () { t = 0; reset(); playing = true; },
+      seek: function (opKey) { var acc = 0; for (var i = 0; i < OPS.length && OPS[i][0] !== opKey; i++) acc += OPS[i][1]; if (acc < t) reset(); t = acc; playing = true; }
     };
   }
 
-  window.SR3D = { hero: hero, still: still, ops: OPS.map(function (o) { return o[0]; }) };
+  /* ======================================================================
+     Finished parts
+     ====================================================================== */
+  var PARTS = {
+    bushing: function () {
+      var outer = [];
+      for (var z = -50; z <= 0.0001; z += 0.1) outer.push([finalRadius(z), z + 50]);
+      var g = new T.Group();
+      g.add(new T.Mesh(revolve(outer, [[SIM.bore, 0], [SIM.bore, 50]], 160), partMaterial('brass', 'turn', 26)));
+      return { obj: g, len: 50 };
+    },
+    piston: function () {
+      var o = [[29.5, 0], [31.5, 1.5], [31.5, 5], [29.5, 5], [29.5, 9], [31.5, 9], [31.5, 13], [26, 13], [26, 25], [31.5, 25], [31.5, 29], [29.5, 29], [29.5, 33], [31.5, 33], [31.5, 38.5], [29.5, 40]];
+      var i = [[10, 0], [10, 28], [15, 28], [15, 40]];
+      var g = new T.Group();
+      g.add(new T.Mesh(revolve(crisp(o), crisp(i), 160), partMaterial('steel', 'turn', 18)));
+      return { obj: g, len: 40 };
+    },
+    spool: function () {
+      var o = [[3, 0], [4, 1], [4, 9], [5.2, 9], [6, 9.8]];
+      var lands = [[9.8, 18], [26, 34], [42, 50], [58, 66]];
+      lands.forEach(function (l, k) { o.push([6, l[1]]); o.push([4.6, l[1] + 1]); var nx = lands[k + 1] ? lands[k + 1][0] : 71; o.push([4.6, nx - 1]); o.push([6, nx]); });
+      o.push([6, 78]); o.push([4, 79]);
+      var pts = crisp(o).concat(threadPts(4, 79, 90, 0.8, 0.49, 8)); pts.push([3.2, 90.6]);
+      var g = new T.Group();
+      g.add(new T.Mesh(revolve(pts, null, 128), partMaterial('steel', 'turn', 30)));
+      return { obj: g, len: 90.6 };
+    },
+    fitting: function () {
+      var g = new T.Group(), m = partMaterial('brass', 'turn', 12);
+      var low = crisp([[5.2, 0], [6.5, 1.2]]).concat(threadPts(6.5, 1.2, 12, 1.337, 0.86, 8)).concat(crisp([[6.5, 12], [5.6, 12.6], [5.6, 14.6]]));
+      g.add(new T.Mesh(revolve(low, [[3.5, 0], [3.5, 14.6]], 128), m));
+      var hex = new T.Shape(), R = 22 / Math.sqrt(3);
+      for (var k = 0; k < 6; k++) { var a = k * PI / 3 + PI / 6; if (k) hex.lineTo(Math.cos(a) * R, Math.sin(a) * R); else hex.moveTo(Math.cos(a) * R, Math.sin(a) * R); }
+      hex.holes.push(circle(0, 0, 3.5));
+      var h = new T.Mesh(extrude(hex, 10, 0.6), partMaterial('brass', 'mill')); h.rotation.x = -PI / 2; h.position.y = 15.2; g.add(h);
+      var tp = new T.Mesh(revolve(crisp([[8, 0], [8, 3], [6.5, 3], [6.5, 5.5], [8, 5.5], [8, 11], [7, 12]]), [[3.5, 0], [3.5, 12]], 128), m);
+      tp.position.y = 25.8; g.add(tp);
+      return { obj: g, len: 37.8 };
+    },
+    flange: function () {
+      var g = new T.Group(), s = new T.Shape(); s.absarc(0, 0, 40, 0, TAU, false);
+      for (var k = 0; k < 6; k++) { var a = k * TAU / 6; s.holes.push(circle(Math.cos(a) * 32, Math.sin(a) * 32, 4.5)); }
+      s.holes.push(circle(0, 0, 12.5));
+      var disc = new T.Mesh(extrude(s, 12, 0.8), partMaterial('alu', 'mill')); disc.rotation.x = -PI / 2; disc.position.y = 14; g.add(disc);
+      var hub = crisp([[25, 0], [25, 5], [21.5, 5], [21.5, 8], [25, 8], [25, 13], [24, 14]]);
+      var hubIn = crisp([[12.5, 0], [12.5, 6], [15.5, 6], [15.5, 9], [12.5, 9], [12.5, 14]]);
+      g.add(new T.Mesh(revolve(hub, hubIn, 128), partMaterial('alu', 'turn', 10)));
+      return { obj: g, len: 26.8, upright: true };
+    },
+    manifold: function () {
+      var g = new T.Group(), M = partMaterial('alu', 'mill');
+      var base = roundedRect(70, 46, 3);
+      [[-22, -10, 3.3], [22, -10, 3.3], [-22, 12, 3.3], [22, 12, 3.3], [0, 0, 6]].forEach(function (h) { base.holes.push(circle(h[0], h[1], h[2])); });
+      var b = new T.Mesh(extrude(base, 28, 0.8), M); b.rotation.x = -PI / 2; g.add(b);
+      var top = roundedRect(70, 46, 3);
+      [[-22, -10, 5.5], [22, -10, 5.5], [-22, 12, 5.5], [22, 12, 5.5], [0, 0, 9.5]].forEach(function (h) { top.holes.push(circle(h[0], h[1], h[2])); });
+      var pk = new T.Path(); pk.moveTo(-30, -19); pk.lineTo(-10, -19); pk.absarc(-10, -14, 5, -PI / 2, PI / 2, false); pk.lineTo(-30, -9); pk.absarc(-30, -14, 5, PI / 2, PI * 1.5, false);
+      top.holes.push(pk);
+      var tp = new T.Mesh(extrude(top, 6, 0.6), M); tp.rotation.x = -PI / 2; tp.position.y = 28.8; g.add(tp);
+      var boss = new T.Mesh(revolve(crisp([[10, 0], [10, 5], [9, 6]]), [[4.5, 0], [4.5, 6]], 64), partMaterial('alu', 'turn', 4));
+      boss.rotation.z = PI / 2; boss.position.set(-35.8, 17, 0); g.add(boss);
+      return { obj: g, len: 35, upright: true };
+    },
+    series: function () {
+      var src = PARTS.fitting().obj, w = new T.Group();
+      for (var row = 0; row < 4; row++) for (var col = 0; col < 6; col++) {
+        var c = src.clone();
+        c.position.set((col - 2.5) * 34 + (row % 2) * 17, 11, (row - 1.5) * 34);
+        c.rotation.set(PI / 2, 0, (row * 6 + col) * 0.7);
+        w.add(c);
+      }
+      return { obj: w, len: 40, flat: true };
+    }
+  };
+  function recolor(obj, mat) {
+    if (!mat) return;
+    obj.traverse(function (o) { if (o.isMesh && o.material && o.material.normalMap) setPartColor(o.material, mat); });
+  }
+  // Put a part on the ground (lathe parts lie down) and return its bounds
+  function placePart(kind, mat) {
+    var P = (PARTS[kind] || PARTS.bushing)();
+    recolor(P.obj, mat); shadowed(P.obj);
+    var holder = new T.Group(), inner = new T.Group();
+    inner.add(P.obj); holder.add(inner);
+    if (!P.upright && !P.flat) { P.obj.rotation.z = PI / 2; P.obj.position.x = P.len / 2; }
+    var bb = new T.Box3().setFromObject(holder);
+    inner.position.y = -bb.min.y + 0.05;
+    inner.position.x = -(bb.min.x + bb.max.x) / 2;
+    inner.position.z = -(bb.min.z + bb.max.z) / 2;
+    return { holder: holder, size: bb.getSize(new T.Vector3()), P: P };
+  }
+
+  var stillCtx = null;
+  function still(kind, mat, w, h) {
+    if (!stillCtx) {
+      var c = document.createElement('canvas'), r = makeRenderer(c, true);
+      r.setClearColor(0x131a20, 1);
+      stillCtx = { c: c, r: r, env: environment(r) };
+    }
+    stillCtx.r.setSize(w, h, false);
+    var scene = new T.Scene(); scene.environment = stillCtx.env;
+    studioLights(scene);
+    var floor = new T.Mesh(new T.PlaneGeometry(3000, 3000), new T.ShadowMaterial({ opacity: 0.5 }));
+    floor.rotation.x = -PI / 2; floor.receiveShadow = true; scene.add(floor);
+    var pl = placePart(kind, mat); scene.add(pl.holder);
+    pl.holder.rotation.y = pl.P.flat ? 0 : -0.6;
+    var s = pl.size, d = Math.max(s.x, s.y * 1.6, s.z) * (pl.P.flat ? 1.25 : 2.6);
+    var cam = new T.PerspectiveCamera(22, w / h, 1, 8000);
+    cam.position.set(d * 0.3, d * (pl.P.flat ? 0.8 : 0.5), d * 0.95);
+    cam.lookAt(0, s.y * 0.4, 0);
+    stillCtx.r.render(scene, cam);
+    var url = stillCtx.c.toDataURL('image/jpeg', 0.9);
+    scene.traverse(function (o) { if (o.geometry) o.geometry.dispose(); });
+    return url;
+  }
+
+  function gallery(canvas) {
+    var wrap = canvas.parentElement, renderer = makeRenderer(canvas);
+    var scene = new T.Scene(); scene.environment = environment(renderer);
+    studioLights(scene);
+    var floor = new T.Mesh(new T.PlaneGeometry(4000, 4000), new T.ShadowMaterial({ opacity: 0.5 }));
+    floor.rotation.x = -PI / 2; floor.receiveShadow = true; scene.add(floor);
+    var cam = new T.PerspectiveCamera(24, 1, 1, 8000);
+    var current = null, size = new T.Vector3(50, 30, 30);
+    var yaw = 0.6, pitch = 0.35, tYaw = yaw, tPitch = pitch, drag = false, lx = 0, ly = 0, idle = 0, intro = 0;
+    function show(kind) {
+      if (current) { scene.remove(current); current.traverse(function (o) { if (o.geometry) o.geometry.dispose(); }); }
+      var pl = placePart(kind); current = pl.holder; size = pl.size; scene.add(current); intro = 0;
+    }
+    canvas.addEventListener('pointerdown', function (e) { drag = true; lx = e.clientX; ly = e.clientY; canvas.setPointerCapture(e.pointerId); });
+    canvas.addEventListener('pointermove', function (e) { if (!drag) return; tYaw += (e.clientX - lx) * 0.008; tPitch = clamp(tPitch + (e.clientY - ly) * 0.005, 0.05, 1.2); lx = e.clientX; ly = e.clientY; idle = 0; });
+    canvas.addEventListener('pointerup', function () { drag = false; });
+    canvas.addEventListener('pointercancel', function () { drag = false; });
+    function resize() { var W = wrap.clientWidth, H = wrap.clientHeight; renderer.setSize(W, H, false); cam.aspect = W / H; cam.updateProjectionMatrix(); }
+    window.addEventListener('resize', resize);
+    var visible = true;
+    if ('IntersectionObserver' in window) new IntersectionObserver(function (e) { visible = e[0].isIntersecting; }).observe(canvas);
+    var last = performance.now();
+    function frame(now) {
+      requestAnimationFrame(frame);
+      var dt = Math.min(0.05, (now - last) / 1000); last = now;
+      if (!visible || document.hidden || !current) return;
+      idle += dt; if (!drag && idle > 2.5) tYaw += dt * 0.3;
+      intro = Math.min(1, intro + dt * 1.6);
+      yaw += (tYaw - yaw) * 0.08; pitch += (tPitch - pitch) * 0.08;
+      var d = Math.max(size.x, size.y * 1.5, size.z) * (cam.aspect < 1 ? 3.4 : 2.4) * (1.25 - 0.25 * ease(intro));
+      cam.position.set(Math.sin(yaw) * Math.cos(pitch) * d, size.y * 0.45 + Math.sin(pitch) * d, Math.cos(yaw) * Math.cos(pitch) * d);
+      cam.lookAt(0, size.y * 0.45, 0);
+      renderer.render(scene, cam);
+    }
+    resize(); requestAnimationFrame(frame);
+    return { show: show };
+  }
+
+  window.SR3D = { hero: hero, gallery: gallery, still: still, program: PROGRAM };
 })();

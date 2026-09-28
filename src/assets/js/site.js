@@ -43,7 +43,7 @@
       img.src = SR3D.still(spec[0], spec[1], w, h);
       img.dataset.rendered = '1';
       img.hidden = false;
-      img.closest('.photo, .page-head__visual, .sim__fallback') && img.closest('.photo, .page-head__visual, .sim__fallback').classList.add('is-render');
+      img.closest('.photo, .page-head__visual, .console__fallback') && img.closest('.photo, .page-head__visual, .console__fallback').classList.add('is-render');
     } catch (e) { img.hidden = true; }
   }
   function missing(img) {
@@ -70,37 +70,72 @@
     else if (!img.complete) img.addEventListener('error', function () { missing(img); }, { once: true });
   });
 
-  /* ---------- Hero simulation ---------- */
+  /* ---------- Hero: CNC simulation + control panel ---------- */
   var sim = $('#sim');
   if (sim && window.SR3D) {
-    var canvas = $('#simCanvas');
-    var ops = $$('#simOps li');
-    var fill = $('#simBar');
-    var hud = function (key) {
-      ops.forEach(function (li) {
-        var i = ops.indexOf(li), cur = ops.findIndex(function (l) { return l.dataset.op === key; });
-        li.classList.toggle('is-done', i < cur);
-        li.classList.toggle('is-active', i === cur);
-      });
+    var ops = $$('#simOps li'), fill = $('#simBar'), list = $('#ncList'), nc = $('#nc');
+    SR3D.program.forEach(function (l, i) {
+      var li = document.createElement('li');
+      var m = l[1].match(/^(N\d+\s*)?(.*?)(\s*\(.*\))?$/);
+      li.innerHTML = '<span class="nc__n">' + String(i + 1).padStart(3, '0') + '</span>' +
+        (m && m[1] ? '<b>' + m[1] + '</b>' : '') +
+        (m ? m[2].replace(/([A-Z])(-?[\d.]+)/g, '<i>$1</i>$2') : l[1]) +
+        (m && m[3] ? '<em>' + m[3] + '</em>' : '');
+      list.appendChild(li);
+    });
+    var rows = $$('li', list), dro = {};
+    $$('#dro dd').forEach(function (d) { dro[d.dataset.k] = d; });
+    var hud = {
+      op: function (key) {
+        var cur = ops.findIndex(function (l) { return l.dataset.op === key; });
+        ops.forEach(function (li, i) { li.classList.toggle('is-done', i < cur); li.classList.toggle('is-active', i === cur); });
+      },
+      line: function (i) {
+        rows.forEach(function (r, k) { r.classList.toggle('is-cur', k === i); r.classList.toggle('is-run', k < i); });
+        var r = rows[i];
+        if (r) nc.scrollTop = Math.max(0, r.offsetTop - nc.clientHeight / 2 + r.offsetHeight / 2);
+      },
+      dro: function (d) {
+        dro.x.textContent = d.x.toFixed(3); dro.z.textContent = d.z.toFixed(3);
+        dro.s.textContent = d.s; dro.f.textContent = d.f.toFixed(3);
+        dro.t.textContent = d.t; dro.m.textContent = d.m;
+        if (fill) fill.style.transform = 'scaleX(' + d.p + ')';
+      }
     };
-    hud.progress = function (p) { if (fill) fill.style.transform = 'scaleX(' + p + ')'; };
-    var ok = true, api = null;
-    try { api = SR3D.hero(canvas, hud); } catch (e) { ok = false; }
-    if (ok && api) {
+    var api = null;
+    try { api = SR3D.hero($('#simCanvas'), hud); } catch (e) { api = null; }
+    if (api) {
       sim.classList.add('is-live');
-      $$('.sim__mats button').forEach(function (b) {
+      $$('.console__mats button').forEach(function (b) {
         b.addEventListener('click', function () {
-          $$('.sim__mats button').forEach(function (x) { x.setAttribute('aria-checked', String(x === b)); });
+          $$('.console__mats button').forEach(function (x) { x.setAttribute('aria-checked', String(x === b)); });
           api.setMaterial(b.dataset.mat);
         });
       });
       var tg = $('#simToggle');
-      tg.addEventListener('click', function () {
-        var playing = api.toggle();
-        tg.textContent = playing ? tg.dataset.pause : tg.dataset.play;
-      });
-      ops.forEach(function (li) { li.addEventListener('click', function () { api.restart(); }); });
+      tg.addEventListener('click', function () { var on = api.toggle(); tg.textContent = on ? tg.dataset.pause : tg.dataset.play; tg.classList.toggle('is-held', !on); });
+      ops.forEach(function (li) { $('button', li).addEventListener('click', function () { api.seek(li.dataset.op); tg.textContent = tg.dataset.pause; tg.classList.remove('is-held'); }); });
     }
+  }
+
+  /* ---------- Parts viewer ---------- */
+  var viewer = $('#viewer');
+  if (viewer && window.SR3D) {
+    var gal = null;
+    var startViewer = function () {
+      if (gal) return;
+      try { gal = SR3D.gallery($('#viewerCanvas')); } catch (e) { viewer.classList.add('is-off'); return; }
+      var sel = $('[aria-selected="true"]', viewer);
+      gal.show(sel ? sel.dataset.part : 'bushing');
+    };
+    $$('.viewer__list [role="tab"]', viewer).forEach(function (b) {
+      b.addEventListener('click', function () {
+        $$('.viewer__list [role="tab"]', viewer).forEach(function (x) { x.setAttribute('aria-selected', String(x === b)); });
+        startViewer(); gal && gal.show(b.dataset.part);
+      });
+    });
+    if (io) new IntersectionObserver(function (en, obs) { if (en[0].isIntersecting) { obs.disconnect(); startViewer(); } }, { rootMargin: '300px 0px' }).observe(viewer);
+    else startViewer();
   }
 
   /* ---------- Reveal on scroll ---------- */

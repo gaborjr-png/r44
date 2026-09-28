@@ -24,8 +24,9 @@ PAGES = [
     ("about",     "rolunk.html",        "about.html",        "Rólunk",         "About us"),
     ("services",  "tevekenysegek.html", "capabilities.html", "Tevékenységek",  "Capabilities"),
     ("machinery", "geppark.html",       "machinery.html",    "Géppark",        "Machinery"),
-    ("quality",   "minoseg.html",       "quality.html",      "Minőség",        "Quality"),
-    ("hc02",      "hc-02.html",         "hc-02.html",        "HC-02",          "HC-02"),
+    ("quality",   "minosegugy.html",    "quality.html",      "Minőségügy",     "Quality"),
+    ("projects",  "projektek.html",     "projects.html",     "Projektek",      "Projects"),
+    ("hc02",      "helikopter.html",    "helicopter.html",   "Helikopter",     "Helicopter"),
     ("careers",   "karrier.html",       "careers.html",      "Karrier",        "Careers"),
     ("contact",   "kapcsolat.html",     "contact.html",      "Kapcsolat",      "Contact"),
 ]

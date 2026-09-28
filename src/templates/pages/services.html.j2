@@ -6,13 +6,14 @@
 {{ m.page_head(_('Tevékenységek', 'Capabilities'),
    _('CNC forgácsolás közép- és nagysorozatban', 'CNC machining in medium and large series'),
    _('Nagy pontosságú esztergált és mart alkatrészek alumíniumból, sárgarézből és műszaki műanyagokból, valamint alumínium- és sárgaréz-öntvények megmunkálása.', 'High-precision turned and milled components in aluminium, brass and engineering plastics, plus machining of aluminium and brass castings.'),
-   'cnc-esztergalas.jpg', 'shaft:brass') }}
+   'cnc-esztergalas.jpg', 'spool:brass') }}
 
 <nav class="subnav" aria-label="{{ _('Az oldal tartalma', 'On this page') }}">
   <div class="wrap subnav__inner">
     <a href="#esztergalas">{{ _('CNC esztergálás', 'CNC turning') }}</a>
     <a href="#maras">{{ _('CNC marás', 'CNC milling') }}</a>
     <a href="#ontveny">{{ _('Öntvény-megmunkálás', 'Casting machining') }}</a>
+    <a href="#altalanos">{{ _('Általános fémforgácsolás', 'General machining') }}</a>
     <a href="#sorozatgyartas">{{ _('Sorozatgyártás', 'Series production') }}</a>
     <a href="#anyagok">{{ _('Anyagok', 'Materials') }}</a>
     <a href="#folyamat">{{ _('Folyamat', 'Process') }}</a>
@@ -21,7 +22,7 @@
 
 <section class="section" id="esztergalas">
   <div class="wrap service reveal">
-    {{ m.photo('cnc-esztergalas.jpg', _('STAR hosszeszterga munkatere', 'Working area of a STAR Swiss-type lathe'), ratio='4/3', render='turned:brass') }}
+    {{ m.photo('cnc-esztergalas.jpg', _('STAR hosszeszterga munkatere', 'Working area of a STAR Swiss-type lathe'), ratio='4/3', render='bushing:brass') }}
     <div class="service__text">
       <p class="eyebrow">{{ _('Technológia', 'Technology') }} 01</p>
       <h2 class="h2">{{ _('CNC esztergálás', 'CNC turning') }}</h2>
@@ -39,7 +40,7 @@
 
 <section class="section section--tint" id="maras">
   <div class="wrap service service--flip reveal">
-    {{ m.photo('cnc-maras.jpg', _('CNC megmunkálóközpont', 'CNC machining centre'), ratio='4/3', render='milled:alu') }}
+    {{ m.photo('cnc-maras.jpg', _('CNC megmunkálóközpont', 'CNC machining centre'), ratio='4/3', render='manifold:alu') }}
     <div class="service__text">
       <p class="eyebrow">{{ _('Technológia', 'Technology') }} 02</p>
       <h2 class="h2">{{ _('CNC marás', 'CNC milling') }}</h2>
@@ -57,7 +58,7 @@
 
 <section class="section" id="ontveny">
   <div class="wrap service reveal">
-    {{ m.photo('ontveny.jpg', _('Megmunkált alumíniumöntvény', 'Machined aluminium casting'), ratio='4/3', render='milled:brass') }}
+    {{ m.photo('ontveny.jpg', _('Megmunkált alumíniumöntvény', 'Machined aluminium casting'), ratio='4/3', render='manifold:brass') }}
     <div class="service__text">
       <p class="eyebrow">{{ _('Technológia', 'Technology') }} 03</p>
       <h2 class="h2">{{ _('Öntvény-megmunkálás', 'Casting machining') }}</h2>
@@ -71,11 +72,27 @@
   </div>
 </section>
 
-<section class="section section--tint" id="sorozatgyartas">
+<section class="section section--tint" id="altalanos">
+  <div class="wrap service service--flip reveal">
+    {{ m.photo('altalanos.jpg', _('Hőkezelt, köszörült acél alkatrész', 'Hardened and ground steel part'), ratio='4/3', render='spool:steel') }}
+    <div class="service__text">
+      <p class="eyebrow">{{ _('Technológia', 'Technology') }} 04</p>
+      <h2 class="h2">{{ _('Általános fémforgácsolás', 'General metal cutting') }}</h2>
+      <p class="lead">{{ _('Hagyományos gépeken történő fémmegmunkálás; egyedi, kis méretű, de bonyolult geometriájú alkatrészek.', 'Metalworking on conventional machines; custom, small but geometrically complex parts.') }}</p>
+      <ul class="checks">
+        <li>{{ _('Hőkezelt, köszörült gépalkatrészek', 'Heat-treated and ground machine parts') }}</li>
+        <li>{{ _('Szerszámok és gépegységek gyártása', 'Manufacture of tools and machine assemblies') }}</li>
+        <li>{{ _('Mintadarabok, kis sorozatok készítése', 'Prototypes and small batches') }}</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="section section" id="sorozatgyartas">
   <div class="wrap service service--flip reveal">
     {{ m.photo('alkatreszek.jpg', _('Sorozatban gyártott esztergált alkatrészek', 'Series-produced turned components'), ratio='4/3', render='series:alu') }}
     <div class="service__text">
-      <p class="eyebrow">{{ _('Szolgáltatás', 'Service') }} 04</p>
+      <p class="eyebrow">{{ _('Szolgáltatás', 'Service') }} 05</p>
       <h2 class="h2">{{ _('Sorozatgyártás és teljes ellátás', 'Series production and full supply') }}</h2>
       <p class="lead">{{ _('Közép- és nagysorozatú alkatrészgyártás 3 műszakban. Partnereink számára a teljes folyamatot biztosítjuk az alapanyag beszerzésétől a késztermék kiszállításáig.', 'Medium and large series production in 3 shifts. We cover the entire process for our partners, from raw material sourcing to delivery of the finished product.') }}</p>
       <ul class="checks">
@@ -89,7 +106,7 @@
   </div>
 </section>
 
-<section class="section" id="anyagok">
+<section class="section section--tint" id="anyagok">
   <div class="wrap">
     <div class="section-head">
       <div>

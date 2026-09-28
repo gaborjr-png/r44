@@ -1,12 +1,14 @@
 # Fotók / Photos
 
+Megvan: `logo-badge.webp` (logó), `telephely.webp` (üzemépület).
+
 Tegye ide a fotókat az alábbi fájlnevekkel (JPG, kb. 2000 px széles, 80% minőség).
-Amíg egy fájl hiányzik, az oldal egy semleges, esztergált alumínium hatású helyőrzőt mutat.
+Amíg egy fájl hiányzik, a helyén a 3D motor valós idejű alkatrész-renderje jelenik meg.
 
 | Fájl | Hol jelenik meg | Javasolt tartalom |
 |---|---|---|
 | hero-csarnok.jpg | Főoldal fejléce | Gyártócsarnok, géppark áttekintő kép (fekvő, széles) |
-| telephely.jpg | Főoldal, Rólunk fejléc | Telephely / épület kívülről |
+| telephely.webp ✓ | Főoldal, Rólunk, Kapcsolat | Üzemépület (megvan) |
 | cnc-esztergalas.jpg | Főoldal, Tevékenységek | INDEX / STAR eszterga munkatere |
 | cnc-maras.jpg | Főoldal, Tevékenységek | Megmunkálóközpont (Chiron, Bridgeport) |
 | alkatreszek.jpg | Főoldal, Tevékenységek | Kész esztergált/mart alkatrészek közelről |

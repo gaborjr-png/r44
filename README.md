@@ -23,8 +23,12 @@ A géplista a `src/build.py` `MACHINES` listájában van, a darabszámokat a bui
 
 ## Interaktív elemek
 
-- Főoldal: valós idejű 3D esztergálási szimuláció (homlokesztergálás → nagyolás → fúrás →
-  simítás → beszúrás → menetvágás → leszúrás), egérrel forgatható, anyagváltóval.
+- Főoldal: valós idejű 3D esztergálási szimuláció revolverfejjel, szerszámcserével, csigafúróval,
+  hűtő-kenő folyadékkal és forgáccsal. Mellette fut a valódi Fanuc 0i-TF szintaxisú NC program
+  (G71 nagyolás, G74 mélyfúrás, G70 simítás, G76 menetvágás) soronkénti kiemeléssel és
+  X/Z/S/F/T kijelzővel. Az alkatrész: M20×1,5 menetes sárgaréz persely.
+- Alkatrész-galéria: forgatható 3D dugattyú, szeleptolattyú, hatlapú csatlakozó,
+  munkahenger-fedél, szelepblokk.
 - Fotók: amíg egy kép hiányzik az `assets/img/` mappából, a helyén a 3D motor által
   renderelt alkatrészkép jelenik meg. A valódi fotó feltöltése után automatikusan az látszik.
 - Géppark: kategória- és gyártószűrő, keresés, gyártónkénti megoszlás.

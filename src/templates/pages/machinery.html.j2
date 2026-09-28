@@ -11,12 +11,12 @@
 {% set brand_max = brands.values() | max %}
 
 {{ m.page_head(_('Géppark', 'Machinery'),
-   _(totals.cnc ~ ' CNC szerszámgép egy telephelyen', totals.cnc ~ ' CNC machine tools on one site'),
-   _('Gyártásunk gerincét INDEX, STAR, Chiron és további vezető gyártók CNC automata esztergái és megmunkálóközpontjai adják, automatikus rúdadagolással.', 'Our production is built on CNC automatic lathes and machining centres from INDEX, STAR, Chiron and other leading manufacturers, with automatic bar feeding.'),
+   _('38 CNC eszterga, 7 megmunkálóközpont', '38 CNC lathes, 7 machining centres'),
+   _('Termelésünk gerincét 38 CNC eszterga és 7 megmunkálóközpont adja, számtalan más szerszámgéppel kiegészülve – INDEX, STAR, Chiron és további vezető gyártók gépei, automatikus rúdadagolással.', 'Our production is built on 38 CNC lathes and 7 machining centres, complemented by numerous other machine tools – from INDEX, STAR, Chiron and other leading makers, with automatic bar feeding.'),
    'geppark.jpg', 'series:alu',
-   [(_('CNC automata eszterga', 'CNC automatic lathes'), machines[0].total),
-    (_('Megmunkálóközpont', 'Machining centres'), machines[1].total),
-    (_('Egyéb CNC eszterga', 'Other CNC lathes'), machines[2].total)]) }}
+   [(_('CNC eszterga', 'CNC lathes'), 38),
+    (_('Megmunkálóközpont', 'Machining centres'), 7),
+    (_('Műszak', 'Shifts'), 3)]) }}
 
 <section class="section">
   <div class="wrap">
@@ -50,7 +50,7 @@
           </label>
         </div>
 
-        <p class="mpark__count" aria-live="polite"><strong id="mCount">{{ machines | sum(attribute='total') }}</strong> <span data-unit>{{ _('gép a listában', 'machines listed') }}</span> <button type="button" class="mpark__reset" id="mReset" hidden>{{ _('Szűrés törlése', 'Clear filters') }}</button></p>
+        <p class="mpark__count" aria-live="polite"><strong id="mCount">{{ machines | sum(attribute='total') }}</strong> <span data-unit>{{ _('gép a gépparklistában', 'machines in the machine list') }}</span> <button type="button" class="mpark__reset" id="mReset" hidden>{{ _('Szűrés törlése', 'Clear filters') }}</button></p>
 
         <div class="table-wrap">
           <table class="table table--machines" id="mTable">
@@ -92,10 +92,10 @@
     </div>
     <div class="gallery">
       {{ m.photo('geppark.jpg', _('CNC gyártócsarnok', 'CNC production hall'), 'gallery__wide', '21/9', 'series:brass') }}
-      {{ m.photo('index-gs30.jpg', _('INDEX GS30 automata eszterga', 'INDEX GS30 automatic lathe'), '', '4/3', 'turned:brass') }}
-      {{ m.photo('star-sr20.jpg', _('STAR SR-20 hosszeszterga', 'STAR SR-20 Swiss-type lathe'), '', '4/3', 'shaft:alu') }}
-      {{ m.photo('chiron.jpg', _('Chiron megmunkálóközpont', 'Chiron machining centre'), '', '4/3', 'milled:alu') }}
-      {{ m.photo('rudadagolo.jpg', _('Automatikus rúdadagolók', 'Automatic bar feeders'), '', '4/3', 'turned:pom') }}
+      {{ m.photo('index-gs30.jpg', _('INDEX GS30 automata eszterga', 'INDEX GS30 automatic lathe'), '', '4/3', 'bushing:brass') }}
+      {{ m.photo('star-sr20.jpg', _('STAR SR-20 hosszeszterga', 'STAR SR-20 Swiss-type lathe'), '', '4/3', 'spool:alu') }}
+      {{ m.photo('chiron.jpg', _('Chiron megmunkálóközpont', 'Chiron machining centre'), '', '4/3', 'manifold:alu') }}
+      {{ m.photo('rudadagolo.jpg', _('Automatikus rúdadagolók', 'Automatic bar feeders'), '', '4/3', 'bushing:pom') }}
     </div>
   </div>
 </section>
