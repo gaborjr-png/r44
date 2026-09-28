@@ -1,0 +1,68 @@
+{% extends "base.html.j2" %}
+{% import "_macros.html.j2" as m with context %}
+{% block title %}{{ _('Géppark', 'Machinery') }}{% endblock %}
+{% block content %}
+
+{{ m.page_head(_('Géppark', 'Machinery'),
+   _(totals.cnc ~ ' CNC szerszámgép egy telephelyen', totals.cnc ~ ' CNC machine tools on one site'),
+   _('Gyártásunk gerincét INDEX, STAR, Chiron és további vezető gyártók CNC automata esztergái és megmunkálóközpontjai adják, automatikus rúdadagolással.', 'Our production is built on CNC automatic lathes and machining centres from INDEX, STAR, Chiron and other leading manufacturers, with automatic bar feeding.'),
+   'geppark.jpg') }}
+
+<section class="section">
+  <div class="wrap">
+    <dl class="kpis">
+      <div><dt>{{ _('CNC automata eszterga', 'CNC automatic lathes') }}</dt><dd>{{ machines[0].total }}</dd></div>
+      <div><dt>{{ _('CNC megmunkálóközpont', 'CNC machining centres') }}</dt><dd>{{ machines[1].total }}</dd></div>
+      <div><dt>{{ _('Egyéb CNC eszterga', 'Other CNC lathes') }}</dt><dd>{{ machines[2].total }}</dd></div>
+      <div><dt>{{ _('CNC fűrész', 'CNC saws') }}</dt><dd>3</dd></div>
+    </dl>
+
+    <div class="machine-groups">
+      {% for g in machines %}
+      <section class="mgroup" aria-labelledby="mg{{ loop.index }}">
+        <header class="mgroup__head">
+          <h2 class="h3" id="mg{{ loop.index }}">{{ g[lang] }}</h2>
+          <span class="mgroup__count">{{ g.total }} {{ _('db', 'units') }}</span>
+        </header>
+        <div class="table-wrap">
+          <table class="table table--machines">
+            <thead>
+              <tr>
+                <th scope="col">{{ _('Típus', 'Model') }}</th>
+                <th scope="col">{{ _('Kiegészítő / rúdadagoló', 'Option / bar feeder') }}</th>
+                <th scope="col" class="num">{{ _('db', 'qty') }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for model, extra, qty in g['items'] %}
+              <tr><th scope="row">{{ model }}</th><td>{{ extra or '–' }}</td><td class="num">{{ qty }}</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </section>
+      {% endfor %}
+    </div>
+    <p class="footnote">{{ _('A géplista tájékoztató jellegű; a gépek pontos műszaki adatait (megmunkálható átmérő, útok, tengelyszám) ajánlatkéréskor megküldjük.', 'The machine list is for information only; detailed specifications (bar capacity, travels, number of axes) are provided with quotations.') }}</p>
+  </div>
+</section>
+
+<section class="section section--tint">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <p class="eyebrow">{{ _('Üzem', 'Plant') }}</p>
+        <h2 class="h2">{{ _('Betekintés a gyártásba', 'Inside our production') }}</h2>
+      </div>
+    </div>
+    <div class="gallery">
+      {{ m.photo('geppark.jpg', _('CNC gyártócsarnok', 'CNC production hall'), 'gallery__wide', '16/9') }}
+      {{ m.photo('index-gs30.jpg', _('INDEX GS30 automata eszterga', 'INDEX GS30 automatic lathe'), '', '4/3') }}
+      {{ m.photo('star-sr20.jpg', _('STAR SR-20 hosszeszterga', 'STAR SR-20 Swiss-type lathe'), '', '4/3') }}
+      {{ m.photo('chiron.jpg', _('Chiron megmunkálóközpont', 'Chiron machining centre'), '', '4/3') }}
+      {{ m.photo('rudadagolo.jpg', _('Automatikus rúdadagolók', 'Automatic bar feeders'), '', '4/3') }}
+    </div>
+  </div>
+</section>
+
+{% endblock %}

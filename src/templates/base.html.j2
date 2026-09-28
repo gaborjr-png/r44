@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="{{ lang }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>{% block title %}{% endblock %} | Steel Riders Kft.</title>
+  <meta name="description" content="{% block description %}{{ _('Steel Riders Kft. – precíziós CNC esztergálás és marás közép- és nagysorozatban 1997 óta. Verpelét, Magyarország.', 'Steel Riders Kft. – precision CNC turning and milling in medium and large series since 1997. Verpelét, Hungary.') }}{% endblock %}">
+  <meta name="theme-color" content="#141b22">
+  <link rel="alternate" hreflang="hu" href="{{ hu_url }}">
+  <link rel="alternate" hreflang="en" href="{{ en_url }}">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Steel Riders Kft.">
+  <meta property="og:title" content="{{ self.title() }} | Steel Riders Kft.">
+  <meta property="og:locale" content="{{ _('hu_HU', 'en_GB') }}">
+  <link rel="icon" href="{{ asset }}img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,500..800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap">
+  <link rel="stylesheet" href="{{ asset }}css/site.css">
+  {% block head %}{% endblock %}
+</head>
+<body class="page-{{ page }}">
+  <a class="skip" href="#main">{{ _('Ugrás a tartalomhoz', 'Skip to content') }}</a>
+
+  <div class="topbar">
+    <div class="wrap topbar__inner">
+      <span class="topbar__addr">3351 Verpelét, Kossuth út 64.</span>
+      <a href="tel:+3636494183">+36 36 494 183</a>
+      <a href="mailto:info1@steelriderskft.hu">info1@steelriderskft.hu</a>
+      <nav class="langs" aria-label="{{ _('Nyelv', 'Language') }}">
+        {% if lang == 'hu' %}
+        <span aria-current="true">HU</span><a href="{{ alt_href }}" hreflang="en" lang="en">EN</a>
+        {% else %}
+        <a href="{{ alt_href }}" hreflang="hu" lang="hu">HU</a><span aria-current="true">EN</span>
+        {% endif %}
+      </nav>
+    </div>
+  </div>
+
+  <header class="header">
+    <div class="wrap header__inner">
+      <a class="brand" href="{{ href('home') }}" aria-label="Steel Riders Kft. – {{ _('Főoldal', 'Home') }}">
+        <svg class="brand__mark" viewBox="0 0 44 44" aria-hidden="true">
+          <rect x="1" y="1" width="42" height="42" rx="3" fill="#141b22"/>
+          <circle cx="22" cy="22" r="13" fill="none" stroke="#e9ecef" stroke-width="2.4"/>
+          <circle cx="22" cy="22" r="5" fill="none" stroke="#c9a45c" stroke-width="2.4"/>
+          <path d="M22 5v7M22 32v7M5 22h7M32 22h7" stroke="#e9ecef" stroke-width="2.4"/>
+        </svg>
+        <span class="brand__name">Steel Riders<small>Kft. · {{ _('CNC forgácsolás', 'CNC machining') }}</small></span>
+      </a>
+
+      <nav class="nav" id="nav" aria-label="{{ _('Fő navigáció', 'Main navigation') }}">
+        <ul>
+          {% for item in nav if item.key != 'contact' %}
+          <li><a href="{{ item.href }}"{% if item.key == page %} aria-current="page"{% endif %}>{{ item.label }}</a></li>
+          {% endfor %}
+          <li class="nav__mobile-only"><a href="{{ href('contact') }}"{% if page == 'contact' %} aria-current="page"{% endif %}>{{ _('Kapcsolat', 'Contact') }}</a></li>
+          <li class="nav__mobile-only nav__langs">
+            {% if lang == 'hu' %}<a href="{{ alt_href }}" lang="en">English version</a>{% else %}<a href="{{ alt_href }}" lang="hu">Magyar változat</a>{% endif %}
+          </li>
+        </ul>
+      </nav>
+
+      <a class="btn btn--brass header__cta" href="{{ href('contact') }}#ajanlatkeres">{{ _('Ajánlatkérés', 'Request a quote') }}</a>
+      <button class="menu-btn" id="menuBtn" type="button" aria-controls="nav" aria-expanded="false">
+        <span class="menu-btn__bars" aria-hidden="true"></span>
+        <span class="sr-only">{{ _('Menü', 'Menu') }}</span>
+      </button>
+    </div>
+  </header>
+
+  <main id="main">
+    {% block content %}{% endblock %}
+  </main>
+
+  {% if page != 'contact' %}
+  <section class="cta-band">
+    <div class="wrap cta-band__inner">
+      <div>
+        <p class="eyebrow eyebrow--light">{{ _('Ajánlatkérés', 'Request for quotation') }}</p>
+        <h2 class="cta-band__title">{{ _('Küldje el műszaki rajzát, és személyre szabott ajánlattal jelentkezünk.', 'Send us your technical drawing and we will get back to you with a tailored quotation.') }}</h2>
+      </div>
+      <div class="cta-band__actions">
+        <a class="btn btn--brass" href="{{ href('contact') }}#ajanlatkeres">{{ _('Ajánlatot kérek', 'Request a quote') }}</a>
+        <a class="btn btn--outline-light" href="tel:+36303828398">+36 30 382 8398</a>
+      </div>
+    </div>
+  </section>
+  {% endif %}
+
+  <footer class="footer">
+    <div class="wrap footer__grid">
+      <div class="footer__brand">
+        <p class="brand__name brand__name--light">Steel Riders<small>Kft.</small></p>
+        <p>{{ _('Precíziós CNC esztergálás és marás közép- és nagysorozatban. Beszállító 1997 óta.', 'Precision CNC turning and milling in medium and large series. Supplier since 1997.') }}</p>
+        <ul class="footer__certs">
+          <li>ISO 9001</li><li>ISO 14001</li>
+        </ul>
+      </div>
+      <div>
+        <h2 class="footer__h">{{ _('Vállalat', 'Company') }}</h2>
+        <ul class="footer__list">
+          <li><a href="{{ href('about') }}">{{ _('Rólunk', 'About us') }}</a></li>
+          <li><a href="{{ href('quality') }}">{{ _('Minőség', 'Quality') }}</a></li>
+          <li><a href="{{ href('hc02') }}">{{ _('HC-02 helikopter', 'HC-02 helicopter') }}</a></li>
+          <li><a href="{{ href('careers') }}">{{ _('Karrier', 'Careers') }}</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2 class="footer__h">{{ _('Gyártás', 'Manufacturing') }}</h2>
+        <ul class="footer__list">
+          <li><a href="{{ href('services') }}#esztergalas">{{ _('CNC esztergálás', 'CNC turning') }}</a></li>
+          <li><a href="{{ href('services') }}#maras">{{ _('CNC marás', 'CNC milling') }}</a></li>
+          <li><a href="{{ href('services') }}#ontveny">{{ _('Öntvény-megmunkálás', 'Casting machining') }}</a></li>
+          <li><a href="{{ href('machinery') }}">{{ _('Géppark', 'Machinery') }}</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2 class="footer__h">{{ _('Kapcsolat', 'Contact') }}</h2>
+        <address class="footer__addr">
+          Steel Riders Kft.<br>
+          3351 Verpelét, Kossuth út 64.<br>
+          {{ _('Magyarország', 'Hungary') }}<br>
+          <a href="tel:+3636494183">+36 36 494 183</a><br>
+          <a href="mailto:info1@steelriderskft.hu">info1@steelriderskft.hu</a>
+        </address>
+      </div>
+    </div>
+    <div class="wrap footer__legal">
+      <span>© {{ year }} Steel Riders Kft.</span>
+      <span>{{ _('Adószám', 'VAT no.') }}: 11174864-2-10</span>
+      <span>{{ _('Cégjegyzékszám', 'Company reg. no.') }}: 10-09-022629</span>
+      <a href="https://www.facebook.com/steelriderskft/" rel="noopener" target="_blank">Facebook</a>
+    </div>
+  </footer>
+
+  <script src="{{ asset }}js/site.js" defer></script>
+</body>
+</html>

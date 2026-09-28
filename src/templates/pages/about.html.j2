@@ -1,0 +1,100 @@
+{% extends "base.html.j2" %}
+{% import "_macros.html.j2" as m with context %}
+{% block title %}{{ _('Rólunk', 'About us') }}{% endblock %}
+{% block content %}
+
+{{ m.page_head(_('Rólunk', 'About us'),
+   _('Több mint ' ~ years ~ ' év a fémforgácsolásban', 'More than ' ~ years ~ ' years in metal cutting'),
+   _('A Steel Riders Kft. 1997 márciusában alakult családi vállalkozásként Verpeléten. Fő tevékenységünk a fémforgácsolás: egyedi munkadarabok gyártása és sorozatgyártás.', 'Steel Riders Kft. was founded in March 1997 as a family business in Verpelét, Hungary. Our core activity is metal cutting: one-off workpieces and series production.'),
+   'telephely.jpg') }}
+
+<section class="section">
+  <div class="wrap split split--wide">
+    <div class="prose">
+      <h2 class="h2">{{ _('A vállalat', 'The company') }}</h2>
+      <p class="lead">{{ _('Kezdetben 3 fővel, egy 200 m²-es műhelyben dolgoztunk. Mára stabil, közel 50 főt foglalkoztató vállalattá fejlődtünk, amely beszállítóként több mint 70 millió darab terméket értékesített.', 'We started with 3 people in a 200 m² workshop. Today we are a stable company employing around 50 people that has delivered more than 70 million parts as a supplier.') }}</p>
+      <p>{{ _('A géppark folyamatos bővítésével és fejlesztésével párhuzamosan új gyártócsarnokok épültek. Telephelyünk továbbra is Verpeléten van: egy 27 000 m²-es, saját tulajdonú ipari területen, 800 m²-es gyártóüzemmel és a 2016-ban uniós támogatással átadott, modern 1200 m²-es gyártócsarnokkal.', 'As the machine park was expanded and modernised, new production halls were built. We are still based in Verpelét: on a 27,000 m² company-owned industrial site with an 800 m² production plant and a modern 1,200 m² production hall opened in 2016 with EU funding.') }}</p>
+      <p>{{ _('Gyártásunk gerincét CNC automata esztergák és CNC megmunkálóközpontok adják, amelyeket számos hagyományos és NC szerszámgép egészít ki. A termelés 3 műszakban folyik.', 'CNC automatic lathes and CNC machining centres form the backbone of our production, complemented by a range of conventional and NC machine tools. Production runs in 3 shifts.') }}</p>
+      <p>{{ _('A hazai és nemzetközi piac növekvő elvárásainak való megfelelés érdekében ISO 9001 minőségirányítási és ISO 14001 környezetirányítási rendszert, saját mérőszobát, valamint SAP integrált vállalatirányítási rendszert működtetünk.', 'To meet the growing requirements of the domestic and international markets, we operate ISO 9001 quality management and ISO 14001 environmental management systems, our own measuring room and an integrated SAP ERP system.') }}</p>
+    </div>
+    <aside class="datasheet" aria-label="{{ _('Cégadatok', 'Company data') }}">
+      <h2 class="datasheet__title">{{ _('Cégadatok', 'Company data') }}</h2>
+      <dl>
+        <div><dt>{{ _('Cégnév', 'Company name') }}</dt><dd>Steel Riders Kft.</dd></div>
+        <div><dt>{{ _('Alapítás', 'Founded') }}</dt><dd>{{ _('1997. március', 'March 1997') }}</dd></div>
+        <div><dt>{{ _('Ügyvezető', 'Managing director') }}</dt><dd>Farkas Gábor</dd></div>
+        <div><dt>{{ _('Székhely', 'Registered office') }}</dt><dd>3351 Verpelét, Kossuth út 64.</dd></div>
+        <div><dt>{{ _('Fő tevékenység', 'Main activity') }}</dt><dd>{{ _('2553 Fémmegmunkálás', '2553 Machining') }}</dd></div>
+        <div><dt>{{ _('Munkatársak', 'Employees') }}</dt><dd>{{ _('kb. 50 fő', 'approx. 50') }}</dd></div>
+        <div><dt>{{ _('Munkarend', 'Operation') }}</dt><dd>{{ _('3 műszak', '3 shifts') }}</dd></div>
+        <div><dt>{{ _('Telephely', 'Site') }}</dt><dd>27 000 m²</dd></div>
+        <div><dt>{{ _('Gyártóterület', 'Production area') }}</dt><dd>800 m² + 1200 m²</dd></div>
+        <div><dt>{{ _('Irányítási rendszerek', 'Management systems') }}</dt><dd>ISO 9001, ISO 14001</dd></div>
+        <div><dt>{{ _('Adószám', 'VAT no.') }}</dt><dd>11174864-2-10</dd></div>
+        <div><dt>{{ _('Cégjegyzékszám', 'Company reg. no.') }}</dt><dd>10-09-022629</dd></div>
+      </dl>
+    </aside>
+  </div>
+</section>
+
+<section class="section section--tint">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <p class="eyebrow">{{ _('Történet', 'History') }}</p>
+        <h2 class="h2">{{ _('Mérföldkövek', 'Milestones') }}</h2>
+      </div>
+    </div>
+    <ol class="timeline">
+      <li>
+        <time>1997</time>
+        <div><h3 class="h3">{{ _('Alapítás', 'Foundation') }}</h3>
+        <p>{{ _('Családi vállalkozásként indulunk Verpeléten 3 fővel, egy 200 m²-es műhelyben. Fő profil: fémforgácsolás, egyedi alkatrészek és sorozatgyártás.', 'We start as a family business in Verpelét with 3 people in a 200 m² workshop. Core profile: metal cutting, one-off parts and series production.') }}</p></div>
+      </li>
+      <li>
+        <time>{{ _('Bővülés', 'Growth') }}</time>
+        <div><h3 class="h3">{{ _('Saját telephely és gyártóüzem', 'Own site and production plant') }}</h3>
+        <p>{{ _('A géppark bővülésével a gyártás egy 27 000 m²-es saját ipari területre, egy 800 m²-es gyártóüzembe költözik.', 'As the machine park grows, production moves to our own 27,000 m² industrial site and an 800 m² plant.') }}</p></div>
+      </li>
+      <li>
+        <time>2016</time>
+        <div><h3 class="h3">{{ _('Új, 1200 m²-es gyártócsarnok', 'New 1,200 m² production hall') }}</h3>
+        <p>{{ _('Uniós támogatással elkészül a modern gyártócsarnok, amely a sorozatgyártási kapacitás bővítését szolgálja.', 'A modern production hall is completed with EU funding, expanding our series production capacity.') }}</p></div>
+      </li>
+      <li>
+        <time>2020</time>
+        <div><h3 class="h3">{{ _('Beszállítói fejlesztés – Irinyi Terv', 'Supplier development – Irinyi Plan') }}</h3>
+        <p>{{ _('A beszállítói tevékenység fejlesztését célzó projektben új STAR SB-20R type G CNC automata esztergákat és hatékonyságnövelő gyártásirányítási rendszert vezetünk be, munkatársaink képzésével együtt.', 'In a project aimed at developing our supplier activities, we introduce new STAR SB-20R type G CNC automatic lathes and an efficiency-boosting production management system, together with staff training.') }}</p></div>
+      </li>
+      <li>
+        <time>2021</time>
+        <div><h3 class="h3">{{ _('HC-02.2 helikopter', 'HC-02.2 helicopter') }}</h3>
+        <p>{{ _('A Hungaro-Copter Kft.-vel közösen gyártott kétszemélyes HC-02.2 helikopter június 8-án megkapja a tesztrepülésekhez szükséges engedélyeket.', 'On 8 June the two-seat HC-02.2 helicopter, built together with Hungaro-Copter Kft., receives the permits required for test flights.') }}</p></div>
+      </li>
+      <li>
+        <time>{{ year }}</time>
+        <div><h3 class="h3">{{ _('Ma', 'Today') }}</h3>
+        <p>{{ _(totals.cnc ~ ' CNC szerszámgép, közel 50 munkatárs, 3 műszak és több mint 70 millió legyártott alkatrész.', totals.cnc ~ ' CNC machine tools, around 50 employees, 3 shifts and more than 70 million parts delivered.') }}</p></div>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <p class="eyebrow">{{ _('Amiben hiszünk', 'What we stand for') }}</p>
+        <h2 class="h2">{{ _('Hogyan dolgozunk', 'How we work') }}</h2>
+      </div>
+    </div>
+    <div class="values">
+      <div><h3 class="h3">{{ _('Egy kézben', 'Single source') }}</h3><p>{{ _('Az alapanyag-beszerzéstől a kiszállításig egy kézben kezeljük a gyártást, ez csökkenti partnereink logisztikai költségeit.', 'We handle manufacturing in one hand from material sourcing to delivery, reducing our partners’ logistics costs.') }}</p></div>
+      <div><h3 class="h3">{{ _('Mérhető minőség', 'Measurable quality') }}</h3><p>{{ _('Tanúsított irányítási rendszerek, saját mérőszoba és dokumentált ellenőrzés.', 'Certified management systems, our own measuring room and documented inspection.') }}</p></div>
+      <div><h3 class="h3">{{ _('Folyamatos fejlesztés', 'Continuous improvement') }}</h3><p>{{ _('Rendszeresen bővítjük gépparkunkat, és fejlesztjük gyártásirányítási rendszereinket.', 'We regularly expand our machine park and develop our production management systems.') }}</p></div>
+      <div><h3 class="h3">{{ _('Helyi munkahely', 'Local employer') }}</h3><p>{{ _('Családi vállalkozásként Verpelét és a környék stabil munkáltatója vagyunk.', 'As a family business we are a stable employer in Verpelét and the surrounding region.') }}</p></div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

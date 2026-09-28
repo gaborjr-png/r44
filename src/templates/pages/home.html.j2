@@ -1,0 +1,133 @@
+{% extends "base.html.j2" %}
+{% import "_macros.html.j2" as m with context %}
+{% block title %}{{ _('Precíziós CNC forgácsolás és sorozatgyártás', 'Precision CNC machining and series production') }}{% endblock %}
+{% block content %}
+
+<section class="hero">
+  <div class="hero__media">
+    <img src="{{ asset }}img/hero-csarnok.jpg" alt="{{ _('CNC gyártócsarnok, Verpelét', 'CNC production hall, Verpelét') }}" fetchpriority="high">
+  </div>
+  <div class="wrap hero__inner">
+    <p class="eyebrow eyebrow--light">{{ _('CNC esztergálás · CNC marás · Sorozatgyártás', 'CNC turning · CNC milling · Series production') }}</p>
+    <h1 class="hero__title">{{ _('Precíziós forgácsolt alkatrészek, közép- és nagysorozatban.', 'Precision machined components in medium and large series.') }}</h1>
+    <p class="hero__lead">{{ _('A Steel Riders Kft. 1997 óta gyárt nagy pontosságú esztergált és mart alkatrészeket az autó-, repülő- és gépipar számára – az alapanyag beszerzésétől a késztermék kiszállításáig.', 'Since 1997 Steel Riders Kft. has manufactured high-precision turned and milled components for the automotive, aerospace and machinery industries – from raw material sourcing to delivery of the finished part.') }}</p>
+    <div class="hero__actions">
+      <a class="btn btn--brass" href="{{ href('contact') }}#ajanlatkeres">{{ _('Ajánlatkérés', 'Request a quote') }}</a>
+      <a class="btn btn--outline-light" href="{{ href('services') }}">{{ _('Gyártási képességeink', 'Our capabilities') }}</a>
+    </div>
+  </div>
+  <div class="hero__facts">
+    <dl class="wrap facts">
+      <div><dt>{{ _('Alapítás', 'Founded') }}</dt><dd>1997</dd></div>
+      <div><dt>{{ _('CNC szerszámgép', 'CNC machine tools') }}</dt><dd>{{ totals.cnc }}</dd></div>
+      <div><dt>{{ _('Legyártott alkatrész', 'Parts delivered') }}</dt><dd>70&nbsp;M+</dd></div>
+      <div><dt>{{ _('Telephely', 'Site area') }}</dt><dd>27&nbsp;000&nbsp;m²</dd></div>
+      <div><dt>{{ _('Munkarend', 'Operation') }}</dt><dd>{{ _('3 műszak', '3 shifts') }}</dd></div>
+    </dl>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap intro">
+    <div class="intro__text">
+      <p class="eyebrow">{{ _('A vállalatról', 'The company') }}</p>
+      <h2 class="h2">{{ _('Családi vállalkozásból megbízható beszállító', 'From family business to trusted supplier') }}</h2>
+      <p class="lead">{{ _('Több mint ' ~ years ~ ' éve foglalkozunk fémforgácsolással. Egy 200 m²-es verpeléti műhelyből indultunk; ma közel 50 munkatárssal, 3 műszakban, saját tulajdonú, 27 000 m²-es telephelyen gyártunk.', 'We have been in metal cutting for more than ' ~ years ~ ' years. We started in a 200 m² workshop in Verpelét; today we manufacture in 3 shifts with around 50 employees on our own 27,000 m² site.') }}</p>
+      <p>{{ _('Versenyelőnyünk, hogy partnereink számára a teljes gyártási folyamatot biztosítjuk: alapanyag-beszerzés, gyártás, ellenőrzés és kiszállítás egy kézben. Ez csökkenti a logisztikai költségeket és egyszerűsíti a beszállítói láncot.', 'Our competitive advantage is that we cover the entire manufacturing process for our partners: material sourcing, production, inspection and delivery in one hand. This reduces logistics costs and simplifies the supply chain.') }}</p>
+      <a class="link-arrow" href="{{ href('about') }}">{{ _('A cég története', 'Our history') }}</a>
+    </div>
+    <div class="intro__media">
+      {{ m.photo('telephely.jpg', _('A Steel Riders telephelye Verpeléten', 'Steel Riders site in Verpelét'), ratio='4/5') }}
+    </div>
+  </div>
+</section>
+
+<section class="section section--tint">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <p class="eyebrow">{{ _('Gyártási képességek', 'Capabilities') }}</p>
+        <h2 class="h2">{{ _('Esztergálás, marás és komplett alkatrészgyártás', 'Turning, milling and complete component manufacturing') }}</h2>
+      </div>
+      <p>{{ _('Elsősorban alumínium, sárgaréz és műszaki műanyag alkatrészeket gyártunk, valamint alumínium- és sárgaréz-öntvényeket munkálunk meg – kis- és középsorozattól a nagysorozatig.', 'We mainly produce aluminium, brass and engineering plastic parts and machine aluminium and brass castings – from small and medium batches up to large series.') }}</p>
+    </div>
+
+    <div class="cap-grid">
+      <a class="cap" href="{{ href('services') }}#esztergalas">
+        {{ m.photo('cnc-esztergalas.jpg', _('INDEX és STAR CNC automata esztergák', 'INDEX and STAR CNC automatic lathes'), ratio='3/2') }}
+        <div class="cap__body">
+          <h3 class="h3">{{ _('CNC esztergálás', 'CNC turning') }}</h3>
+          <p>{{ _('Hosszesztergák és automata esztergák rúdadagolóval, komplett megmunkálás egy felfogásban.', 'Swiss-type and automatic lathes with bar feeders, complete machining in a single set-up.') }}</p>
+          <span class="cap__meta">{{ totals.lathes }} {{ _('CNC eszterga', 'CNC lathes') }}</span>
+        </div>
+      </a>
+      <a class="cap" href="{{ href('services') }}#maras">
+        {{ m.photo('cnc-maras.jpg', _('CNC megmunkálóközpont', 'CNC machining centre'), ratio='3/2') }}
+        <div class="cap__body">
+          <h3 class="h3">{{ _('CNC marás', 'CNC milling') }}</h3>
+          <p>{{ _('3 és 5 tengelyes megmunkálóközpontok prizmatikus alkatrészekhez és öntvényekhez.', '3- and 5-axis machining centres for prismatic parts and castings.') }}</p>
+          <span class="cap__meta">{{ totals.centres }} {{ _('megmunkálóközpont', 'machining centres') }}</span>
+        </div>
+      </a>
+      <a class="cap" href="{{ href('services') }}#sorozatgyartas">
+        {{ m.photo('alkatreszek.jpg', _('Esztergált sárgaréz és alumínium alkatrészek', 'Turned brass and aluminium parts'), ratio='3/2') }}
+        <div class="cap__body">
+          <h3 class="h3">{{ _('Sorozatgyártás', 'Series production') }}</h3>
+          <p>{{ _('Közép- és nagysorozatok 3 műszakban, tervezhető kapacitással és ütemezett szállítással.', 'Medium and large series in 3 shifts with plannable capacity and scheduled deliveries.') }}</p>
+          <span class="cap__meta">{{ _('70 millió+ legyártott darab', '70 million+ parts delivered') }}</span>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <p class="eyebrow">{{ _('Iparágak', 'Industries') }}</p>
+        <h2 class="h2">{{ _('Alkatrészek az ipar szinte minden területére', 'Components for almost every industry') }}</h2>
+      </div>
+      <p>{{ _('Kis- és középsorozatban gyakorlatilag az ipar valamennyi területére gyártottunk már alkatrészt.', 'In small and medium batches we have already produced parts for practically every field of industry.') }}</p>
+    </div>
+    <ul class="industries">
+      <li><span class="industries__code">AUT</span><strong>{{ _('Autóipar', 'Automotive') }}</strong><span>{{ _('Járműipari berendezések alkatrészei', 'Components for vehicle equipment') }}</span></li>
+      <li><span class="industries__code">AER</span><strong>{{ _('Repülőgépipar', 'Aerospace') }}</strong><span>{{ _('Többek között a HC-02 helikopter gyártása', 'Including manufacture of the HC-02 helicopter') }}</span></li>
+      <li><span class="industries__code">MCH</span><strong>{{ _('Ipari gépek', 'Industrial machinery') }}</strong><span>{{ _('Gépgyártás, hajtástechnika', 'Machine building, drive technology') }}</span></li>
+      <li><span class="industries__code">AGR</span><strong>{{ _('Mezőgazdasági gépek', 'Agricultural machinery') }}</strong><span>{{ _('Mezőgazdasági gépalkatrészek', 'Agricultural machine components') }}</span></li>
+      <li><span class="industries__code">MED</span><strong>{{ _('Orvosi és vegyipar', 'Medical & chemical') }}</strong><span>{{ _('Orvosi és vegyipari berendezések', 'Medical and chemical equipment') }}</span></li>
+      <li><span class="industries__code">ELE</span><strong>{{ _('Elektronika', 'Electronics') }}</strong><span>{{ _('Elektronikai eszközök alkatrészei', 'Parts for electronic devices') }}</span></li>
+    </ul>
+  </div>
+</section>
+
+<section class="section section--dark">
+  <div class="wrap split">
+    <div>
+      <p class="eyebrow eyebrow--light">{{ _('Minőség', 'Quality') }}</p>
+      <h2 class="h2">{{ _('Tanúsított rendszerek, saját mérőszoba', 'Certified systems, in-house metrology') }}</h2>
+      <p class="lead">{{ _('ISO 9001 minőségirányítási és ISO 14001 környezetirányítási rendszer szerint működünk. A gyártásközi és végellenőrzést saját mérőszobánkban végezzük, a folyamatokat SAP integrált vállalatirányítási rendszer támogatja.', 'We operate under ISO 9001 quality management and ISO 14001 environmental management systems. In-process and final inspection take place in our own measuring room, and processes are supported by an integrated SAP ERP system.') }}</p>
+      <a class="link-arrow link-arrow--light" href="{{ href('quality') }}">{{ _('Minőségbiztosítás', 'Quality assurance') }}</a>
+    </div>
+    <ul class="cert-list">
+      <li><span>ISO 9001</span>{{ _('Minőségirányítási rendszer', 'Quality management system') }}</li>
+      <li><span>ISO 14001</span>{{ _('Környezetirányítási rendszer', 'Environmental management system') }}</li>
+      <li><span>QA</span>{{ _('Saját mérőszoba', 'In-house measuring room') }}</li>
+      <li><span>SAP</span>{{ _('Integrált vállalatirányítás', 'Integrated ERP') }}</li>
+    </ul>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap feature">
+    {{ m.photo('hc02.jpg', _('Hungarocopter HC-02 helikopter', 'Hungarocopter HC-02 helicopter'), ratio='16/10') }}
+    <div class="feature__text">
+      <p class="eyebrow">{{ _('Saját fejlesztés', 'In-house development') }}</p>
+      <h2 class="h2">{{ _('Hungarocopter HC-02', 'Hungarocopter HC-02') }}</h2>
+      <p>{{ _('Az első magyar fejlesztésű és gyártású kétszemélyes helikopter gyártásában a Hungaro-Copter Kft. partnereként veszünk részt. A projekt jól mutatja, milyen pontosságú és összetettségű alkatrészek készülnek üzemünkben.', 'We manufacture the first Hungarian-designed and built two-seat helicopter as partner of Hungaro-Copter Kft. The project demonstrates the precision and complexity of the components produced in our plant.') }}</p>
+      <a class="link-arrow" href="{{ href('hc02') }}">{{ _('A HC-02 projekt', 'The HC-02 project') }}</a>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

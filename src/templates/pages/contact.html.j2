@@ -1,0 +1,121 @@
+{% extends "base.html.j2" %}
+{% import "_macros.html.j2" as m with context %}
+{% block title %}{{ _('Kapcsolat', 'Contact') }}{% endblock %}
+{% block content %}
+
+{{ m.page_head(_('Kapcsolat', 'Contact'),
+   _('Vegye fel velünk a kapcsolatot', 'Get in touch'),
+   _('Ajánlatkéréssel, gyártási kérdéssel vagy álláspályázattal keressen minket bizalommal.', 'Contact us with an enquiry, a manufacturing question or a job application.')) }}
+
+<section class="section">
+  <div class="wrap">
+    <div class="people">
+      <article class="person">
+        <p class="person__role">{{ _('Ügyvezető', 'Managing Director') }}</p>
+        <h2 class="person__name">Farkas Gábor</h2>
+        <p class="person__lines"><a href="tel:+36303828398">+36 30 382 8398</a><a href="mailto:info1@steelriderskft.hu">info1@steelriderskft.hu</a></p>
+      </article>
+      <article class="person">
+        <p class="person__role">{{ _('Üzemvezető', 'Plant Manager') }}</p>
+        <h2 class="person__name">Kiszály Tamás</h2>
+        <p class="person__lines"><a href="tel:+36304518637">+36 30 451 8637</a><a href="mailto:kiszaly.tamas@steelriderskft.hu">kiszaly.tamas@steelriderskft.hu</a></p>
+      </article>
+      <article class="person">
+        <p class="person__role">{{ _('Munkaügy', 'Human Resources') }}</p>
+        <h2 class="person__name">Pfundt Krisztina</h2>
+        <p class="person__lines"><a href="tel:+36306812644">+36 30 681 2644</a><a href="mailto:munkaugy@steelriderskft.hu">munkaugy@steelriderskft.hu</a></p>
+      </article>
+      <article class="person">
+        <p class="person__role">{{ _('Központ', 'Main office') }}</p>
+        <h2 class="person__name">Steel Riders Kft.</h2>
+        <p class="person__lines"><a href="tel:+3636494183">+36 36 494 183</a><a href="mailto:info@steelriderskft.hu">info@steelriderskft.hu</a></p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="section section--tint" id="ajanlatkeres">
+  <div class="wrap contact-grid">
+    <form class="rfq" id="rfq" novalidate data-to="info1@steelriderskft.hu"
+          data-msg-invalid="{{ _('Kérjük, töltse ki a *-gal jelölt mezőket.', 'Please complete the fields marked *.') }}"
+          data-msg-subject="{{ _('Ajánlatkérés', 'Request for quotation') }}">
+      <h2 class="h2">{{ _('Ajánlatkérés', 'Request for quotation') }}</h2>
+      <p>{{ _('Adja meg az alkatrész főbb adatait. A műszaki rajzot (PDF) és a 3D modellt (STEP) a megnyíló e-mailhez csatolhatja.', 'Enter the main details of the part. You can attach the drawing (PDF) and 3D model (STEP) to the e-mail that opens.') }}</p>
+
+      <fieldset>
+        <legend>{{ _('Kapcsolattartó', 'Contact person') }}</legend>
+        <div class="field-row">
+          <div class="field"><label for="f-name">{{ _('Név', 'Name') }} *</label><input id="f-name" name="name" required autocomplete="name"></div>
+          <div class="field"><label for="f-company">{{ _('Cég', 'Company') }} *</label><input id="f-company" name="company" required autocomplete="organization"></div>
+        </div>
+        <div class="field-row">
+          <div class="field"><label for="f-email">{{ _('E-mail', 'E-mail') }} *</label><input id="f-email" name="email" type="email" required autocomplete="email"></div>
+          <div class="field"><label for="f-phone">{{ _('Telefon', 'Phone') }}</label><input id="f-phone" name="phone" type="tel" autocomplete="tel"></div>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>{{ _('Alkatrész', 'Part') }}</legend>
+        <div class="field-row">
+          <div class="field"><label for="f-part">{{ _('Megnevezés / rajzszám', 'Part name / drawing no.') }}</label><input id="f-part" name="part"></div>
+          <div class="field"><label for="f-material">{{ _('Anyag', 'Material') }}</label>
+            <select id="f-material" name="material">
+              <option value="">{{ _('Válasszon', 'Select') }}</option>
+              <option>{{ _('Alumínium', 'Aluminium') }}</option>
+              <option>{{ _('Sárgaréz', 'Brass') }}</option>
+              <option>{{ _('Műszaki műanyag', 'Engineering plastic') }}</option>
+              <option>{{ _('Alumíniumöntvény', 'Aluminium casting') }}</option>
+              <option>{{ _('Sárgaréz-öntvény', 'Brass casting') }}</option>
+              <option>{{ _('Egyéb', 'Other') }}</option>
+            </select>
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field"><label for="f-tech">{{ _('Technológia', 'Technology') }}</label>
+            <select id="f-tech" name="tech">
+              <option value="">{{ _('Válasszon', 'Select') }}</option>
+              <option>{{ _('Esztergálás', 'Turning') }}</option>
+              <option>{{ _('Marás', 'Milling') }}</option>
+              <option>{{ _('Esztergálás + marás', 'Turning + milling') }}</option>
+              <option>{{ _('Öntvény-megmunkálás', 'Casting machining') }}</option>
+            </select>
+          </div>
+          <div class="field"><label for="f-qty">{{ _('Éves mennyiség (db)', 'Annual quantity (pcs)') }}</label><input id="f-qty" name="qty" inputmode="numeric"></div>
+        </div>
+        <div class="field"><label for="f-msg">{{ _('Megjegyzés', 'Notes') }} *</label><textarea id="f-msg" name="message" rows="5" required placeholder="{{ _('Pl. tűrések, felületkezelés, szállítási ütemezés', 'e.g. tolerances, surface treatment, delivery schedule') }}"></textarea></div>
+      </fieldset>
+
+      <div class="rfq__actions">
+        <button class="btn btn--brass" type="submit">{{ _('Ajánlatkérés összeállítása', 'Prepare request') }}</button>
+        <p class="rfq__status" id="rfqStatus" role="status" aria-live="polite"></p>
+      </div>
+
+      <div class="rfq__result" id="rfqResult" hidden>
+        <p><strong>{{ _('Az ajánlatkérés elkészült.', 'Your request is ready.') }}</strong> {{ _('Küldje el e-mailben a', 'Send it by e-mail to') }} <span class="mono">info1@steelriderskft.hu</span> {{ _('címre, a rajzokat csatolva.', 'with your drawings attached.') }}</p>
+        <pre class="rfq__text" id="rfqText"></pre>
+        <div class="rfq__buttons">
+          <a class="btn btn--brass" id="rfqMail" href="mailto:info1@steelriderskft.hu">{{ _('Megnyitás levelezőben', 'Open in e-mail client') }}</a>
+          <button class="btn btn--outline" type="button" id="rfqCopy" data-done="{{ _('Kimásolva', 'Copied') }}">{{ _('Szöveg másolása', 'Copy text') }}</button>
+        </div>
+      </div>
+    </form>
+
+    <aside class="visit">
+      <h2 class="h3">{{ _('Telephely', 'Location') }}</h2>
+      <address>
+        Steel Riders Kft.<br>
+        3351 Verpelét, Kossuth út 64.<br>
+        {{ _('Magyarország', 'Hungary') }}
+      </address>
+      <p class="visit__note">{{ _('Verpelét Heves megyében, Eger és Gyöngyös között található.', 'Verpelét is in Heves County, between Eger and Gyöngyös.') }}</p>
+      <a class="btn btn--outline btn--block" href="https://www.google.com/maps/search/?api=1&amp;query=Steel+Riders+Kft+Verpel%C3%A9t+Kossuth+%C3%BAt+64" target="_blank" rel="noopener">{{ _('Útvonaltervezés', 'Get directions') }}</a>
+      <dl class="visit__data">
+        <div><dt>{{ _('Cégnév', 'Company') }}</dt><dd>Steel Riders Kft.</dd></div>
+        <div><dt>{{ _('Adószám', 'VAT no.') }}</dt><dd>11174864-2-10</dd></div>
+        <div><dt>{{ _('Cégjegyzékszám', 'Reg. no.') }}</dt><dd>10-09-022629</dd></div>
+      </dl>
+    </aside>
+  </div>
+</section>
+
+{% endblock %}

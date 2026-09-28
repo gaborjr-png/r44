@@ -1,0 +1,25 @@
+# Fotók / Photos
+
+Tegye ide a fotókat az alábbi fájlnevekkel (JPG, kb. 2000 px széles, 80% minőség).
+Amíg egy fájl hiányzik, az oldal egy semleges, esztergált alumínium hatású helyőrzőt mutat.
+
+| Fájl | Hol jelenik meg | Javasolt tartalom |
+|---|---|---|
+| hero-csarnok.jpg | Főoldal fejléce | Gyártócsarnok, géppark áttekintő kép (fekvő, széles) |
+| telephely.jpg | Főoldal, Rólunk fejléc | Telephely / épület kívülről |
+| cnc-esztergalas.jpg | Főoldal, Tevékenységek | INDEX / STAR eszterga munkatere |
+| cnc-maras.jpg | Főoldal, Tevékenységek | Megmunkálóközpont (Chiron, Bridgeport) |
+| alkatreszek.jpg | Főoldal, Tevékenységek | Kész esztergált/mart alkatrészek közelről |
+| ontveny.jpg | Tevékenységek | Megmunkált alumínium- vagy sárgaréz-öntvény |
+| geppark.jpg | Géppark fejléc + galéria | Csarnok, gépsor |
+| index-gs30.jpg | Géppark galéria | INDEX GS30 |
+| star-sr20.jpg | Géppark galéria | STAR SR-20 |
+| chiron.jpg | Géppark galéria | Chiron FZ16 / FZ22 |
+| rudadagolo.jpg | Géppark galéria | Rúdadagolók |
+| meroszoba.jpg | Minőség | Mérőszoba, mérőeszközök |
+| hc02.jpg | Főoldal, HC-02 | HC-02 helikopter |
+| hc02-gyartas.jpg | HC-02 galéria | HC-02 alkatrészgyártás |
+| hc02-szereles.jpg | HC-02 galéria | HC-02 szerelés |
+| csapat.jpg | Karrier fejléc | Munkatársak a gépeknél |
+
+Csere után futtassa: `python3 src/build.py`

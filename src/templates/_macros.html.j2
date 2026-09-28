@@ -1,0 +1,24 @@
+{# Photo slot. Drop the real photo into src/assets/img/<file>; until then a
+   machined-aluminium placeholder with the caption is shown. #}
+{% macro photo(file, alt, cls='', ratio='4/3', caption='') -%}
+<figure class="photo {{ cls }}" style="--ratio: {{ ratio }}">
+  <img src="{{ asset }}img/{{ file }}" alt="{{ alt }}" loading="lazy" decoding="async">
+  <span class="photo__ph" aria-hidden="true">{{ alt }}</span>
+  {% if caption %}<figcaption>{{ caption }}</figcaption>{% endif %}
+</figure>
+{%- endmacro %}
+
+{% macro page_head(eyebrow, title, lead, file='', alt='') -%}
+<section class="page-head{% if file %} page-head--photo{% endif %}">
+  {% if file %}
+  <div class="page-head__bg">
+    <img src="{{ asset }}img/{{ file }}" alt="" loading="eager">
+  </div>
+  {% endif %}
+  <div class="wrap page-head__inner">
+    <p class="eyebrow eyebrow--light">{{ eyebrow }}</p>
+    <h1 class="page-head__title">{{ title }}</h1>
+    <p class="page-head__lead">{{ lead }}</p>
+  </div>
+</section>
+{%- endmacro %}

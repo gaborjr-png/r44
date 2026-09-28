@@ -1,0 +1,64 @@
+{% extends "base.html.j2" %}
+{% import "_macros.html.j2" as m with context %}
+{% block title %}{{ _('Karrier', 'Careers') }}{% endblock %}
+{% block content %}
+
+{{ m.page_head(_('Karrier', 'Careers'),
+   _('Dolgozzon velünk Verpeléten', 'Work with us in Verpelét'),
+   _('Családi vállalkozásként 1997 óta biztosítunk stabil munkahelyet. Folyamatosan bővülő gépparkunkhoz keresünk szakembereket.', 'As a family business we have offered stable employment since 1997. We are looking for skilled people for our growing machine park.'),
+   'csapat.jpg') }}
+
+<section class="section">
+  <div class="wrap split split--wide">
+    <div>
+      <p class="eyebrow">{{ _('Nyitott pozíció', 'Open position') }}</p>
+      <article class="job">
+        <header class="job__head">
+          <h2 class="h2">{{ _('CNC gépkezelő', 'CNC machine operator') }}</h2>
+          <ul class="job__tags">
+            <li>{{ _('Verpelét', 'Verpelét') }}</li>
+            <li>{{ _('Teljes munkaidő', 'Full time') }}</li>
+            <li>{{ _('Több műszak', 'Shift work') }}</li>
+          </ul>
+        </header>
+        <div class="job__cols">
+          <div>
+            <h3 class="h4">{{ _('Feladatok', 'Responsibilities') }}</h3>
+            <ul class="checks">
+              <li>{{ _('CNC esztergák, megmunkálóközpontok kezelése, felügyelete', 'Operating and supervising CNC lathes and machining centres') }}</li>
+              <li>{{ _('Alkatrészek mérése, gyártásközi ellenőrzés', 'Measuring parts, in-process inspection') }}</li>
+              <li>{{ _('Anyagutánpótlás, szerszámcsere', 'Material replenishment, tool changes') }}</li>
+            </ul>
+          </div>
+          <div>
+            <h3 class="h4">{{ _('Előny', 'Advantages') }}</h3>
+            <ul class="checks">
+              <li>{{ _('Forgácsoló vagy gépészeti végzettség', 'Qualification in machining or mechanical engineering') }}</li>
+              <li>{{ _('Műszaki rajz olvasása, mérőeszközök ismerete', 'Reading technical drawings, use of measuring instruments') }}</li>
+              <li>{{ _('CNC gépen szerzett tapasztalat', 'Experience on CNC machines') }}</li>
+            </ul>
+          </div>
+        </div>
+      </article>
+      <h3 class="h3 mt">{{ _('Amit kínálunk', 'What we offer') }}</h3>
+      <ul class="checks checks--cols">
+        <li>{{ _('Stabil, 1997 óta működő családi vállalkozás', 'A stable family business operating since 1997') }}</li>
+        <li>{{ _('Modern INDEX, STAR és Chiron géppark', 'A modern INDEX, STAR and Chiron machine park') }}</li>
+        <li>{{ _('Betanítás és szakmai fejlődési lehetőség', 'Training and professional development') }}</li>
+        <li>{{ _('Közeli munkahely Eger és Gyöngyös térségében', 'A workplace close to Eger and Gyöngyös') }}</li>
+      </ul>
+    </div>
+    <aside class="contact-card">
+      <h2 class="h3">{{ _('Jelentkezés', 'How to apply') }}</h2>
+      <p>{{ _('Önéletrajzát e-mailben küldje el, vagy hívja munkaügyi kollégánkat.', 'Send your CV by e-mail or call our HR colleague.') }}</p>
+      <p class="contact-card__name">Pfundt Krisztina<span>{{ _('Munkaügy', 'Human resources') }}</span></p>
+      <p class="contact-card__lines">
+        <a href="tel:+36306812644">+36 30 681 2644</a>
+        <a href="mailto:munkaugy@steelriderskft.hu">munkaugy@steelriderskft.hu</a>
+      </p>
+      <a class="btn btn--brass btn--block" href="mailto:munkaugy@steelriderskft.hu?subject={{ _('Jelentkezés – CNC gépkezelő', 'Application – CNC machine operator') | urlencode }}">{{ _('Önéletrajz küldése', 'Send your CV') }}</a>
+    </aside>
+  </div>
+</section>
+
+{% endblock %}

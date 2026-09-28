@@ -1,0 +1,137 @@
+{% extends "base.html.j2" %}
+{% import "_macros.html.j2" as m with context %}
+{% block title %}{{ _('Tevékenységek', 'Capabilities') }}{% endblock %}
+{% block content %}
+
+{{ m.page_head(_('Tevékenységek', 'Capabilities'),
+   _('CNC forgácsolás közép- és nagysorozatban', 'CNC machining in medium and large series'),
+   _('Nagy pontosságú esztergált és mart alkatrészek alumíniumból, sárgarézből és műszaki műanyagokból, valamint alumínium- és sárgaréz-öntvények megmunkálása.', 'High-precision turned and milled components in aluminium, brass and engineering plastics, plus machining of aluminium and brass castings.'),
+   'cnc-esztergalas.jpg') }}
+
+<nav class="subnav" aria-label="{{ _('Az oldal tartalma', 'On this page') }}">
+  <div class="wrap subnav__inner">
+    <a href="#esztergalas">{{ _('CNC esztergálás', 'CNC turning') }}</a>
+    <a href="#maras">{{ _('CNC marás', 'CNC milling') }}</a>
+    <a href="#ontveny">{{ _('Öntvény-megmunkálás', 'Casting machining') }}</a>
+    <a href="#sorozatgyartas">{{ _('Sorozatgyártás', 'Series production') }}</a>
+    <a href="#anyagok">{{ _('Anyagok', 'Materials') }}</a>
+    <a href="#folyamat">{{ _('Folyamat', 'Process') }}</a>
+  </div>
+</nav>
+
+<section class="section" id="esztergalas">
+  <div class="wrap service">
+    {{ m.photo('cnc-esztergalas.jpg', _('STAR hosszeszterga munkatere', 'Working area of a STAR Swiss-type lathe'), ratio='4/3') }}
+    <div class="service__text">
+      <p class="eyebrow">{{ _('Technológia', 'Technology') }} 01</p>
+      <h2 class="h2">{{ _('CNC esztergálás', 'CNC turning') }}</h2>
+      <p class="lead">{{ _('Forgástest jellegű alkatrészek komplett megmunkálása CNC automata esztergákon és hosszesztergákon, rúdanyagból.', 'Complete machining of rotational parts from bar stock on CNC automatic and Swiss-type lathes.') }}</p>
+      <ul class="checks">
+        <li>{{ _('INDEX GS30 / GS42, STAR SR, SA, SB és SR-32J, Hanwha és Nakamura-Tome gépek', 'INDEX GS30 / GS42, STAR SR, SA, SB and SR-32J, Hanwha and Nakamura-Tome machines') }}</li>
+        <li>{{ _('Automatikus rúdadagolás (FMB, LNS, MBL, IEMCA) – hosszú, felügyelt futásidők', 'Automatic bar feeding (FMB, LNS, MBL, IEMCA) for long, supervised run times') }}</li>
+        <li>{{ _('Kisméretű, összetett precíziós alkatrészek hosszesztergán', 'Small, complex precision parts on Swiss-type lathes') }}</li>
+        <li>{{ _('Tokmányos megmunkálás Mori Seiki és SZIM esztergákon', 'Chucking work on Mori Seiki and SZIM lathes') }}</li>
+      </ul>
+      <p class="service__meta"><strong>{{ totals.lathes }}</strong> {{ _('CNC eszterga a gépparkban', 'CNC lathes in our machine park') }} · <a href="{{ href('machinery') }}">{{ _('Géplista', 'Machine list') }}</a></p>
+    </div>
+  </div>
+</section>
+
+<section class="section section--tint" id="maras">
+  <div class="wrap service service--flip">
+    {{ m.photo('cnc-maras.jpg', _('CNC megmunkálóközpont', 'CNC machining centre'), ratio='4/3') }}
+    <div class="service__text">
+      <p class="eyebrow">{{ _('Technológia', 'Technology') }} 02</p>
+      <h2 class="h2">{{ _('CNC marás', 'CNC milling') }}</h2>
+      <p class="lead">{{ _('Prizmatikus alkatrészek marása, fúrása és menetkészítése függőleges és vízszintes megmunkálóközpontokon, 5 tengelyes megmunkálással is.', 'Milling, drilling and threading of prismatic parts on vertical and horizontal machining centres, including 5-axis machining.') }}</p>
+      <ul class="checks">
+        <li>{{ _('Chiron FZ16 / FZ22 nagy sebességű megmunkálóközpontok', 'Chiron FZ16 / FZ22 high-speed machining centres') }}</li>
+        <li>{{ _('Bridgeport VMC 1000 5 tengelyes megmunkálás', 'Bridgeport VMC 1000 5-axis machining') }}</li>
+        <li>{{ _('OKK, KIWA, Akira-Seiki és Bridgeport Interact gépek', 'OKK, KIWA, Akira-Seiki and Bridgeport Interact machines') }}</li>
+        <li>{{ _('Esztergált alkatrészek utólagos marása, fúrása', 'Secondary milling and drilling of turned parts') }}</li>
+      </ul>
+      <p class="service__meta"><strong>{{ totals.centres }}</strong> {{ _('CNC megmunkálóközpont', 'CNC machining centres') }} · <a href="{{ href('machinery') }}">{{ _('Géplista', 'Machine list') }}</a></p>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="ontveny">
+  <div class="wrap service">
+    {{ m.photo('ontveny.jpg', _('Megmunkált alumíniumöntvény', 'Machined aluminium casting'), ratio='4/3') }}
+    <div class="service__text">
+      <p class="eyebrow">{{ _('Technológia', 'Technology') }} 03</p>
+      <h2 class="h2">{{ _('Öntvény-megmunkálás', 'Casting machining') }}</h2>
+      <p class="lead">{{ _('Alumínium- és sárgaréz-öntvények kész méretre munkálása sorozatban.', 'Finish machining of aluminium and brass castings in series.') }}</p>
+      <ul class="checks">
+        <li>{{ _('Öntvények befogása, bázisfelületek és illesztések megmunkálása', 'Fixturing of castings, machining of datum faces and fits') }}</li>
+        <li>{{ _('Marás, fúrás, menetkészítés egy vagy több felfogásban', 'Milling, drilling and threading in one or more set-ups') }}</li>
+        <li>{{ _('Gyártásközi és végellenőrzés saját mérőszobában', 'In-process and final inspection in our own measuring room') }}</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="section section--tint" id="sorozatgyartas">
+  <div class="wrap service service--flip">
+    {{ m.photo('alkatreszek.jpg', _('Sorozatban gyártott esztergált alkatrészek', 'Series-produced turned components'), ratio='4/3') }}
+    <div class="service__text">
+      <p class="eyebrow">{{ _('Szolgáltatás', 'Service') }} 04</p>
+      <h2 class="h2">{{ _('Sorozatgyártás és teljes ellátás', 'Series production and full supply') }}</h2>
+      <p class="lead">{{ _('Közép- és nagysorozatú alkatrészgyártás 3 műszakban. Partnereink számára a teljes folyamatot biztosítjuk az alapanyag beszerzésétől a késztermék kiszállításáig.', 'Medium and large series production in 3 shifts. We cover the entire process for our partners, from raw material sourcing to delivery of the finished product.') }}</p>
+      <ul class="checks">
+        <li>{{ _('Alapanyag-beszerzés és -kezelés', 'Raw material sourcing and handling') }}</li>
+        <li>{{ _('CNC fűrészek az anyagdaraboláshoz (Bomar, Forte)', 'CNC saws for material cutting (Bomar, Forte)') }}</li>
+        <li>{{ _('Gyártásirányítás és SAP alapú nyomon követés', 'Production management and SAP-based traceability') }}</li>
+        <li>{{ _('Csomagolás és kiszállítás a partner igényei szerint', 'Packaging and delivery to customer requirements') }}</li>
+        <li>{{ _('Egyedi alkatrészek és kissorozatok hagyományos és NC gépeken is', 'One-off parts and small batches on conventional and NC machines as well') }}</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="anyagok">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <p class="eyebrow">{{ _('Anyagok', 'Materials') }}</p>
+        <h2 class="h2">{{ _('Megmunkált anyagok', 'Materials we machine') }}</h2>
+      </div>
+      <p>{{ _('Fő profilunk a színesfém és műanyag alkatrészek gyártása. Az alapanyagot igény szerint mi szerezzük be.', 'Our main focus is non-ferrous metal and plastic parts. We source the raw material on request.') }}</p>
+    </div>
+    <div class="table-wrap">
+      <table class="table">
+        <thead>
+          <tr><th scope="col">{{ _('Anyagcsoport', 'Material group') }}</th><th scope="col">{{ _('Kiinduló forma', 'Starting form') }}</th><th scope="col">{{ _('Jellemző technológia', 'Typical technology') }}</th></tr>
+        </thead>
+        <tbody>
+          <tr><th scope="row">{{ _('Alumíniumötvözetek', 'Aluminium alloys') }}</th><td>{{ _('Rúd, profil', 'Bar, profile') }}</td><td>{{ _('Esztergálás, marás', 'Turning, milling') }}</td></tr>
+          <tr><th scope="row">{{ _('Sárgaréz', 'Brass') }}</th><td>{{ _('Rúd', 'Bar') }}</td><td>{{ _('Automata esztergálás, hosszesztergálás', 'Automatic and Swiss-type turning') }}</td></tr>
+          <tr><th scope="row">{{ _('Műszaki műanyagok', 'Engineering plastics') }}</th><td>{{ _('Rúd, lemez', 'Bar, plate') }}</td><td>{{ _('Esztergálás, marás', 'Turning, milling') }}</td></tr>
+          <tr><th scope="row">{{ _('Alumíniumöntvény', 'Aluminium castings') }}</th><td>{{ _('Öntött nyersdarab', 'Raw casting') }}</td><td>{{ _('Marás, fúrás, menetkészítés', 'Milling, drilling, threading') }}</td></tr>
+          <tr><th scope="row">{{ _('Sárgaréz-öntvény', 'Brass castings') }}</th><td>{{ _('Öntött nyersdarab', 'Raw casting') }}</td><td>{{ _('Marás, esztergálás', 'Milling, turning') }}</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section class="section section--dark" id="folyamat">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <p class="eyebrow eyebrow--light">{{ _('Együttműködés', 'Working with us') }}</p>
+        <h2 class="h2">{{ _('Az ajánlatkéréstől a szállításig', 'From enquiry to delivery') }}</h2>
+      </div>
+    </div>
+    <ol class="process">
+      <li><h3 class="h3">{{ _('Ajánlatkérés', 'Enquiry') }}</h3><p>{{ _('Műszaki rajz (PDF), 3D modell (STEP), éves mennyiség és anyagminőség alapján.', 'Based on the drawing (PDF), 3D model (STEP), annual quantity and material grade.') }}</p></li>
+      <li><h3 class="h3">{{ _('Műszaki átvizsgálás', 'Technical review') }}</h3><p>{{ _('Gyárthatóság, technológia és gépválasztás, átfutási idő.', 'Manufacturability, process and machine selection, lead time.') }}</p></li>
+      <li><h3 class="h3">{{ _('Árajánlat', 'Quotation') }}</h3><p>{{ _('Darabár, szerszám- és készülékköltség, szállítási feltételek.', 'Unit price, tooling and fixture costs, delivery terms.') }}</p></li>
+      <li><h3 class="h3">{{ _('Mintagyártás', 'Samples') }}</h3><p>{{ _('Első minták gyártása és mérési jegyzőkönyv.', 'First samples with inspection report.') }}</p></li>
+      <li><h3 class="h3">{{ _('Sorozatgyártás', 'Series production') }}</h3><p>{{ _('Ütemezett gyártás 3 műszakban, gyártásközi ellenőrzéssel.', 'Scheduled production in 3 shifts with in-process inspection.') }}</p></li>
+      <li><h3 class="h3">{{ _('Szállítás', 'Delivery') }}</h3><p>{{ _('Végellenőrzés, csomagolás és kiszállítás.', 'Final inspection, packaging and delivery.') }}</p></li>
+    </ol>
+  </div>
+</section>
+
+{% endblock %}

@@ -1,0 +1,49 @@
+{% extends "base.html.j2" %}
+{% import "_macros.html.j2" as m with context %}
+{% block title %}{{ _('HC-02 helikopter', 'HC-02 helicopter') }}{% endblock %}
+{% block content %}
+
+{{ m.page_head('Hungarocopter HC-02',
+   _('Az első magyar fejlesztésű és gyártású kétszemélyes helikopter', 'The first Hungarian-designed and built two-seat helicopter'),
+   _('A HC-02 típusokat Farkas Gábor és Juhász Zoltán tervezte; gyártásukat a Hungaro-Copter Kft. és a Steel Riders Kft. közösen végzi.', 'The HC-02 types were designed by Gábor Farkas and Zoltán Juhász and are manufactured jointly by Hungaro-Copter Kft. and Steel Riders Kft.'),
+   'hc02.jpg') }}
+
+<section class="section">
+  <div class="wrap split split--wide">
+    <div class="prose">
+      <h2 class="h2">{{ _('A projekt', 'The project') }}</h2>
+      <p class="lead">{{ _('A cél egy megbízható, egymás melletti ülésrendű, ultrakönnyű kategóriájú helikopter, amely oktatási célra is alkalmas.', 'The aim is a reliable, side-by-side, ultralight-category helicopter that is also suitable for flight training.') }}</p>
+      <p>{{ _('Több éves tervezési és gyártás-előkészítési munka után 2021-re elkészült a VFR repülésre alkalmas, két személy szállítására képes HC-02.2 változat. A helikopter 2021. június 8. óta rendelkezik a magyarországi és szlovákiai tesztrepülésekhez szükséges repülési engedéllyel és lajstromozási bizonyítvánnyal.', 'After several years of design and production preparation, the two-seat HC-02.2 variant, suitable for VFR flight, was completed in 2021. Since 8 June 2021 the helicopter has held the flight permit and registration certificate required for test flights in Hungary and Slovakia.') }}</p>
+      <p>{{ _('Tapasztalt tesztpilóta értékelése szerint a hazai fejlesztésű helikopter dinamikája és irányíthatósága jó, teljesítmény–tömeg aránya pedig meghaladja a kategóriában megszokottat.', 'According to an experienced test pilot, the domestically developed helicopter has good dynamics and controllability, and its power-to-weight ratio exceeds what is usual in its class.') }}</p>
+      <p>{{ _('A helikopter alkatrészeinek gyártása során szerzett tapasztalat beszállítói gyártásunkban is hasznosul.', 'The experience gained in manufacturing the helicopter components also benefits our supplier production.') }}</p>
+      <a class="btn btn--outline" href="https://hungarocopter.hu/" target="_blank" rel="noopener">hungarocopter.hu</a>
+    </div>
+    <aside class="datasheet">
+      <h2 class="datasheet__title">{{ _('Főbb adatok – HC-02.2', 'Key data – HC-02.2') }}</h2>
+      <dl>
+        <div><dt>{{ _('Kategória', 'Category') }}</dt><dd>{{ _('Ultrakönnyű helikopter', 'Ultralight helicopter') }}</dd></div>
+        <div><dt>{{ _('Ülések', 'Seats') }}</dt><dd>{{ _('2, egymás mellett', '2, side by side') }}</dd></div>
+        <div><dt>{{ _('Hajtómű', 'Engine') }}</dt><dd>Rotax 915 iS3</dd></div>
+        <div><dt>{{ _('Teljesítmény', 'Power') }}</dt><dd>141 {{ _('LE', 'hp') }}</dd></div>
+        <div><dt>{{ _('Rotorátmérő', 'Rotor diameter') }}</dt><dd>7000 mm</dd></div>
+        <div><dt>{{ _('Rotorlapátok', 'Rotor blades') }}</dt><dd>2</dd></div>
+        <div><dt>{{ _('Utazósebesség', 'Cruise speed') }}</dt><dd>160 km/h (87 kt)</dd></div>
+        <div><dt>{{ _('Üzemanyag', 'Fuel capacity') }}</dt><dd>54 l</dd></div>
+        <div><dt>{{ _('Repülési engedély', 'Flight permit') }}</dt><dd>2021. 06. 08.</dd></div>
+      </dl>
+      <p class="datasheet__note">{{ _('Forrás: Hungaro-Copter Kft. közzétett adatai.', 'Source: published data of Hungaro-Copter Kft.') }}</p>
+    </aside>
+  </div>
+</section>
+
+<section class="section section--tint">
+  <div class="wrap">
+    <div class="gallery gallery--3">
+      {{ m.photo('hc02.jpg', _('HC-02 helikopter repülés közben', 'HC-02 helicopter in flight'), 'gallery__wide', '16/9') }}
+      {{ m.photo('hc02-gyartas.jpg', _('HC-02 alkatrészek gyártása', 'Manufacturing HC-02 components'), '', '4/3') }}
+      {{ m.photo('hc02-szereles.jpg', _('HC-02 szerelés', 'HC-02 assembly'), '', '4/3') }}
+    </div>
+  </div>
+</section>
+
+{% endblock %}
