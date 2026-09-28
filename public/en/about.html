@@ -1,11 +1,11 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" class="no-js">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>About us | Steel Riders Kft.</title>
   <meta name="description" content="Steel Riders Kft. – precision CNC turning and milling in medium and large series since 1997. Verpelét, Hungary.">
-  <meta name="theme-color" content="#141b22">
+  <meta name="theme-color" content="#0f1419">
   <link rel="alternate" hreflang="hu" href="https://steelriderskft.hu/rolunk.html">
   <link rel="alternate" hreflang="en" href="https://steelriderskft.hu/en/about.html">
   <meta property="og:type" content="website">
@@ -17,65 +17,70 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,500..800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap">
   <link rel="stylesheet" href="../assets/css/site.css">
+  <script>document.documentElement.classList.replace('no-js', 'js');</script>
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"Organization","name":"Steel Riders Kft.","url":"https://steelriderskft.hu/","foundingDate":"1997-03","email":"info1@steelriderskft.hu","telephone":"+36 36 494 183","taxID":"11174864-2-10","address":{"@type":"PostalAddress","streetAddress":"Kossuth út 64.","postalCode":"3351","addressLocality":"Verpelét","addressCountry":"HU"}}
+  </script>
 </head>
 <body class="page-about">
   <a class="skip" href="#main">Skip to content</a>
+  <div class="progress" aria-hidden="true"><span id="scrollProgress"></span></div>
 
-  <div class="topbar">
-    <div class="wrap topbar__inner">
-      <span class="topbar__addr">3351 Verpelét, Kossuth út 64.</span>
-      <a href="tel:+3636494183">+36 36 494 183</a>
-      <a href="mailto:info1@steelriderskft.hu">info1@steelriderskft.hu</a>
-      <nav class="langs" aria-label="Language">
-        <a href="../rolunk.html" hreflang="hu" lang="hu">HU</a><span aria-current="true">EN</span>
-      </nav>
-    </div>
-  </div>
-
-  <header class="header">
+  <header class="header" id="header">
     <div class="wrap header__inner">
       <a class="brand" href="index.html" aria-label="Steel Riders Kft. – Home">
         <svg class="brand__mark" viewBox="0 0 44 44" aria-hidden="true">
-          <rect x="1" y="1" width="42" height="42" rx="3" fill="#141b22"/>
-          <circle cx="22" cy="22" r="13" fill="none" stroke="#e9ecef" stroke-width="2.4"/>
+          <rect x="1" y="1" width="42" height="42" rx="3" class="brand__bg"/>
+          <circle cx="22" cy="22" r="13" fill="none" class="brand__ring" stroke-width="2.4"/>
           <circle cx="22" cy="22" r="5" fill="none" stroke="#c9a45c" stroke-width="2.4"/>
-          <path d="M22 5v7M22 32v7M5 22h7M32 22h7" stroke="#e9ecef" stroke-width="2.4"/>
+          <path d="M22 5v7M22 32v7M5 22h7M32 22h7" class="brand__ring" stroke-width="2.4"/>
         </svg>
         <span class="brand__name">Steel Riders<small>Kft. · CNC machining</small></span>
       </a>
 
       <nav class="nav" id="nav" aria-label="Main navigation">
-        <ul>
-          <li><a href="about.html" aria-current="page">About us</a></li>
-          <li><a href="capabilities.html">Capabilities</a></li>
-          <li><a href="machinery.html">Machinery</a></li>
-          <li><a href="quality.html">Quality</a></li>
-          <li><a href="hc-02.html">HC-02</a></li>
-          <li><a href="careers.html">Careers</a></li>
-          <li class="nav__mobile-only"><a href="contact.html">Contact</a></li>
-          <li class="nav__mobile-only nav__langs">
-<a href="../rolunk.html" lang="hu">Magyar változat</a>          </li>
+        <ul class="nav__list">
+          <li><a href="about.html" aria-current="page"><span class="nav__idx">01</span>About us</a></li>
+          <li><a href="capabilities.html"><span class="nav__idx">02</span>Capabilities</a></li>
+          <li><a href="machinery.html"><span class="nav__idx">03</span>Machinery</a></li>
+          <li><a href="quality.html"><span class="nav__idx">04</span>Quality</a></li>
+          <li><a href="hc-02.html"><span class="nav__idx">05</span>HC-02</a></li>
+          <li><a href="careers.html"><span class="nav__idx">06</span>Careers</a></li>
+          <li><a href="contact.html"><span class="nav__idx">07</span>Contact</a></li>
         </ul>
+        <div class="nav__foot">
+          <a href="tel:+3636494183">+36 36 494 183</a>
+          <a href="mailto:info1@steelriderskft.hu">info1@steelriderskft.hu</a>
+          <span>3351 Verpelét, Kossuth út 64.</span>
+        </div>
       </nav>
 
-      <a class="btn btn--brass header__cta" href="contact.html#ajanlatkeres">Request a quote</a>
-      <button class="menu-btn" id="menuBtn" type="button" aria-controls="nav" aria-expanded="false">
-        <span class="menu-btn__bars" aria-hidden="true"></span>
-        <span class="sr-only">Menu</span>
-      </button>
+      <div class="header__tools">
+        <div class="langs" role="group" aria-label="Language">
+          <a href="../rolunk.html" hreflang="hu" lang="hu">HU</a><span aria-current="true">EN</span>
+        </div>
+        <a class="btn btn--brass btn--sm header__cta" href="contact.html#ajanlatkeres">Request a quote</a>
+        <button class="menu-btn" id="menuBtn" type="button" aria-controls="nav" aria-expanded="false">
+          <span class="menu-btn__bars" aria-hidden="true"></span>
+          <span class="sr-only">Menu</span>
+        </button>
+      </div>
     </div>
   </header>
 
   <main id="main">
 
-<section class="page-head page-head--photo">
-  <div class="page-head__bg">
-    <img src="../assets/img/telephely.jpg" alt="" loading="eager">
-  </div>
+<section class="page-head">
+  <div class="page-head__grid" aria-hidden="true"></div>
   <div class="wrap page-head__inner">
-    <p class="eyebrow eyebrow--light">About us</p>
-    <h1 class="page-head__title">More than 29 years in metal cutting</h1>
-    <p class="page-head__lead">Steel Riders Kft. was founded in March 1997 as a family business in Verpelét, Hungary. Our core activity is metal cutting: one-off workpieces and series production.</p>
+    <div class="page-head__text">
+      <p class="eyebrow eyebrow--light">About us</p>
+      <h1 class="page-head__title">More than 29 years in metal cutting</h1>
+      <p class="page-head__lead">Steel Riders Kft. was founded in March 1997 as a family business in Verpelét, Hungary. Our core activity is metal cutting: one-off workpieces and series production.</p>
+    </div>
+    <div class="page-head__visual">
+      <img src="../assets/img/telephely.jpg" alt="" data-render="series:brass" decoding="async">
+    </div>
   </div>
 </section>
 
@@ -171,14 +176,15 @@
   </main>
 
   <section class="cta-band">
+    <div class="cta-band__grid" aria-hidden="true"></div>
     <div class="wrap cta-band__inner">
       <div>
         <p class="eyebrow eyebrow--light">Request for quotation</p>
         <h2 class="cta-band__title">Send us your technical drawing and we will get back to you with a tailored quotation.</h2>
       </div>
       <div class="cta-band__actions">
-        <a class="btn btn--brass" href="contact.html#ajanlatkeres">Request a quote</a>
-        <a class="btn btn--outline-light" href="tel:+36303828398">+36 30 382 8398</a>
+        <a class="btn btn--brass btn--lg" href="contact.html#ajanlatkeres">Request a quote<span class="btn__arrow" aria-hidden="true">→</span></a>
+        <a class="cta-band__phone" href="tel:+36303828398"><span>or call</span>+36 30 382 8398</a>
       </div>
     </div>
   </section>
@@ -226,9 +232,12 @@
       <span>VAT no.: 11174864-2-10</span>
       <span>Company reg. no.: 10-09-022629</span>
       <a href="https://www.facebook.com/steelriderskft/" rel="noopener" target="_blank">Facebook</a>
+      <a class="footer__top" href="#main">Back to top ↑</a>
     </div>
   </footer>
 
+  <script src="../assets/vendor/three.min.js" defer></script>
+  <script src="../assets/js/part3d.js" defer></script>
   <script src="../assets/js/site.js" defer></script>
 </body>
 </html>

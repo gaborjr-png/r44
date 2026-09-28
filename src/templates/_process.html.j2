@@ -1,0 +1,12 @@
+{# Sticky scroll process: the active step follows the scroll position. #}
+<div class="flow" data-flow>
+  <div class="flow__rail" aria-hidden="true"><span class="flow__fill"></span></div>
+  <ol class="flow__steps">
+    <li class="flow__step"><span class="flow__n">01</span><div><h3 class="h3">{{ _('Ajánlatkérés', 'Enquiry') }}</h3><p>{{ _('Műszaki rajz (PDF), 3D modell (STEP), éves mennyiség és anyagminőség alapján.', 'Based on the drawing (PDF), 3D model (STEP), annual quantity and material grade.') }}</p></div></li>
+    <li class="flow__step"><span class="flow__n">02</span><div><h3 class="h3">{{ _('Műszaki átvizsgálás', 'Technical review') }}</h3><p>{{ _('Gyárthatóság, technológia és gépválasztás, átfutási idő.', 'Manufacturability, process and machine selection, lead time.') }}</p></div></li>
+    <li class="flow__step"><span class="flow__n">03</span><div><h3 class="h3">{{ _('Árajánlat', 'Quotation') }}</h3><p>{{ _('Darabár, szerszám- és készülékköltség, szállítási feltételek.', 'Unit price, tooling and fixture costs, delivery terms.') }}</p></div></li>
+    <li class="flow__step"><span class="flow__n">04</span><div><h3 class="h3">{{ _('Mintagyártás', 'Samples') }}</h3><p>{{ _('Első minták gyártása és mérési jegyzőkönyv.', 'First samples with inspection report.') }}</p></div></li>
+    <li class="flow__step"><span class="flow__n">05</span><div><h3 class="h3">{{ _('Sorozatgyártás', 'Series production') }}</h3><p>{{ _('Ütemezett gyártás 3 műszakban, gyártásközi ellenőrzéssel.', 'Scheduled production in 3 shifts with in-process inspection.') }}</p></div></li>
+    <li class="flow__step"><span class="flow__n">06</span><div><h3 class="h3">{{ _('Szállítás', 'Delivery') }}</h3><p>{{ _('Végellenőrzés, csomagolás és kiszállítás.', 'Final inspection, packaging and delivery.') }}</p></div></li>
+  </ol>
+</div>

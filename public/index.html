@@ -1,11 +1,11 @@
 <!doctype html>
-<html lang="hu">
+<html lang="hu" class="no-js">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Precíziós CNC forgácsolás és sorozatgyártás | Steel Riders Kft.</title>
   <meta name="description" content="Steel Riders Kft. – precíziós CNC esztergálás és marás közép- és nagysorozatban 1997 óta. Verpelét, Magyarország.">
-  <meta name="theme-color" content="#141b22">
+  <meta name="theme-color" content="#0f1419">
   <link rel="alternate" hreflang="hu" href="https://steelriderskft.hu/">
   <link rel="alternate" hreflang="en" href="https://steelriderskft.hu/en/">
   <meta property="og:type" content="website">
@@ -17,96 +17,144 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,500..800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap">
   <link rel="stylesheet" href="assets/css/site.css">
+  <script>document.documentElement.classList.replace('no-js', 'js');</script>
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"Organization","name":"Steel Riders Kft.","url":"https://steelriderskft.hu/","foundingDate":"1997-03","email":"info1@steelriderskft.hu","telephone":"+36 36 494 183","taxID":"11174864-2-10","address":{"@type":"PostalAddress","streetAddress":"Kossuth út 64.","postalCode":"3351","addressLocality":"Verpelét","addressCountry":"HU"}}
+  </script>
 </head>
 <body class="page-home">
   <a class="skip" href="#main">Ugrás a tartalomhoz</a>
+  <div class="progress" aria-hidden="true"><span id="scrollProgress"></span></div>
 
-  <div class="topbar">
-    <div class="wrap topbar__inner">
-      <span class="topbar__addr">3351 Verpelét, Kossuth út 64.</span>
-      <a href="tel:+3636494183">+36 36 494 183</a>
-      <a href="mailto:info1@steelriderskft.hu">info1@steelriderskft.hu</a>
-      <nav class="langs" aria-label="Nyelv">
-        <span aria-current="true">HU</span><a href="en/index.html" hreflang="en" lang="en">EN</a>
-      </nav>
-    </div>
-  </div>
-
-  <header class="header">
+  <header class="header" id="header">
     <div class="wrap header__inner">
       <a class="brand" href="index.html" aria-label="Steel Riders Kft. – Főoldal">
         <svg class="brand__mark" viewBox="0 0 44 44" aria-hidden="true">
-          <rect x="1" y="1" width="42" height="42" rx="3" fill="#141b22"/>
-          <circle cx="22" cy="22" r="13" fill="none" stroke="#e9ecef" stroke-width="2.4"/>
+          <rect x="1" y="1" width="42" height="42" rx="3" class="brand__bg"/>
+          <circle cx="22" cy="22" r="13" fill="none" class="brand__ring" stroke-width="2.4"/>
           <circle cx="22" cy="22" r="5" fill="none" stroke="#c9a45c" stroke-width="2.4"/>
-          <path d="M22 5v7M22 32v7M5 22h7M32 22h7" stroke="#e9ecef" stroke-width="2.4"/>
+          <path d="M22 5v7M22 32v7M5 22h7M32 22h7" class="brand__ring" stroke-width="2.4"/>
         </svg>
         <span class="brand__name">Steel Riders<small>Kft. · CNC forgácsolás</small></span>
       </a>
 
       <nav class="nav" id="nav" aria-label="Fő navigáció">
-        <ul>
-          <li><a href="rolunk.html">Rólunk</a></li>
-          <li><a href="tevekenysegek.html">Tevékenységek</a></li>
-          <li><a href="geppark.html">Géppark</a></li>
-          <li><a href="minoseg.html">Minőség</a></li>
-          <li><a href="hc-02.html">HC-02</a></li>
-          <li><a href="karrier.html">Karrier</a></li>
-          <li class="nav__mobile-only"><a href="kapcsolat.html">Kapcsolat</a></li>
-          <li class="nav__mobile-only nav__langs">
-<a href="en/index.html" lang="en">English version</a>          </li>
+        <ul class="nav__list">
+          <li><a href="rolunk.html"><span class="nav__idx">01</span>Rólunk</a></li>
+          <li><a href="tevekenysegek.html"><span class="nav__idx">02</span>Tevékenységek</a></li>
+          <li><a href="geppark.html"><span class="nav__idx">03</span>Géppark</a></li>
+          <li><a href="minoseg.html"><span class="nav__idx">04</span>Minőség</a></li>
+          <li><a href="hc-02.html"><span class="nav__idx">05</span>HC-02</a></li>
+          <li><a href="karrier.html"><span class="nav__idx">06</span>Karrier</a></li>
+          <li><a href="kapcsolat.html"><span class="nav__idx">07</span>Kapcsolat</a></li>
         </ul>
+        <div class="nav__foot">
+          <a href="tel:+3636494183">+36 36 494 183</a>
+          <a href="mailto:info1@steelriderskft.hu">info1@steelriderskft.hu</a>
+          <span>3351 Verpelét, Kossuth út 64.</span>
+        </div>
       </nav>
 
-      <a class="btn btn--brass header__cta" href="kapcsolat.html#ajanlatkeres">Ajánlatkérés</a>
-      <button class="menu-btn" id="menuBtn" type="button" aria-controls="nav" aria-expanded="false">
-        <span class="menu-btn__bars" aria-hidden="true"></span>
-        <span class="sr-only">Menü</span>
-      </button>
+      <div class="header__tools">
+        <div class="langs" role="group" aria-label="Nyelv">
+          <span aria-current="true">HU</span><a href="en/index.html" hreflang="en" lang="en">EN</a>
+        </div>
+        <a class="btn btn--brass btn--sm header__cta" href="kapcsolat.html#ajanlatkeres">Ajánlatkérés</a>
+        <button class="menu-btn" id="menuBtn" type="button" aria-controls="nav" aria-expanded="false">
+          <span class="menu-btn__bars" aria-hidden="true"></span>
+          <span class="sr-only">Menü</span>
+        </button>
+      </div>
     </div>
   </header>
 
   <main id="main">
 
-<section class="hero">
-  <div class="hero__media">
-    <img src="assets/img/hero-csarnok.jpg" alt="CNC gyártócsarnok, Verpelét" fetchpriority="high">
-  </div>
+
+<section class="hero" id="hero">
+  <div class="hero__grid" aria-hidden="true"></div>
+  <div class="hero__glow" aria-hidden="true"></div>
+
   <div class="wrap hero__inner">
-    <p class="eyebrow eyebrow--light">CNC esztergálás · CNC marás · Sorozatgyártás</p>
-    <h1 class="hero__title">Precíziós forgácsolt alkatrészek, közép- és nagysorozatban.</h1>
-    <p class="hero__lead">A Steel Riders Kft. 1997 óta gyárt nagy pontosságú esztergált és mart alkatrészeket az autó-, repülő- és gépipar számára – az alapanyag beszerzésétől a késztermék kiszállításáig.</p>
-    <div class="hero__actions">
-      <a class="btn btn--brass" href="kapcsolat.html#ajanlatkeres">Ajánlatkérés</a>
-      <a class="btn btn--outline-light" href="tevekenysegek.html">Gyártási képességeink</a>
+    <div class="hero__copy">
+      <p class="eyebrow eyebrow--light">CNC esztergálás · CNC marás · Sorozatgyártás</p>
+      <h1 class="hero__title">
+        <span class="line"><span>Precízió,</span></span>
+        <span class="line"><span>millió darabban</span></span>
+        <span class="line line--muted"><span>mérve.</span></span>
+      </h1>
+      <p class="hero__lead">Nagy pontosságú esztergált és mart alkatrészek közép- és nagysorozatban az autó-, repülő- és gépipar számára – az alapanyag beszerzésétől a késztermék kiszállításáig, 1997 óta.</p>
+      <div class="hero__actions">
+        <a class="btn btn--brass btn--lg" href="kapcsolat.html#ajanlatkeres">Ajánlatkérés<span class="btn__arrow" aria-hidden="true">→</span></a>
+        <a class="btn btn--ghost-light btn--lg" href="geppark.html">Géppark</a>
+      </div>
+    </div>
+
+    <div class="sim" id="sim" data-ops='["Homlokeszterg\u00e1l\u00e1s", "Nagyol\u00e1s", "F\u00far\u00e1s", "Sim\u00edt\u00e1s", "Besz\u00far\u00e1s", "Menetv\u00e1g\u00e1s", "Lesz\u00far\u00e1s", "K\u00e9sz alkatr\u00e9sz"]'>
+      <div class="sim__stage">
+        <canvas class="sim__canvas" id="simCanvas" aria-label="Interaktív 3D esztergálási szimuláció" role="img"></canvas>
+        <div class="sim__fallback">
+          <img src="assets/img/hero-csarnok.jpg" alt="" data-render="turned:brass">
+        </div>
+        <p class="sim__hint"><span aria-hidden="true">⟲</span> Húzza a forgatáshoz</p>
+      </div>
+
+      <div class="sim__hud">
+        <div class="sim__head">
+          <span class="sim__label">Élő szimuláció · CNC esztergálás</span>
+          <button class="sim__btn" type="button" id="simToggle" data-play="Lejátszás" data-pause="Szünet">Szünet</button>
+        </div>
+        <ol class="sim__ops" id="simOps">
+          <li data-op="face"><span class="sim__num">01</span>Homlokesztergálás</li>
+          <li data-op="rough"><span class="sim__num">02</span>Nagyolás</li>
+          <li data-op="drill"><span class="sim__num">03</span>Fúrás</li>
+          <li data-op="finish"><span class="sim__num">04</span>Simítás</li>
+          <li data-op="groove"><span class="sim__num">05</span>Beszúrás</li>
+          <li data-op="thread"><span class="sim__num">06</span>Menetvágás</li>
+          <li data-op="cutoff"><span class="sim__num">07</span>Leszúrás</li>
+          <li data-op="inspect"><span class="sim__num">08</span>Kész alkatrész</li>
+        </ol>
+        <div class="sim__bar"><span id="simBar"></span></div>
+        <div class="sim__mats" role="radiogroup" aria-label="Anyag">
+          <button type="button" role="radio" aria-checked="false" data-mat="alu"><i class="sw sw--alu"></i>Alumínium</button>
+          <button type="button" role="radio" aria-checked="true" data-mat="brass"><i class="sw sw--brass"></i>Sárgaréz</button>
+          <button type="button" role="radio" aria-checked="false" data-mat="pom"><i class="sw sw--pom"></i>Műanyag</button>
+        </div>
+      </div>
     </div>
   </div>
+
   <div class="hero__facts">
     <dl class="wrap facts">
       <div><dt>Alapítás</dt><dd>1997</dd></div>
-      <div><dt>CNC szerszámgép</dt><dd>44</dd></div>
-      <div><dt>Legyártott alkatrész</dt><dd>70&nbsp;M+</dd></div>
-      <div><dt>Telephely</dt><dd>27&nbsp;000&nbsp;m²</dd></div>
+      <div><dt>CNC szerszámgép</dt><dd><span data-count="44">44</span></dd></div>
+      <div><dt>Legyártott alkatrész</dt><dd><span data-count="70">70</span>&nbsp;M+</dd></div>
+      <div><dt>Telephely</dt><dd><span data-count="27000" data-sep="1">27&nbsp;000</span>&nbsp;m²</dd></div>
       <div><dt>Munkarend</dt><dd>3 műszak</dd></div>
     </dl>
   </div>
 </section>
 
+<section class="brands" aria-label="Gépparkunk gyártói">
+  <div class="wrap brands__inner">
+    <p class="brands__label">Gépparkunk</p>
+    <ul class="brands__list">
+      <li>INDEX</li><li>STAR</li><li>CHIRON</li><li>MORI SEIKI</li><li>NAKAMURA-TOME</li><li>HANWHA</li><li>BRIDGEPORT</li><li>OKK</li>
+    </ul>
+  </div>
+</section>
+
 <section class="section">
-  <div class="wrap intro">
-    <div class="intro__text">
-      <p class="eyebrow">A vállalatról</p>
-      <h2 class="h2">Családi vállalkozásból megbízható beszállító</h2>
-      <p class="lead">Több mint 29 éve foglalkozunk fémforgácsolással. Egy 200 m²-es verpeléti műhelyből indultunk; ma közel 50 munkatárssal, 3 műszakban, saját tulajdonú, 27 000 m²-es telephelyen gyártunk.</p>
-      <p>Versenyelőnyünk, hogy partnereink számára a teljes gyártási folyamatot biztosítjuk: alapanyag-beszerzés, gyártás, ellenőrzés és kiszállítás egy kézben. Ez csökkenti a logisztikai költségeket és egyszerűsíti a beszállítói láncot.</p>
-      <a class="link-arrow" href="rolunk.html">A cég története</a>
+  <div class="wrap statement">
+    <p class="eyebrow">A vállalatról</p>
+    <p class="statement__text reveal">Egy 200 m²-es verpeléti műhelyből indultunk 3 fővel. Ma közel 50 munkatárssal, 3 műszakban, 44 CNC szerszámgépen gyártunk – és partnereinknek a teljes folyamatot biztosítjuk az alapanyagtól a kiszállításig.</p>
+    <div class="statement__grid">
+      <div class="reveal"><span class="statement__num"><span data-count="29">29</span></span><span>év tapasztalat a fémforgácsolásban</span></div>
+      <div class="reveal"><span class="statement__num"><span data-count="31">31</span></span><span>CNC eszterga, rúdadagolóval</span></div>
+      <div class="reveal"><span class="statement__num"><span data-count="10">10</span></span><span>CNC megmunkálóközpont, 5 tengelyig</span></div>
+      <div class="reveal"><span class="statement__num">2000&nbsp;m²</span><span>gyártóterület két csarnokban</span></div>
     </div>
-    <div class="intro__media">
-      <figure class="photo " style="--ratio: 4/5">
-  <img src="assets/img/telephely.jpg" alt="A Steel Riders telephelye Verpeléten" loading="lazy" decoding="async">
-  <span class="photo__ph" aria-hidden="true">A Steel Riders telephelye Verpeléten</span>
-</figure>
-    </div>
+    <a class="link-arrow" href="rolunk.html">A cég története</a>
   </div>
 </section>
 
@@ -117,43 +165,75 @@
         <p class="eyebrow">Gyártási képességek</p>
         <h2 class="h2">Esztergálás, marás és komplett alkatrészgyártás</h2>
       </div>
-      <p>Elsősorban alumínium, sárgaréz és műszaki műanyag alkatrészeket gyártunk, valamint alumínium- és sárgaréz-öntvényeket munkálunk meg – kis- és középsorozattól a nagysorozatig.</p>
+      <p>Válasszon technológiát a részletekért.</p>
     </div>
 
-    <div class="cap-grid">
-      <a class="cap" href="tevekenysegek.html#esztergalas">
-        <figure class="photo " style="--ratio: 3/2">
-  <img src="assets/img/cnc-esztergalas.jpg" alt="INDEX és STAR CNC automata esztergák" loading="lazy" decoding="async">
-  <span class="photo__ph" aria-hidden="true">INDEX és STAR CNC automata esztergák</span>
+    <div class="tabs" data-tabs>
+      <div class="tabs__list" role="tablist" aria-label="Technológiák">
+        <button role="tab" id="t-turn" aria-controls="p-turn" aria-selected="true"><span>01</span>CNC esztergálás</button>
+        <button role="tab" id="t-mill" aria-controls="p-mill" aria-selected="false" tabindex="-1"><span>02</span>CNC marás</button>
+        <button role="tab" id="t-cast" aria-controls="p-cast" aria-selected="false" tabindex="-1"><span>03</span>Öntvény-megmunkálás</button>
+        <button role="tab" id="t-series" aria-controls="p-series" aria-selected="false" tabindex="-1"><span>04</span>Sorozatgyártás</button>
+      </div>
+
+      <div class="tabs__panel" role="tabpanel" id="p-turn" aria-labelledby="t-turn">
+        <figure class="photo " style="--ratio: 4/3">
+  <img src="assets/img/cnc-esztergalas.jpg" alt="Esztergált sárgaréz alkatrész" loading="lazy" decoding="async" data-render="turned:brass">
 </figure>
-        <div class="cap__body">
-          <h3 class="h3">CNC esztergálás</h3>
-          <p>Hosszesztergák és automata esztergák rúdadagolóval, komplett megmunkálás egy felfogásban.</p>
-          <span class="cap__meta">31 CNC eszterga</span>
+        <div class="tabs__body">
+          <h3 class="h3">Forgástestek komplett megmunkálása rúdanyagból</h3>
+          <p>INDEX és STAR CNC automata esztergák, hosszesztergák automatikus rúdadagolóval. Kisméretű, összetett alkatrészek egy felfogásban.</p>
+          <dl class="specs">
+            <div><dt>Gépek</dt><dd>31 CNC eszterga</dd></div>
+            <div><dt>Rúdadagolás</dt><dd>FMB, LNS, MBL, IEMCA</dd></div>
+            <div><dt>Anyagok</dt><dd>Alumínium, sárgaréz, műanyag</dd></div>
+          </dl>
+          <a class="link-arrow" href="tevekenysegek.html#esztergalas">Részletek</a>
         </div>
-      </a>
-      <a class="cap" href="tevekenysegek.html#maras">
-        <figure class="photo " style="--ratio: 3/2">
-  <img src="assets/img/cnc-maras.jpg" alt="CNC megmunkálóközpont" loading="lazy" decoding="async">
-  <span class="photo__ph" aria-hidden="true">CNC megmunkálóközpont</span>
+      </div>
+      <div class="tabs__panel" role="tabpanel" id="p-mill" aria-labelledby="t-mill" hidden>
+        <figure class="photo " style="--ratio: 4/3">
+  <img src="assets/img/cnc-maras.jpg" alt="Mart alumínium alkatrész" loading="lazy" decoding="async" data-render="milled:alu">
 </figure>
-        <div class="cap__body">
-          <h3 class="h3">CNC marás</h3>
-          <p>3 és 5 tengelyes megmunkálóközpontok prizmatikus alkatrészekhez és öntvényekhez.</p>
-          <span class="cap__meta">10 megmunkálóközpont</span>
+        <div class="tabs__body">
+          <h3 class="h3">Prizmatikus alkatrészek 3 és 5 tengelyen</h3>
+          <p>Marás, fúrás és menetkészítés függőleges és vízszintes megmunkálóközpontokon; esztergált alkatrészek utólagos megmunkálása.</p>
+          <dl class="specs">
+            <div><dt>Gépek</dt><dd>10 megmunkálóközpont</dd></div>
+            <div><dt>Gyártók</dt><dd>Chiron, Bridgeport, OKK, KIWA, Akira-Seiki</dd></div>
+            <div><dt>Tengelyek</dt><dd>3 és 5 tengely</dd></div>
+          </dl>
+          <a class="link-arrow" href="tevekenysegek.html#maras">Részletek</a>
         </div>
-      </a>
-      <a class="cap" href="tevekenysegek.html#sorozatgyartas">
-        <figure class="photo " style="--ratio: 3/2">
-  <img src="assets/img/alkatreszek.jpg" alt="Esztergált sárgaréz és alumínium alkatrészek" loading="lazy" decoding="async">
-  <span class="photo__ph" aria-hidden="true">Esztergált sárgaréz és alumínium alkatrészek</span>
+      </div>
+      <div class="tabs__panel" role="tabpanel" id="p-cast" aria-labelledby="t-cast" hidden>
+        <figure class="photo " style="--ratio: 4/3">
+  <img src="assets/img/ontveny.jpg" alt="Megmunkált öntvény" loading="lazy" decoding="async" data-render="milled:brass">
 </figure>
-        <div class="cap__body">
-          <h3 class="h3">Sorozatgyártás</h3>
-          <p>Közép- és nagysorozatok 3 műszakban, tervezhető kapacitással és ütemezett szállítással.</p>
-          <span class="cap__meta">70 millió+ legyártott darab</span>
+        <div class="tabs__body">
+          <h3 class="h3">Alumínium- és sárgaréz-öntvények kész méretre</h3>
+          <p>Öntött nyersdarabok befogása, bázisfelületek, illesztések és furatok megmunkálása sorozatban, gyártásközi ellenőrzéssel.</p>
+          <dl class="specs">
+            <div><dt>Anyagok</dt><dd>Alumínium- és sárgaréz-öntvény</dd></div>
+            <div><dt>Műveletek</dt><dd>Marás, fúrás, menetkészítés</dd></div>
+          </dl>
+          <a class="link-arrow" href="tevekenysegek.html#ontveny">Részletek</a>
         </div>
-      </a>
+      </div>
+      <div class="tabs__panel" role="tabpanel" id="p-series" aria-labelledby="t-series" hidden>
+        <figure class="photo " style="--ratio: 4/3">
+  <img src="assets/img/alkatreszek.jpg" alt="Sorozatban gyártott alkatrészek" loading="lazy" decoding="async" data-render="series:brass">
+</figure>
+        <div class="tabs__body">
+          <h3 class="h3">Közép- és nagysorozat, egy kézből</h3>
+          <p>3 műszakos gyártás, SAP alapú nyomon követés, alapanyag-beszerzés, csomagolás és kiszállítás.</p>
+          <dl class="specs">
+            <div><dt>Eddig legyártva</dt><dd>70 millió+ darab</dd></div>
+            <div><dt>Munkarend</dt><dd>3 műszak</dd></div>
+          </dl>
+          <a class="link-arrow" href="tevekenysegek.html#sorozatgyartas">Részletek</a>
+        </div>
+      </div>
     </div>
   </div>
 </section>
@@ -162,49 +242,89 @@
   <div class="wrap">
     <div class="section-head">
       <div>
-        <p class="eyebrow">Iparágak</p>
+        <p class="eyebrow">Anyagok</p>
+        <h2 class="h2">Színesfémek és műszaki műanyagok</h2>
+      </div>
+      <p>Fő profilunk az alumínium, sárgaréz és műanyag alkatrészek gyártása. Az alapanyagot igény szerint mi szerezzük be.</p>
+    </div>
+    <div class="materials">
+      <article class="material reveal">
+        <figure class="photo " style="--ratio: 1/1">
+  <img src="assets/img/anyag-aluminium.jpg" alt="Alumínium alkatrész" loading="lazy" decoding="async" data-render="shaft:alu">
+</figure>
+        <div class="material__body"><span class="material__sym">Al</span><h3 class="h3">Alumínium</h3><p>Könnyű, jól forgácsolható ötvözetek rúdból és profilból; alumíniumöntvények.</p></div>
+      </article>
+      <article class="material reveal">
+        <figure class="photo " style="--ratio: 1/1">
+  <img src="assets/img/anyag-sargarez.jpg" alt="Sárgaréz alkatrész" loading="lazy" decoding="async" data-render="turned:brass">
+</figure>
+        <div class="material__body"><span class="material__sym">CuZn</span><h3 class="h3">Sárgaréz</h3><p>Automata esztergálásra ideális anyag; szerelvények, csatlakozók, sárgaréz-öntvények.</p></div>
+      </article>
+      <article class="material reveal">
+        <figure class="photo " style="--ratio: 1/1">
+  <img src="assets/img/anyag-muanyag.jpg" alt="Műanyag alkatrész" loading="lazy" decoding="async" data-render="turned:pom">
+</figure>
+        <div class="material__body"><span class="material__sym">POM</span><h3 class="h3">Műszaki műanyagok</h3><p>Forgácsolt műanyag alkatrészek rúdból és lemezből.</p></div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="section section--dark">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <p class="eyebrow eyebrow--light">Iparágak</p>
         <h2 class="h2">Alkatrészek az ipar szinte minden területére</h2>
       </div>
       <p>Kis- és középsorozatban gyakorlatilag az ipar valamennyi területére gyártottunk már alkatrészt.</p>
     </div>
     <ul class="industries">
-      <li><span class="industries__code">AUT</span><strong>Autóipar</strong><span>Járműipari berendezések alkatrészei</span></li>
-      <li><span class="industries__code">AER</span><strong>Repülőgépipar</strong><span>Többek között a HC-02 helikopter gyártása</span></li>
-      <li><span class="industries__code">MCH</span><strong>Ipari gépek</strong><span>Gépgyártás, hajtástechnika</span></li>
-      <li><span class="industries__code">AGR</span><strong>Mezőgazdasági gépek</strong><span>Mezőgazdasági gépalkatrészek</span></li>
-      <li><span class="industries__code">MED</span><strong>Orvosi és vegyipar</strong><span>Orvosi és vegyipari berendezések</span></li>
-      <li><span class="industries__code">ELE</span><strong>Elektronika</strong><span>Elektronikai eszközök alkatrészei</span></li>
-    </ul>
-  </div>
-</section>
-
-<section class="section section--dark">
-  <div class="wrap split">
-    <div>
-      <p class="eyebrow eyebrow--light">Minőség</p>
-      <h2 class="h2">Tanúsított rendszerek, saját mérőszoba</h2>
-      <p class="lead">ISO 9001 minőségirányítási és ISO 14001 környezetirányítási rendszer szerint működünk. A gyártásközi és végellenőrzést saját mérőszobánkban végezzük, a folyamatokat SAP integrált vállalatirányítási rendszer támogatja.</p>
-      <a class="link-arrow link-arrow--light" href="minoseg.html">Minőségbiztosítás</a>
-    </div>
-    <ul class="cert-list">
-      <li><span>ISO 9001</span>Minőségirányítási rendszer</li>
-      <li><span>ISO 14001</span>Környezetirányítási rendszer</li>
-      <li><span>QA</span>Saját mérőszoba</li>
-      <li><span>SAP</span>Integrált vállalatirányítás</li>
+      <li class="reveal"><span class="industries__code">01</span><strong>Autóipar</strong><span>Járműipari berendezések alkatrészei</span></li>
+      <li class="reveal"><span class="industries__code">02</span><strong>Repülőgépipar</strong><span>Többek között a HC-02 helikopter</span></li>
+      <li class="reveal"><span class="industries__code">03</span><strong>Ipari gépek</strong><span>Gépgyártás, hajtástechnika</span></li>
+      <li class="reveal"><span class="industries__code">04</span><strong>Mezőgazdasági gépek</strong><span>Mezőgazdasági gépalkatrészek</span></li>
+      <li class="reveal"><span class="industries__code">05</span><strong>Orvosi és vegyipar</strong><span>Orvosi és vegyipari berendezések</span></li>
+      <li class="reveal"><span class="industries__code">06</span><strong>Elektronika</strong><span>Elektronikai eszközök alkatrészei</span></li>
     </ul>
   </div>
 </section>
 
 <section class="section">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <p class="eyebrow">Együttműködés</p>
+        <h2 class="h2">Az ajánlatkéréstől a szállításig</h2>
+      </div>
+    </div>
+<div class="flow" data-flow>
+  <div class="flow__rail" aria-hidden="true"><span class="flow__fill"></span></div>
+  <ol class="flow__steps">
+    <li class="flow__step"><span class="flow__n">01</span><div><h3 class="h3">Ajánlatkérés</h3><p>Műszaki rajz (PDF), 3D modell (STEP), éves mennyiség és anyagminőség alapján.</p></div></li>
+    <li class="flow__step"><span class="flow__n">02</span><div><h3 class="h3">Műszaki átvizsgálás</h3><p>Gyárthatóság, technológia és gépválasztás, átfutási idő.</p></div></li>
+    <li class="flow__step"><span class="flow__n">03</span><div><h3 class="h3">Árajánlat</h3><p>Darabár, szerszám- és készülékköltség, szállítási feltételek.</p></div></li>
+    <li class="flow__step"><span class="flow__n">04</span><div><h3 class="h3">Mintagyártás</h3><p>Első minták gyártása és mérési jegyzőkönyv.</p></div></li>
+    <li class="flow__step"><span class="flow__n">05</span><div><h3 class="h3">Sorozatgyártás</h3><p>Ütemezett gyártás 3 műszakban, gyártásközi ellenőrzéssel.</p></div></li>
+    <li class="flow__step"><span class="flow__n">06</span><div><h3 class="h3">Szállítás</h3><p>Végellenőrzés, csomagolás és kiszállítás.</p></div></li>
+  </ol>
+</div>  </div>
+</section>
+
+<section class="section section--tint">
   <div class="wrap feature">
     <figure class="photo " style="--ratio: 16/10">
-  <img src="assets/img/hc02.jpg" alt="Hungarocopter HC-02 helikopter" loading="lazy" decoding="async">
-  <span class="photo__ph" aria-hidden="true">Hungarocopter HC-02 helikopter</span>
+  <img src="assets/img/hc02.jpg" alt="Hungarocopter HC-02 helikopter" loading="lazy" decoding="async" data-render="shaft:steel">
 </figure>
     <div class="feature__text">
-      <p class="eyebrow">Saját fejlesztés</p>
+      <p class="eyebrow">Repülőipar</p>
       <h2 class="h2">Hungarocopter HC-02</h2>
-      <p>Az első magyar fejlesztésű és gyártású kétszemélyes helikopter gyártásában a Hungaro-Copter Kft. partnereként veszünk részt. A projekt jól mutatja, milyen pontosságú és összetettségű alkatrészek készülnek üzemünkben.</p>
+      <p>Az első magyar fejlesztésű és gyártású kétszemélyes helikopter gyártásában a Hungaro-Copter Kft. partnereként veszünk részt.</p>
+      <dl class="specs specs--inline">
+        <div><dt>Hajtómű</dt><dd>Rotax 915 iS3</dd></div>
+        <div><dt>Rotor</dt><dd>Ø 7000 mm</dd></div>
+        <div><dt>Utazósebesség</dt><dd>160 km/h</dd></div>
+      </dl>
       <a class="link-arrow" href="hc-02.html">A HC-02 projekt</a>
     </div>
   </div>
@@ -213,14 +333,15 @@
   </main>
 
   <section class="cta-band">
+    <div class="cta-band__grid" aria-hidden="true"></div>
     <div class="wrap cta-band__inner">
       <div>
         <p class="eyebrow eyebrow--light">Ajánlatkérés</p>
         <h2 class="cta-band__title">Küldje el műszaki rajzát, és személyre szabott ajánlattal jelentkezünk.</h2>
       </div>
       <div class="cta-band__actions">
-        <a class="btn btn--brass" href="kapcsolat.html#ajanlatkeres">Ajánlatot kérek</a>
-        <a class="btn btn--outline-light" href="tel:+36303828398">+36 30 382 8398</a>
+        <a class="btn btn--brass btn--lg" href="kapcsolat.html#ajanlatkeres">Ajánlatot kérek<span class="btn__arrow" aria-hidden="true">→</span></a>
+        <a class="cta-band__phone" href="tel:+36303828398"><span>vagy hívjon</span>+36 30 382 8398</a>
       </div>
     </div>
   </section>
@@ -268,9 +389,12 @@
       <span>Adószám: 11174864-2-10</span>
       <span>Cégjegyzékszám: 10-09-022629</span>
       <a href="https://www.facebook.com/steelriderskft/" rel="noopener" target="_blank">Facebook</a>
+      <a class="footer__top" href="#main">Vissza a tetejére ↑</a>
     </div>
   </footer>
 
+  <script src="assets/vendor/three.min.js" defer></script>
+  <script src="assets/js/part3d.js" defer></script>
   <script src="assets/js/site.js" defer></script>
 </body>
 </html>

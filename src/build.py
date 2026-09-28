@@ -81,13 +81,27 @@ MACHINES = [
         ],
     },
 ]
+NOT_MACHINE_TOOLS = ("Matrix",)  # tool vending system, not a machine tool
+
+
+def is_machine(model):
+    return not model.startswith(NOT_MACHINE_TOOLS)
+
+
 for g in MACHINES:
-    g["total"] = sum(q for _, _, q in g["items"])
+    g["total"] = sum(q for m, _, q in g["items"] if is_machine(m))
 TOTALS = {
     "lathes": MACHINES[0]["total"] + MACHINES[2]["total"],
     "centres": MACHINES[1]["total"],
     "cnc": sum(g["total"] for g in MACHINES[:3]) + 3,  # + 3 CNC saws
 }
+
+
+def brand(model):
+    for multi in ("Mori Seiki",):
+        if model.startswith(multi):
+            return multi
+    return model.split(" ")[0]
 
 
 def render():
@@ -97,6 +111,8 @@ def render():
         trim_blocks=True,
         lstrip_blocks=True,
     )
+    env.globals["brand"] = brand
+    env.globals["is_machine"] = is_machine
     if OUT.exists():
         shutil.rmtree(OUT)
     shutil.copytree(SRC / "assets", OUT / "assets")

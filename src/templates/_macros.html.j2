@@ -1,24 +1,32 @@
-{# Photo slot. Drop the real photo into src/assets/img/<file>; until then a
-   machined-aluminium placeholder with the caption is shown. #}
-{% macro photo(file, alt, cls='', ratio='4/3', caption='') -%}
+{# Photo slot. The real photo goes to src/assets/img/<file>. While it is
+   missing, site.js replaces it with a real-time 3D studio render
+   described by `render` ("kind:material", see assets/js/part3d.js). #}
+{% macro photo(file, alt, cls='', ratio='4/3', render='turned:brass', caption='') -%}
 <figure class="photo {{ cls }}" style="--ratio: {{ ratio }}">
-  <img src="{{ asset }}img/{{ file }}" alt="{{ alt }}" loading="lazy" decoding="async">
-  <span class="photo__ph" aria-hidden="true">{{ alt }}</span>
+  <img src="{{ asset }}img/{{ file }}" alt="{{ alt }}" loading="lazy" decoding="async" data-render="{{ render }}">
   {% if caption %}<figcaption>{{ caption }}</figcaption>{% endif %}
 </figure>
 {%- endmacro %}
 
-{% macro page_head(eyebrow, title, lead, file='', alt='') -%}
-<section class="page-head{% if file %} page-head--photo{% endif %}">
-  {% if file %}
-  <div class="page-head__bg">
-    <img src="{{ asset }}img/{{ file }}" alt="" loading="eager">
-  </div>
-  {% endif %}
+{% macro page_head(eyebrow, title, lead, file='', render='turned:brass', stats=None) -%}
+<section class="page-head">
+  <div class="page-head__grid" aria-hidden="true"></div>
   <div class="wrap page-head__inner">
-    <p class="eyebrow eyebrow--light">{{ eyebrow }}</p>
-    <h1 class="page-head__title">{{ title }}</h1>
-    <p class="page-head__lead">{{ lead }}</p>
+    <div class="page-head__text">
+      <p class="eyebrow eyebrow--light">{{ eyebrow }}</p>
+      <h1 class="page-head__title">{{ title }}</h1>
+      <p class="page-head__lead">{{ lead }}</p>
+      {% if stats %}
+      <dl class="page-head__stats">
+        {% for k, v in stats %}<div><dt>{{ k }}</dt><dd>{{ v }}</dd></div>{% endfor %}
+      </dl>
+      {% endif %}
+    </div>
+    {% if file %}
+    <div class="page-head__visual">
+      <img src="{{ asset }}img/{{ file }}" alt="" data-render="{{ render }}" decoding="async">
+    </div>
+    {% endif %}
   </div>
 </section>
 {%- endmacro %}
