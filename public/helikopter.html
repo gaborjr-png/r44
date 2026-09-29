@@ -25,6 +25,18 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,500..800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap">
   <link rel="stylesheet" href="assets/css/site.css">
   <script>document.documentElement.classList.replace('no-js', 'js');</script>
+  <script>
+  /* New page → start at the top (keeps #anchor links and Back/Forward position) */
+  (function () {
+    var nav = performance.getEntriesByType ? performance.getEntriesByType('navigation')[0] : null;
+    if (location.hash || (nav && nav.type === 'back_forward')) return;
+    if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+    var top = function () { var h = document.documentElement, b = h.style.scrollBehavior; h.style.scrollBehavior = 'auto'; window.scrollTo(0, 0); h.style.scrollBehavior = b; };
+    top();
+    document.addEventListener('DOMContentLoaded', top);
+    window.addEventListener('load', function () { if (window.scrollY < 400) top(); });
+  })();
+  </script>
   <script type="application/ld+json">
   {"@context":"https://schema.org","@type":"LocalBusiness","@id":"https://steelriderskft.hu/#org","name":"Steel Riders Kft.","description":"Hungarocopter HC-02 – az első magyar fejlesztésű és gyártású kétszemélyes helikopter, amelyet a Hungaro-Copter Kft. és a Steel Riders Kft. közösen gyárt.","url":"https://steelriderskft.hu/","logo":"https://steelriderskft.hu/assets/img/logo-badge.webp","image":"https://steelriderskft.hu/assets/img/og.jpg","foundingDate":"1997-03","email":"info1@steelriderskft.hu","telephone":"+36 36 494 183","taxID":"11174864-2-10","numberOfEmployees":50,"address":{"@type":"PostalAddress","streetAddress":"Kossuth út 64.","postalCode":"3351","addressLocality":"Verpelét","addressRegion":"Heves","addressCountry":"HU"},"geo":{"@type":"GeoCoordinates","latitude":47.85,"longitude":20.23},"hasMap":"https://www.google.com/maps/search/?api=1&query=Steel+Riders+Kft+Verpel%C3%A9t+Kossuth+%C3%BAt+64","sameAs":["https://www.facebook.com/steelriderskft/"],"knowsAbout":["CNC turning","CNC milling","Series production","Swiss-type turning"]}
   </script>
