@@ -11,6 +11,7 @@
 <nav class="subnav" aria-label="{{ _('Az oldal tartalma', 'On this page') }}">
   <div class="wrap subnav__inner">
     <a href="#esztergalas">{{ _('CNC esztergálás', 'CNC turning') }}</a>
+    <a href="#hogyan-keszul">{{ _('Így készül', 'How it is made') }}</a>
     <a href="#maras">{{ _('CNC marás', 'CNC milling') }}</a>
     <a href="#ontveny">{{ _('Öntvény-megmunkálás', 'Casting machining') }}</a>
     <a href="#altalanos">{{ _('Általános fémforgácsolás', 'General machining') }}</a>
@@ -34,6 +35,83 @@
         <li>{{ _('Takisawa NEX108 / NEX108Y (Y-tengely) és EX910 CNC esztergák, EEN NC csúcsesztergák', 'Takisawa NEX108 / NEX108Y (Y-axis) and EX910 CNC lathes, EEN NC centre lathes') }}</li>
       </ul>
       <p class="service__meta"><strong>{{ totals.cnc_lathes }}</strong> {{ _('CNC eszterga + ' ~ machines[3].total ~ ' NC csúcseszterga', 'CNC lathes + ' ~ machines[3].total ~ ' NC centre lathes') }} · <a href="{{ href('machinery') }}">{{ _('Géplista', 'Machine list') }}</a></p>
+    </div>
+  </div>
+</section>
+
+<section class="section section--dark" id="hogyan-keszul">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <p class="eyebrow eyebrow--light">{{ _('Így dolgozunk', 'How we work') }}</p>
+        <h2 class="h2">{{ _('Hogyan készül egy esztergált alkatrész?', 'How is a turned part made?') }}</h2>
+      </div>
+      <p>{{ _('Kövesse végig egy M20×1,5 menetes sárgaréz persely gyártását a nyers rúdtól a kész, ellenőrzött darabig. A szimulációt valódi CNC program vezérli – ugyanúgy, ahogy a gépeinken.', 'Follow the production of an M20×1.5 threaded brass bushing from raw bar to finished, inspected part. The simulation is driven by a real CNC program – just like on our machines.') }}</p>
+    </div>
+
+    <div class="lathe-demo">
+      <ol class="ld-steps" id="simOps">
+        {% set steps = [
+          ('face', _('Homlokesztergálás', 'Facing'), 'G01', _('A nyers rúd végét síkra esztergáljuk – ez lesz a mérések bázisa.', 'The bar end is faced flat – this becomes the reference for all dimensions.')),
+          ('rough', _('Nagyolás', 'Roughing'), 'G71', _('Több fogásban eltávolítjuk az anyag nagy részét, 0,2 mm ráhagyással a simításhoz.', 'Most of the material is removed in several passes, leaving 0.2 mm for finishing.')),
+          ('drill', _('Fúrás', 'Drilling'), 'G74', _('Ø10-es keményfém fúróval, lépcsőzetesen fúrjuk az átmenő furatot, hogy a forgács kiürüljön.', 'The Ø10 through bore is peck-drilled with a carbide drill so chips are cleared.')),
+          ('finish', _('Simítás', 'Finishing'), 'G70', _('A simítókés egyetlen fogásban végigköveti a kész kontúrt – itt dől el a mérettűrés és a felületi minőség.', 'The finishing tool follows the final contour in one pass – this sets tolerance and surface finish.')),
+          ('groove', _('Beszúrás', 'Grooving'), 'G01', _('Menetkifutó és O-gyűrű horony készül beszúrókéssel.', 'The thread relief and the O-ring groove are cut with a grooving tool.')),
+          ('thread', _('Menetvágás', 'Threading'), 'G76', _('Az M20×1,5 menetet kilenc fogásban, egyre mélyebbre vágjuk.', 'The M20×1.5 thread is cut in nine progressively deeper passes.')),
+          ('cutoff', _('Leszúrás', 'Parting off'), 'G01', _('A kész alkatrészt leválasztjuk a rúdról; a gép indulhat a következő darabbal.', 'The finished part is parted from the bar; the machine starts the next piece.')),
+          ('inspect', _('Ellenőrzés', 'Inspection'), 'QC', _('A kritikus méreteket mérjük és dokumentáljuk, mielőtt a sorozat folytatódik.', 'Critical dimensions are measured and documented before the series continues.')),
+        ] %}
+        {% for key, title, code, text in steps %}
+        <li data-op="{{ key }}"><button type="button">
+          <span class="ld-steps__n">{{ '%02d' % loop.index }}</span>
+          <span class="ld-steps__body"><strong>{{ title }} <code>{{ code }}</code></strong><span>{{ text }}</span></span>
+        </button></li>
+        {% endfor %}
+      </ol>
+      <div class="console console--compact" id="sim">
+      <div class="console__stage">
+        <canvas class="console__canvas" id="simCanvas" role="img" aria-label="{{ _('Valós idejű 3D esztergálási szimuláció a mellette futó CNC programmal', 'Real-time 3D turning simulation driven by the CNC program alongside') }}"></canvas>
+        <div class="console__fallback"><img src="{{ asset }}img/hero-csarnok.jpg" alt="" data-render="bushing:brass"></div>
+        <div class="simtag" id="simTag" hidden
+             data-tools='{{ [_("CNMG 120408 · nagyoló", "CNMG 120408 · roughing"), _("VBMT 160404 · simító", "VBMT 160404 · finishing"), _("Ø10 keményfém csigafúró", "Ø10 carbide twist drill"), _("Beszúrókés B2,5", "Grooving tool W2.5"), _("16ER 1,5 ISO menetkés", "16ER 1.5 ISO threading insert"), _("Leszúrókés B3,0", "Parting tool W3.0")] | tojson | forceescape }}'>
+          <b data-k="t">T0101</b><span data-k="tool"></span><em><span data-k="vc"></span> · f <span data-k="f"></span></em>
+        </div>
+        <svg class="simdims" id="simDims" aria-hidden="true"></svg>
+        <div class="simqc" id="simQc" hidden>{{ _('Méretellenőrzés · megfelelt', 'Dimensional check · passed') }}</div>
+        <div class="console__badge"><span class="live"></span>{{ _('Valós idejű szimuláció', 'Real-time simulation') }}</div>
+        <p class="console__hint">{{ _('Húzza a forgatáshoz', 'Drag to rotate') }}</p>
+        <div class="console__mats" role="radiogroup" aria-label="{{ _('Anyag', 'Material') }}">
+          <button type="button" role="radio" aria-checked="true" data-mat="brass"><i class="sw sw--brass"></i>CuZn39Pb3</button>
+          <button type="button" role="radio" aria-checked="false" data-mat="alu"><i class="sw sw--alu"></i>AlCuMgPb</button>
+          <button type="button" role="radio" aria-checked="false" data-mat="pom"><i class="sw sw--pom"></i>POM-C</button>
+        </div>
+      </div>
+
+      <aside class="console__side" aria-label="{{ _('CNC vezérlő', 'CNC control') }}">
+        <div class="ctrl__head">
+          <span>FANUC 0i-TF</span><span>O4471</span>
+          <button type="button" class="ctrl__btn" id="simToggle" data-play="▶ Cycle start" data-pause="❚❚ Feed hold">❚❚ Feed hold</button>
+        </div>
+        <dl class="dro" id="dro">
+          <div><dt>X</dt><dd data-k="x">200.000</dd></div>
+          <div><dt>Z</dt><dd data-k="z">150.000</dd></div>
+          <div><dt>S</dt><dd data-k="s">0</dd></div>
+          <div><dt>F</dt><dd data-k="f">0.000</dd></div>
+          <div><dt>T</dt><dd data-k="t">T0000</dd></div>
+          <div><dt>M</dt><dd data-k="m">M09</dd></div>
+        </dl>
+        <div class="meters">
+          <div><span>{{ _('Ciklusidő', 'Cycle time') }}</span><b id="mCycle">00:00.0</b></div>
+          <div><span>{{ _('Darab', 'Parts') }}</span><b id="mParts">0001</b></div>
+          <div><span>{{ _('Mód', 'Modal') }}</span><b id="mModal">G00</b></div>
+          <div class="meters__load"><span>{{ _('Orsóterhelés', 'Spindle load') }}</span><i><em id="mLoad"></em></i></div>
+        </div>
+        <div class="plot"><canvas id="plot" aria-label="{{ _('Szerszámpálya X–Z síkban', 'Tool path in the X–Z plane') }}" role="img"></canvas><span>{{ _('Szerszámpálya · X/Z', 'Tool path · X/Z') }}</span></div>
+        <div class="nc" id="nc" tabindex="0" aria-label="{{ _('NC program', 'NC program') }}"><ol id="ncList"></ol></div>
+        <p class="ctrl__part">{{ _('Alkatrész: M20×1,5 menetes persely, Ø30 × 50 mm, O-gyűrű horonnyal, Ø10 átmenő furattal', 'Part: M20×1.5 threaded bushing, Ø30 × 50 mm, O-ring groove, Ø10 through bore') }}</p>
+      </aside>
+      <div class="console__bar"><span id="simBar"></span></div>
+    </div>
     </div>
   </div>
 </section>

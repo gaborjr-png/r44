@@ -882,3 +882,90 @@ a:hover .photo img, .photo:hover img { transform: scale(calc(var(--zoom, 1) * 1.
 .fab.is-shown { transform: none; }
 @media (max-width: 900px) { .fab { display: inline-flex; } }
 .page-contact .fab { display: none; }
+
+/* 3D callouts */
+.simtag { position: absolute; left: 0; top: 0; z-index: 3; pointer-events: none; display: grid; gap: 2px; min-width: 190px; padding: 10px 12px 11px; border-radius: 8px; background: rgba(10,13,16,.72); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(209,171,98,.45); font: 500 0.7rem/1.35 var(--font-mono); color: var(--alu-200); transition: transform .12s linear; will-change: transform; }
+.simtag::before { content: ""; position: absolute; left: -26px; top: 70px; width: 26px; height: 1px; background: rgba(209,171,98,.7); transform-origin: right; transform: rotate(-38deg); }
+.simtag b { color: var(--brass-300); font-weight: 500; font-size: 0.78rem; }
+.simtag em { font-style: normal; color: #9ff0c0; }
+.simdims { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 3; pointer-events: none; overflow: visible; }
+.simdims line { stroke: #9ff0c0; stroke-width: 1.2; }
+.simdims marker path { fill: #9ff0c0; }
+.simdims rect { fill: rgba(10,13,16,.8); stroke: rgba(159,240,192,.6); }
+.simdims text { fill: #d8ffe8; font: 500 11px var(--font-mono); }
+.simqc { position: absolute; right: 16px; bottom: 16px; z-index: 3; display: inline-flex; align-items: center; gap: 8px; padding: 9px 13px; border-radius: 99px; background: rgba(20,60,40,.7); border: 1px solid rgba(91,208,143,.6); color: #c9f7dc; font: 500 0.72rem var(--font-mono); letter-spacing: .06em; text-transform: uppercase; backdrop-filter: blur(8px); animation: fadeUp .5s var(--ease) both; }
+.simqc::before { content: "✓"; color: #5bd08f; font-weight: 700; }
+@media (max-width: 560px) { .simtag { display: none; } }
+
+/* aerial site section */
+.aerial { overflow: hidden; }
+.aerial__grid { display: grid; grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.25fr); gap: clamp(32px, 5vw, 80px); align-items: center; }
+.aerial__facts { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; margin: 28px 0 26px; background: var(--ink-700); border: 1px solid var(--ink-700); border-radius: 8px; overflow: hidden; }
+.aerial__facts div { background: var(--ink-900); padding: 18px 18px 20px; display: flex; flex-direction: column-reverse; gap: 4px; }
+.aerial__facts dt { font-size: 0.8rem; color: var(--steel-400); }
+.aerial__facts dd { margin: 0; font: 700 1.35rem/1.1 var(--font-display); font-stretch: 112%; color: var(--white); }
+.aerial__photo { max-height: none; box-shadow: 0 50px 110px rgba(0,0,0,.55), 0 0 0 1px rgba(255,255,255,.06); transform: perspective(1600px) rotateY(-4deg); transition: transform .8s var(--ease); }
+.aerial__photo:hover { transform: none; }
+.aerial__cap { position: absolute; right: 14px; bottom: 14px; z-index: 2; font: 500 0.7rem var(--font-mono); letter-spacing: .1em; color: var(--white); background: rgba(10,13,16,.55); backdrop-filter: blur(8px); padding: 7px 10px; border-radius: 99px; }
+@media (max-width: 900px) { .aerial__grid { grid-template-columns: 1fr; } .aerial__photo { transform: none; } }
+
+/* ==========================================================================
+   v6 – photo hero, lathe demo on the capabilities page
+   ========================================================================== */
+.hero--photo { min-height: clamp(640px, 94vh, 940px); display: flex; flex-direction: column; justify-content: flex-end; }
+.hero__bg { position: absolute; inset: 0; z-index: -2; overflow: hidden; }
+.hero__bg img { width: 100%; height: 100%; object-fit: cover; object-position: 62% 45%; animation: kenburns 24s ease-in-out infinite alternate; }
+.hero--photo::before { content: ""; position: absolute; inset: 0; z-index: -1; background:
+  linear-gradient(90deg, rgba(10,13,16,.94) 0%, rgba(10,13,16,.78) 38%, rgba(10,13,16,.25) 75%, rgba(10,13,16,.35) 100%),
+  linear-gradient(180deg, rgba(10,13,16,.55) 0%, rgba(10,13,16,0) 30%, rgba(10,13,16,0) 60%, rgba(10,13,16,.9) 100%); }
+.hero--photo .hero__glow, .hero--photo .hero__grid { display: none; }
+.hero__content { padding-top: calc(var(--header-h) + 64px); padding-bottom: clamp(40px, 6vw, 72px); max-width: var(--wrap); }
+.hero__content .hero__title { max-width: 14ch; }
+.hero__content .hero__lead { max-width: 54ch; margin: 26px 0 34px; }
+.hero--photo .hero__facts { backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); background: rgba(10,13,16,.55); }
+@media (max-width: 700px) {
+  .hero--photo::before { background: linear-gradient(180deg, rgba(10,13,16,.6) 0%, rgba(10,13,16,.75) 45%, rgba(10,13,16,.95) 100%); }
+  .hero__bg img { object-position: 70% 40%; }
+}
+
+.lathe-demo { display: grid; grid-template-columns: minmax(0, 0.78fr) minmax(0, 1.4fr); gap: clamp(24px, 3.5vw, 48px); align-items: start; }
+.ld-steps { list-style: none; display: grid; gap: 2px; position: sticky; top: calc(var(--header-h) + 24px); }
+.ld-steps button { width: 100%; display: grid; grid-template-columns: 34px 1fr; gap: 10px; text-align: left; background: none; border: 0; border-left: 2px solid var(--ink-700); padding: 12px 14px 12px 16px; color: var(--steel-400); cursor: pointer; transition: background-color .25s, border-color .25s, color .25s; font: inherit; }
+.ld-steps button:hover { background: rgba(255,255,255,.03); color: var(--alu-200); }
+.ld-steps__n { font: 500 0.72rem var(--font-mono); padding-top: 3px; }
+.ld-steps__body { display: grid; gap: 4px; }
+.ld-steps strong { font: 700 1rem/1.25 var(--font-display); font-stretch: 106%; color: var(--alu-200); display: flex; align-items: center; gap: 8px; }
+.ld-steps code { font: 500 0.66rem var(--font-mono); color: var(--brass-300); border: 1px solid rgba(209,171,98,.35); padding: 2px 6px; border-radius: 4px; }
+.ld-steps__body > span { font-size: 0.88rem; line-height: 1.5; max-height: 0; overflow: hidden; opacity: 0; transition: max-height .45s var(--ease), opacity .35s; }
+.ld-steps li.is-done button { border-left-color: rgba(209,171,98,.45); }
+.ld-steps li.is-done strong { color: var(--alu-300); }
+.ld-steps li.is-active button { border-left-color: var(--brass-300); background: rgba(209,171,98,.07); color: var(--alu-200); }
+.ld-steps li.is-active strong { color: var(--white); }
+.ld-steps li.is-active .ld-steps__n { color: var(--brass-300); }
+.ld-steps li.is-active .ld-steps__body > span { max-height: 120px; opacity: 1; }
+
+.console--compact { grid-template-columns: 1fr; grid-template-areas: "stage" "side" "bar"; margin-bottom: 0; }
+.console--compact .console__stage { min-height: 0; aspect-ratio: 16 / 10; }
+.console--compact .console__side { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); border-left: 0; border-top: 1px solid rgba(255,255,255,.08); }
+.console--compact .ctrl__head { grid-column: 1 / -1; }
+.console--compact .dro { grid-column: 1; }
+.console--compact .meters { grid-column: 1; }
+.console--compact .plot { grid-column: 1; height: 104px; }
+.console--compact .nc { grid-column: 2; grid-row: 2 / span 3; max-height: none; border-left: 1px solid rgba(255,255,255,.08); }
+.console--compact .ctrl__part { grid-column: 1 / -1; }
+@media (max-width: 1020px) {
+  .lathe-demo { grid-template-columns: 1fr; }
+  .ld-steps { position: static; grid-template-columns: 1fr 1fr; }
+  .ld-steps li.is-active .ld-steps__body > span { max-height: 0; opacity: 0; }
+  .lathe-demo .console { order: -1; }
+}
+@media (max-width: 640px) {
+  .console--compact .console__side { grid-template-columns: 1fr; }
+  .console--compact .nc { grid-column: 1; grid-row: auto; max-height: 180px; border-left: 0; }
+  .console--compact .console__stage { aspect-ratio: 4 / 3.6; }
+  .ld-steps { grid-template-columns: 1fr; }
+}
+
+.spot__card--below { transform: translate(calc(var(--x) * -1%), 26px) translateY(-8px); }
+.spot__card--below.is-open { transform: translate(calc(var(--x) * -1%), 26px); }
+.aerial .lead { color: var(--alu-300); }

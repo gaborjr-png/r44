@@ -330,6 +330,18 @@
   var INDEX_T = 0.9;
   var TOTAL = OPS.reduce(function (a, o) { return a + o[1]; }, 0);
   var TOOL_NAMES = ['T0101', 'T0202', 'T0303', 'T0404', 'T0505', 'T0606'];
+  var TOOL_INFO = ['CNMG 120408 · nagyoló', 'VBMT 160404 · simító', 'Ø10 HM csigafúró', 'Beszúró B2,5', '16ER 1,5 ISO menetkés', 'Leszúró B3,0'];
+  // [yaw, pitch, distance, target x, target y] per operation
+  var SHOTS = {
+    face:   [0.62, 0.16, 205, -2, 10],
+    rough:  [0.32, 0.22, 262, -22, 12],
+    drill:  [0.95, 0.12, 215, 6, 6],
+    finish: [0.18, 0.26, 235, -26, 11],
+    groove: [0.46, 0.18, 170, -24, 10],
+    thread: [0.52, 0.16, 150, -8, 10],
+    cutoff: [0.28, 0.2, 190, -48, 10],
+    inspect:[0.4, 0.3, 175, -30, 6]
+  };
 
   /* ======================================================================
      Tools (tip at local origin, shank along +Y toward the turret)
@@ -453,10 +465,11 @@
     x.fillRect(330, 838, 90, 8); x.fillRect(604, 838, 90, 8);
     var tex = new T.CanvasTexture(c);
     var letters = new T.Mesh(new T.PlaneGeometry(48 * S * 0.62, 48 * S * 0.62), new T.MeshStandardMaterial({
-      color: lin(0xeef0f2), metalness: 0.9, roughness: 0.2, alphaMap: tex, transparent: true, envMapIntensity: 1.4,
-      emissive: 0xffffff, emissiveMap: tex, emissiveIntensity: 0.22
+      color: lin(0xf2f4f6), metalness: 0.85, roughness: 0.22, alphaMap: tex, transparent: true, envMapIntensity: 1.5,
+      emissive: 0xffffff, emissiveMap: tex, emissiveIntensity: 0.45, polygonOffset: true, polygonOffsetFactor: -4
     }));
-    letters.position.set(0, -2 * S, 3.4);
+    letters.position.set(0, -2 * S, 4.4);
+    letters.material.depthWrite = false; letters.renderOrder = 2;
     g.add(letters);
     return shadowed(g);
   }
@@ -550,7 +563,9 @@
     var matKey = 'brass';
     var workMat = partMaterial(matKey, 'turn', 30);
     var work = new T.Mesh(new T.BufferGeometry(), workMat); work.castShadow = work.receiveShadow = true; spindle.add(work);
-    var finished = new T.Mesh(new T.BufferGeometry(), workMat); finished.castShadow = true; finished.visible = false; rig.add(finished);
+    workMat.vertexColors = true;
+    var finMat = partMaterial(matKey, 'turn', 30);
+    var finished = new T.Mesh(new T.BufferGeometry(), finMat); finished.castShadow = true; finished.visible = false; rig.add(finished);
     finished.rotation.order = 'ZYX';
 
     // Tool side (turret, coolant nozzle) is tilted back like a slant-bed lathe
@@ -574,10 +589,10 @@
     var dummy = new T.Object3D(), chipCur = 0;
 
     /* stock state */
-    var N = 264, rad = new Float32Array(N + 1), boreDepth = 0, threadFrac = 0, cutDone = false, dirty = true;
+    var N = 264, rad = new Float32Array(N + 1), boreDepth = 0, threadFrac = 0, cutDone = false, dirty = true, faced = false;
     function reset() {
       for (var i = 0; i <= N; i++) rad[i] = SIM.stock;
-      boreDepth = 0; threadFrac = 0; cutDone = false; dirty = true;
+      boreDepth = 0; threadFrac = 0; cutDone = false; dirty = true; faced = false;
       finished.visible = false;
       for (var k = 0; k < CHIPS; k++) chipS[k].life = 0;
     }
@@ -599,6 +614,17 @@
         P.push(v2(SIM.bore, SIM.L)); P.push(v2(SIM.bore, SIM.L)); P.push(v2(SIM.bore, yb)); P.push(v2(SIM.bore, yb)); P.push(v2(0, yb - SIM.bore * 0.6));
       } else P.push(v2(0, SIM.L));
       var g = new T.LatheGeometry(P, 96); g.computeVertexNormals();
+      // bar stock is dull drawn material, machined surfaces are bright
+      var n = P.length, cnt = g.attributes.position.count, col = new Float32Array(cnt * 3);
+      for (var v = 0; v < cnt; v++) {
+        var jj = v % n, fresh;
+        if (jj <= 1) fresh = false;
+        else if (jj <= N + 2) fresh = rad[jj - 2] < SIM.stock - 0.01;
+        else fresh = faced || jj > N + 3;
+        var c = fresh ? 1 : 0.6;
+        col[v * 3] = c; col[v * 3 + 1] = c * (fresh ? 1 : 0.96); col[v * 3 + 2] = c * (fresh ? 1 : 0.88);
+      }
+      g.setAttribute('color', new T.BufferAttribute(col, 3));
       work.geometry.dispose(); work.geometry = g;
     }
     function buildFinished() {
@@ -619,7 +645,7 @@
     // tool tip in machine coords (X diameter, Z) for op & progress; removes material
     function path(key, p) {
       var X = 34, Z = 2, cut = false;
-      if (key === 'face') { X = 34 - p * 35.6; Z = 0; cut = X < 32 && X > 0; }
+      if (key === 'face') { X = 34 - p * 35.6; Z = 0; cut = X < 32 && X > 0; if (p > 0.2 && !faced) { faced = true; dirty = true; } }
       else if (key === 'rough') {
         var levels = [29, 26, 23, 20.4], n = levels.length + 1;
         var k = Math.min(n - 1, Math.floor(p * n)), q = p * n - k;
@@ -722,6 +748,7 @@
     if ('IntersectionObserver' in window) new IntersectionObserver(function (e) { visible = e[0].isIntersecting; }).observe(canvas);
 
     var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var camDist = 285, camTarget = new T.Vector3(-6, 16, 0);
     var cycle = 1, t = 0, playing = true, last = performance.now(), spin = 0, rpmNow = 0, lastOp = -1, lastLine = -1, dropT = 0;
     var turretAngle = 0, turretPos = new T.Vector3(120, 160, 0), tip = new T.Vector3(), target = new T.Vector3(-6, 16, 0);
     var home = new T.Vector3(100, 160, 0);
@@ -788,12 +815,44 @@
       if (cut) emitChips(dt, key);
       updateChips(dt);
 
+      // Cinematic director: per-operation framing, user drag takes over for 6 s
       idle += dt;
-      if (!drag && idle > 5) tYaw = 0.3 + Math.sin(t * 0.12) * 0.3;
-      yaw += (tYaw - yaw) * 0.07; pitch += (tPitch - pitch) * 0.07;
-      var dist = cam.aspect < 1 ? 440 : 285;
-      cam.position.set(target.x + Math.sin(yaw) * dist * Math.cos(pitch), target.y + Math.sin(pitch) * dist, target.z + Math.cos(yaw) * dist * Math.cos(pitch));
-      cam.lookAt(target);
+      var shot = SHOTS[key] || SHOTS.rough;
+      if (!drag && idle > 6) {
+        var drift = Math.sin(t * 0.21) * 0.08;
+        if (key === 'inspect') { tYaw = shot[0] + o.local * 0.35; } else tYaw = shot[0] + drift;
+        tPitch = shot[1];
+        camDist += (shot[2] - camDist) * 0.02;
+        if (key === 'inspect') camTarget.lerp(finished.position.clone().add(new T.Vector3(-25, 0, 0)), 0.04);
+        else camTarget.lerp(new T.Vector3(shot[3], shot[4], 0), 0.025);
+      }
+      yaw += (tYaw - yaw) * 0.035; pitch += (tPitch - pitch) * 0.035;
+      var dist = camDist * (cam.aspect < 1 ? 1.55 : cam.aspect < 1.4 ? 1.2 : 1);
+      cam.position.set(camTarget.x + Math.sin(yaw) * dist * Math.cos(pitch), camTarget.y + Math.sin(pitch) * dist, camTarget.z + Math.cos(yaw) * dist * Math.cos(pitch));
+      cam.lookAt(camTarget);
+      target.copy(camTarget);
+
+      // screen-space callouts for the page (tool tag, inspection dimensions)
+      if (hud && hud.overlay) {
+        var W = renderer.domElement.clientWidth, H = renderer.domElement.clientHeight;
+        var toScreen = function (v) { var q = v.clone().project(cam); return { x: (q.x + 1) / 2 * W, y: (1 - q.y) / 2 * H, on: q.z < 1 }; };
+        var tag = null, dims = null;
+        if (station >= 0 && !inIndex && key !== 'inspect') {
+          var ts = toScreen(tipW);
+          tag = { x: ts.x, y: ts.y, t: TOOL_NAMES[station], tool: TOOL_INFO[station], op: key, vc: op[3] === 'css' ? op[4] + ' m/min' : op[4] + ' 1/min', f: op[5] };
+        }
+        if (key === 'inspect' && dropT > 0.85) {
+          finished.updateMatrixWorld();
+          var L = function (y, r) { return toScreen(finished.localToWorld(new T.Vector3(0, y, r))); };
+          dims = [
+            { a: L(0, 19), b: L(50, 19), label: '50 ±0,05' },
+            { a: L(8, 15), b: L(8, -15), label: 'Ø30 h9' },
+            { a: L(42, 10), b: L(42, -10), label: 'M20×1,5' },
+            { a: L(27.25, 12.5), b: L(27.25, -12.5), label: 'Ø25 f7' }
+          ];
+        }
+        hud.overlay(tag, dims);
+      }
       keyLight.position.set(cam.position.x * 0.3 - 60, 140, cam.position.z * 0.3 + 80);
 
       if (hud) {
@@ -868,7 +927,7 @@
     requestAnimationFrame(frame);
     return {
       setMaterial: function (k) {
-        matKey = k; setPartColor(workMat, k);
+        matKey = k; setPartColor(workMat, k); setPartColor(finMat, k);
         chipMat.color.copy(lin(MAT[k].color)); chipMat.metalness = MAT[k].metalness; chipMat.roughness = k === 'pom' ? 0.4 : 0.28;
         chips.geometry = chipGeos[k] || chipGeos.brass;
       },

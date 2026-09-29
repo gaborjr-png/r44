@@ -73,81 +73,23 @@
   <a class="fab" href="kapcsolat.html#ajanlatkeres">Ajánlatkérés</a>
   <main id="main">
 
-
-<section class="hero" id="hero">
-  <div class="hero__grid" aria-hidden="true"></div>
-  <div class="hero__glow" aria-hidden="true"></div>
-
-  <div class="wrap hero__top">
-    <div>
-      <p class="eyebrow eyebrow--light">CNC forgácsolt fém alkatrészek gyártása · 1997 óta</p>
-      <h1 class="hero__title">
-        <span class="line"><span>Precízió,</span></span>
-        <span class="line"><span>millió darabban</span></span>
-        <span class="line line--muted"><span>mérve.</span></span>
-      </h1>
-    </div>
-    <div class="hero__aside">
-      <p class="hero__lead">Több mint 20 éve a beszállítói piacon, 70 000 000 eladott termékkel. Közép- és nagysorozatú esztergált és mart alkatrészek az elektronika, a járműipar és a pneumatika számára.</p>
-      <div class="hero__actions">
-        <a class="btn btn--brass btn--lg" href="kapcsolat.html#ajanlatkeres">Ajánlatkérés<span class="btn__arrow" aria-hidden="true">→</span></a>
-        <a class="btn btn--ghost-light btn--lg" href="#alkatreszek">Alkatrészek</a>
-      </div>
+<section class="hero hero--photo" id="hero">
+  <div class="hero__bg" aria-hidden="true">
+    <img src="assets/img/star-sr16.webp" alt="" fetchpriority="high" width="1448" height="1086">
+  </div>
+  <div class="wrap hero__content">
+    <p class="eyebrow eyebrow--light">CNC forgácsolt fém alkatrészek gyártása · 1997 óta</p>
+    <h1 class="hero__title">
+      <span class="line"><span>Precízió,</span></span>
+      <span class="line"><span>millió darabban</span></span>
+      <span class="line line--muted"><span>mérve.</span></span>
+    </h1>
+    <p class="hero__lead">Több mint 20 éve a beszállítói piacon, 70 000 000 eladott termékkel. Közép- és nagysorozatú esztergált és mart alkatrészek az elektronika, a járműipar és a pneumatika számára – az alapanyagtól a kiszállításig.</p>
+    <div class="hero__actions">
+      <a class="btn btn--brass btn--lg" href="kapcsolat.html#ajanlatkeres">Ajánlatkérés<span class="btn__arrow" aria-hidden="true">→</span></a>
+      <a class="btn btn--ghost-light btn--lg" href="tevekenysegek.html#hogyan-keszul">Hogyan készül egy alkatrész?</a>
     </div>
   </div>
-
-  <div class="wrap">
-    <div class="console" id="sim">
-      <div class="console__stage">
-        <canvas class="console__canvas" id="simCanvas" role="img" aria-label="Valós idejű 3D esztergálási szimuláció a mellette futó CNC programmal"></canvas>
-        <div class="console__fallback"><img src="assets/img/hero-csarnok.jpg" alt="" data-render="bushing:brass"></div>
-        <div class="console__badge"><span class="live"></span>Valós idejű szimuláció</div>
-        <p class="console__hint">Húzza a forgatáshoz</p>
-        <div class="console__mats" role="radiogroup" aria-label="Anyag">
-          <button type="button" role="radio" aria-checked="true" data-mat="brass"><i class="sw sw--brass"></i>CuZn39Pb3</button>
-          <button type="button" role="radio" aria-checked="false" data-mat="alu"><i class="sw sw--alu"></i>AlCuMgPb</button>
-          <button type="button" role="radio" aria-checked="false" data-mat="pom"><i class="sw sw--pom"></i>POM-C</button>
-        </div>
-      </div>
-
-      <aside class="console__side" aria-label="CNC vezérlő">
-        <div class="ctrl__head">
-          <span>FANUC 0i-TF</span><span>O4471</span>
-          <button type="button" class="ctrl__btn" id="simToggle" data-play="▶ Cycle start" data-pause="❚❚ Feed hold">❚❚ Feed hold</button>
-        </div>
-        <dl class="dro" id="dro">
-          <div><dt>X</dt><dd data-k="x">200.000</dd></div>
-          <div><dt>Z</dt><dd data-k="z">150.000</dd></div>
-          <div><dt>S</dt><dd data-k="s">0</dd></div>
-          <div><dt>F</dt><dd data-k="f">0.000</dd></div>
-          <div><dt>T</dt><dd data-k="t">T0000</dd></div>
-          <div><dt>M</dt><dd data-k="m">M09</dd></div>
-        </dl>
-        <div class="meters">
-          <div><span>Ciklusidő</span><b id="mCycle">00:00.0</b></div>
-          <div><span>Darab</span><b id="mParts">0001</b></div>
-          <div><span>Mód</span><b id="mModal">G00</b></div>
-          <div class="meters__load"><span>Orsóterhelés</span><i><em id="mLoad"></em></i></div>
-        </div>
-        <div class="plot"><canvas id="plot" aria-label="Szerszámpálya X–Z síkban" role="img"></canvas><span>Szerszámpálya · X/Z</span></div>
-        <div class="nc" id="nc" tabindex="0" aria-label="NC program"><ol id="ncList"></ol></div>
-        <p class="ctrl__part">Alkatrész: M20×1,5 menetes persely, Ø30 × 50 mm, O-gyűrű horonnyal, Ø10 átmenő furattal</p>
-      </aside>
-
-      <ol class="console__ops" id="simOps">
-        <li data-op="face"><button type="button"><span>01</span>Homlokesztergálás</button></li>
-        <li data-op="rough"><button type="button"><span>02</span>Nagyolás</button></li>
-        <li data-op="drill"><button type="button"><span>03</span>Fúrás</button></li>
-        <li data-op="finish"><button type="button"><span>04</span>Simítás</button></li>
-        <li data-op="groove"><button type="button"><span>05</span>Beszúrás</button></li>
-        <li data-op="thread"><button type="button"><span>06</span>Menetvágás</button></li>
-        <li data-op="cutoff"><button type="button"><span>07</span>Leszúrás</button></li>
-        <li data-op="inspect"><button type="button"><span>08</span>Kész alkatrész</button></li>
-      </ol>
-      <div class="console__bar"><span id="simBar"></span></div>
-    </div>
-  </div>
-
   <div class="hero__facts">
     <dl class="wrap facts">
       <div><dt>Eladott termék</dt><dd><span data-count="70">70</span>&nbsp;M+</dd></div>
@@ -179,6 +121,43 @@
     <figure class="intro__photo reveal">
       <img src="assets/img/telephely.webp" alt="A Steel Riders Kft. üzemépülete Verpeléten" loading="lazy" width="1536" height="1024">
       <figcaption>3351 Verpelét, Kossuth út 64.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section class="section section--dark aerial" id="telephely">
+  <div class="wrap aerial__grid">
+    <div class="aerial__text">
+      <p class="eyebrow eyebrow--light">Telephely</p>
+      <h2 class="h2">27 000 m² saját telephely Verpeléten</h2>
+      <p class="lead">Két gyártócsarnok, napelemes energiatermelés, saját helikopter-leszállóhely – minden a gyártáshoz és a kiszállításhoz egy helyen, Eger és Gyöngyös között.</p>
+      <dl class="aerial__facts">
+        <div><dt>Telephely</dt><dd>27 000 m²</dd></div>
+        <div><dt>Gyártócsarnokok</dt><dd>800 + 1200 m²</dd></div>
+        <div><dt>Környezet</dt><dd>ISO 14001</dd></div>
+        <div><dt>Cím</dt><dd>Kossuth út 64.</dd></div>
+      </dl>
+      <a class="link-arrow link-arrow--light" href="kapcsolat.html">Útvonal és kapcsolat</a>
+    </div>
+    <figure class="showcase__scene aerial__photo is-active" data-scene="site">
+      <img src="assets/img/telephely-legi.webp" alt="A Steel Riders Kft. verpeléti telephelye felülről" loading="lazy" width="1448" height="1086">
+      <button type="button" class="spot" style="left: 33.5%; top: 19%" aria-describedby="spot-site-1" data-i="0"><span class="sr-only">Helikopter-leszállóhely</span></button>
+      <div class="spot__card spot__card--below" id="spot-site-1" role="tooltip" style="--x: 33.5; --y: 19" data-i="0">
+        <span class="spot__n">01</span><strong>Helikopter-leszállóhely</strong><span>Saját helikopter-leszállóhely a telephely északi részén.</span>
+      </div>
+      <button type="button" class="spot" style="left: 37%; top: 42%" aria-describedby="spot-site-2" data-i="1"><span class="sr-only">Gyártócsarnokok</span></button>
+      <div class="spot__card" id="spot-site-2" role="tooltip" style="--x: 37; --y: 42" data-i="1">
+        <span class="spot__n">02</span><strong>Gyártócsarnokok</strong><span>CNC automata esztergák, megmunkálóközpontok és 3 műszakos sorozatgyártás.</span>
+      </div>
+      <button type="button" class="spot" style="left: 57.5%; top: 86%" aria-describedby="spot-site-3" data-i="2"><span class="sr-only">Napelemes energia</span></button>
+      <div class="spot__card" id="spot-site-3" role="tooltip" style="--x: 57.5; --y: 86" data-i="2">
+        <span class="spot__n">03</span><strong>Napelemes energia</strong><span>Tetőre szerelt napelemek – ISO 14001 szerinti, felelős működés.</span>
+      </div>
+      <button type="button" class="spot" style="left: 56%; top: 70%" aria-describedby="spot-site-4" data-i="3"><span class="sr-only">Logisztikai udvar</span></button>
+      <div class="spot__card" id="spot-site-4" role="tooltip" style="--x: 56; --y: 70" data-i="3">
+        <span class="spot__n">04</span><strong>Logisztikai udvar</strong><span>Alapanyag-beérkezés és késztermék-kiszállítás egy helyen.</span>
+      </div>
+      <figcaption class="aerial__cap">47.85° N · 20.23° E</figcaption>
     </figure>
   </div>
 </section>
@@ -244,7 +223,7 @@
         <button type="button" class="spot" style="left: 26%; top: 16%" aria-describedby="spot-mill-6" data-i="5">
           <span class="sr-only">Vertikális megmunkálóközpont</span>
         </button>
-        <div class="spot__card" id="spot-mill-6" role="tooltip" style="--x: 26; --y: 16" data-i="5">
+        <div class="spot__card spot__card--below" id="spot-mill-6" role="tooltip" style="--x: 26; --y: 16" data-i="5">
           <span class="spot__n">06</span>
           <strong>Vertikális megmunkálóközpont</strong>
           <span>11 vertikális megmunkálóközpont: Akira Seiki, Bridgeport, Mori Seiki, OKK – Fanuc, Heidenhain és Mitsubishi vezérléssel.</span>
@@ -263,7 +242,7 @@
         <button type="button" class="spot" style="left: 32%; top: 16%" aria-describedby="spot-turn-2" data-i="1">
           <span class="sr-only">Fanuc vezérlés</span>
         </button>
-        <div class="spot__card" id="spot-turn-2" role="tooltip" style="--x: 32; --y: 16" data-i="1">
+        <div class="spot__card spot__card--below" id="spot-turn-2" role="tooltip" style="--x: 32; --y: 16" data-i="1">
           <span class="spot__n">02</span>
           <strong>Fanuc vezérlés</strong>
           <span>A STAR esztergák Fanuc 16T, 18i és 0i-TF vezérléssel dolgoznak.</span>

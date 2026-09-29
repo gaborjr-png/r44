@@ -90,6 +90,7 @@
 <nav class="subnav" aria-label="On this page">
   <div class="wrap subnav__inner">
     <a href="#esztergalas">CNC turning</a>
+    <a href="#hogyan-keszul">How it is made</a>
     <a href="#maras">CNC milling</a>
     <a href="#ontveny">Casting machining</a>
     <a href="#altalanos">General machining</a>
@@ -115,6 +116,99 @@
         <li>Takisawa NEX108 / NEX108Y (Y-axis) and EX910 CNC lathes, EEN NC centre lathes</li>
       </ul>
       <p class="service__meta"><strong>24</strong> CNC lathes + 5 NC centre lathes · <a href="machinery.html">Machine list</a></p>
+    </div>
+  </div>
+</section>
+
+<section class="section section--dark" id="hogyan-keszul">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <p class="eyebrow eyebrow--light">How we work</p>
+        <h2 class="h2">How is a turned part made?</h2>
+      </div>
+      <p>Follow the production of an M20×1.5 threaded brass bushing from raw bar to finished, inspected part. The simulation is driven by a real CNC program – just like on our machines.</p>
+    </div>
+
+    <div class="lathe-demo">
+      <ol class="ld-steps" id="simOps">
+        <li data-op="face"><button type="button">
+          <span class="ld-steps__n">01</span>
+          <span class="ld-steps__body"><strong>Facing <code>G01</code></strong><span>The bar end is faced flat – this becomes the reference for all dimensions.</span></span>
+        </button></li>
+        <li data-op="rough"><button type="button">
+          <span class="ld-steps__n">02</span>
+          <span class="ld-steps__body"><strong>Roughing <code>G71</code></strong><span>Most of the material is removed in several passes, leaving 0.2 mm for finishing.</span></span>
+        </button></li>
+        <li data-op="drill"><button type="button">
+          <span class="ld-steps__n">03</span>
+          <span class="ld-steps__body"><strong>Drilling <code>G74</code></strong><span>The Ø10 through bore is peck-drilled with a carbide drill so chips are cleared.</span></span>
+        </button></li>
+        <li data-op="finish"><button type="button">
+          <span class="ld-steps__n">04</span>
+          <span class="ld-steps__body"><strong>Finishing <code>G70</code></strong><span>The finishing tool follows the final contour in one pass – this sets tolerance and surface finish.</span></span>
+        </button></li>
+        <li data-op="groove"><button type="button">
+          <span class="ld-steps__n">05</span>
+          <span class="ld-steps__body"><strong>Grooving <code>G01</code></strong><span>The thread relief and the O-ring groove are cut with a grooving tool.</span></span>
+        </button></li>
+        <li data-op="thread"><button type="button">
+          <span class="ld-steps__n">06</span>
+          <span class="ld-steps__body"><strong>Threading <code>G76</code></strong><span>The M20×1.5 thread is cut in nine progressively deeper passes.</span></span>
+        </button></li>
+        <li data-op="cutoff"><button type="button">
+          <span class="ld-steps__n">07</span>
+          <span class="ld-steps__body"><strong>Parting off <code>G01</code></strong><span>The finished part is parted from the bar; the machine starts the next piece.</span></span>
+        </button></li>
+        <li data-op="inspect"><button type="button">
+          <span class="ld-steps__n">08</span>
+          <span class="ld-steps__body"><strong>Inspection <code>QC</code></strong><span>Critical dimensions are measured and documented before the series continues.</span></span>
+        </button></li>
+      </ol>
+      <div class="console console--compact" id="sim">
+      <div class="console__stage">
+        <canvas class="console__canvas" id="simCanvas" role="img" aria-label="Real-time 3D turning simulation driven by the CNC program alongside"></canvas>
+        <div class="console__fallback"><img src="../assets/img/hero-csarnok.jpg" alt="" data-render="bushing:brass"></div>
+        <div class="simtag" id="simTag" hidden
+             data-tools='[&#34;CNMG 120408 \u00b7 roughing&#34;, &#34;VBMT 160404 \u00b7 finishing&#34;, &#34;\u00d810 carbide twist drill&#34;, &#34;Grooving tool W2.5&#34;, &#34;16ER 1.5 ISO threading insert&#34;, &#34;Parting tool W3.0&#34;]'>
+          <b data-k="t">T0101</b><span data-k="tool"></span><em><span data-k="vc"></span> · f <span data-k="f"></span></em>
+        </div>
+        <svg class="simdims" id="simDims" aria-hidden="true"></svg>
+        <div class="simqc" id="simQc" hidden>Dimensional check · passed</div>
+        <div class="console__badge"><span class="live"></span>Real-time simulation</div>
+        <p class="console__hint">Drag to rotate</p>
+        <div class="console__mats" role="radiogroup" aria-label="Material">
+          <button type="button" role="radio" aria-checked="true" data-mat="brass"><i class="sw sw--brass"></i>CuZn39Pb3</button>
+          <button type="button" role="radio" aria-checked="false" data-mat="alu"><i class="sw sw--alu"></i>AlCuMgPb</button>
+          <button type="button" role="radio" aria-checked="false" data-mat="pom"><i class="sw sw--pom"></i>POM-C</button>
+        </div>
+      </div>
+
+      <aside class="console__side" aria-label="CNC control">
+        <div class="ctrl__head">
+          <span>FANUC 0i-TF</span><span>O4471</span>
+          <button type="button" class="ctrl__btn" id="simToggle" data-play="▶ Cycle start" data-pause="❚❚ Feed hold">❚❚ Feed hold</button>
+        </div>
+        <dl class="dro" id="dro">
+          <div><dt>X</dt><dd data-k="x">200.000</dd></div>
+          <div><dt>Z</dt><dd data-k="z">150.000</dd></div>
+          <div><dt>S</dt><dd data-k="s">0</dd></div>
+          <div><dt>F</dt><dd data-k="f">0.000</dd></div>
+          <div><dt>T</dt><dd data-k="t">T0000</dd></div>
+          <div><dt>M</dt><dd data-k="m">M09</dd></div>
+        </dl>
+        <div class="meters">
+          <div><span>Cycle time</span><b id="mCycle">00:00.0</b></div>
+          <div><span>Parts</span><b id="mParts">0001</b></div>
+          <div><span>Modal</span><b id="mModal">G00</b></div>
+          <div class="meters__load"><span>Spindle load</span><i><em id="mLoad"></em></i></div>
+        </div>
+        <div class="plot"><canvas id="plot" aria-label="Tool path in the X–Z plane" role="img"></canvas><span>Tool path · X/Z</span></div>
+        <div class="nc" id="nc" tabindex="0" aria-label="NC program"><ol id="ncList"></ol></div>
+        <p class="ctrl__part">Part: M20×1.5 threaded bushing, Ø30 × 50 mm, O-ring groove, Ø10 through bore</p>
+      </aside>
+      <div class="console__bar"><span id="simBar"></span></div>
+    </div>
     </div>
   </div>
 </section>

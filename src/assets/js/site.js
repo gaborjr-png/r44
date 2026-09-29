@@ -106,6 +106,32 @@
       }
     };
 
+    /* 3D callouts: tool tag that follows the tool tip, inspection dimensions */
+    var tagEl = $('#simTag'), dimsEl = $('#simDims'), qcEl = $('#simQc');
+    var toolNames = tagEl ? JSON.parse(tagEl.dataset.tools) : [];
+    var tk = {}; if (tagEl) $$('[data-k]', tagEl).forEach(function (e) { tk[e.dataset.k] = e; });
+    hud.overlay = function (tag, dims) {
+      if (tagEl) {
+        tagEl.hidden = !tag;
+        if (tag) {
+          tagEl.style.transform = 'translate(' + Math.round(tag.x + 26) + 'px,' + Math.round(tag.y - 70) + 'px)';
+          tk.t.textContent = tag.t; tk.tool.textContent = toolNames[+tag.t.slice(-1) - 1] || tag.tool;
+          tk.vc.textContent = (tag.vc.indexOf('m/min') > 0 ? 'Vc ' : 'n ') + tag.vc; tk.f.textContent = tag.f;
+        }
+      }
+      if (dimsEl) {
+        if (!dims) { if (dimsEl.childNodes.length) dimsEl.innerHTML = ''; if (qcEl) qcEl.hidden = true; return; }
+        var html = '';
+        dims.forEach(function (d) {
+          var mx = (d.a.x + d.b.x) / 2, my = (d.a.y + d.b.y) / 2;
+          html += '<line x1="' + d.a.x + '" y1="' + d.a.y + '" x2="' + d.b.x + '" y2="' + d.b.y + '" marker-start="url(#ar)" marker-end="url(#ar)"/>' +
+            '<g transform="translate(' + mx + ',' + my + ')"><rect x="-38" y="-12" width="76" height="22" rx="4"/><text y="4" text-anchor="middle">' + d.label + '</text></g>';
+        });
+        dimsEl.innerHTML = '<defs><marker id="ar" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 1 L9 5 L0 9z"/></marker></defs>' + html;
+        if (qcEl) qcEl.hidden = false;
+      }
+    };
+
     /* meters: cycle time, part counter, modal group, spindle load */
     var mCycle = $('#mCycle'), mParts = $('#mParts'), mModal = $('#mModal'), mLoad = $('#mLoad'), load = 0;
     function meters(d) {
@@ -164,8 +190,10 @@
     }
 
     var api = null;
+    var startSim = function () {
     try { api = SR3D.hero($('#simCanvas'), hud, { lite: innerWidth < 900 }); } catch (e) { api = null; }
     if (api) {
+      window.SR_SIM = api;
       sim.classList.add('is-live');
       $$('.console__mats button').forEach(function (b) {
         b.addEventListener('click', function () {
@@ -177,9 +205,28 @@
       tg.addEventListener('click', function () { var on = api.toggle(); tg.textContent = on ? tg.dataset.pause : tg.dataset.play; tg.classList.toggle('is-held', !on); });
       ops.forEach(function (li) { $('button', li).addEventListener('click', function () { api.seek(li.dataset.op); tg.textContent = tg.dataset.pause; tg.classList.remove('is-held'); }); });
     }
+    };
+    // start the WebGL scene only when the demo scrolls near the viewport
+    if (io) new IntersectionObserver(function (en, obs) { if (en[0].isIntersecting) { obs.disconnect(); startSim(); } }, { rootMargin: '400px 0px' }).observe(sim);
+    else startSim();
   }
 
   /* ---------- Photo showcase with hotspots ---------- */
+  // stand-alone hotspot photos (e.g. aerial view)
+  $$('.aerial__photo').forEach(function (f) { bindSpots(f); });
+  function bindSpots(f) {
+    var spots = $$('.spot', f), cards = $$('.spot__card', f);
+    function open(i) {
+      spots.forEach(function (s, k) { s.classList.toggle('is-open', k === i); s.setAttribute('aria-expanded', String(k === i)); });
+      cards.forEach(function (c, k) { c.classList.toggle('is-open', k === i); });
+    }
+    spots.forEach(function (s, i) {
+      s.addEventListener('click', function (e) { e.stopPropagation(); open(s.classList.contains('is-open') ? -1 : i); });
+      s.addEventListener('mouseenter', function () { if (matchMedia('(hover: hover)').matches) open(i); });
+    });
+    f.addEventListener('click', function () { open(-1); });
+    open(0);
+  }
   $$('[data-showcase]').forEach(function (sc) {
     var tabs = $$('.showcase__tabs [role="tab"]', sc), scenes = $$('.showcase__scene', sc);
     tabs.forEach(function (t) {
