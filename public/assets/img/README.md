@@ -4,7 +4,8 @@ Megvan: `logo-badge.webp` (logó), `telephely.webp` (üzemépület), `alkatresze
 (mart alkatrészek, megmunkálóközpont), `star-sr16.webp` (STAR SR-16 automata eszterga, alkatrészek).
 További fotók: `csarnok.webp` (gyártócsarnok, nyitókép), `maras-munka.webp` (megmunkálóközpont munka
 közben), `meroszoba.webp` (optikai mérőrendszer), `szallitas.webp` (szállításra kész alkatrészek),
-`telephely-legi.webp`, `telephely-naplemente.webp` (légifotók).
+`telephely-legi.webp`, `telephely-naplemente.webp` (légifotók), `hc02-repules.jpg` (HC-02 repülés közben),
+`star-sr32.webp` (STAR SR-32J rúdadagolóval).
 Ezek kivágásai (`pos`, `zoom` paraméter a sablonokban) töltik ki a legtöbb képhelyet.
 
 Tegye ide a fotókat az alábbi fájlnevekkel (JPG, kb. 2000 px széles, 80% minőség).

@@ -6,7 +6,7 @@
 {{ m.page_head(_('Minőségügy', 'Quality'),
    _('Minőségbiztosítás és környezettudatos működés', 'Quality assurance and environmental responsibility'),
    _('A hazai és nemzetközi piac növekvő elvárásainak való megfelelés érdekében kiemelt figyelmet fordítunk a minőségbiztosításra.', 'To meet the growing requirements of domestic and international markets, we place particular emphasis on quality assurance.'),
-   'meroszoba.webp', 'bushing:brass', pos='62% 45%') }}
+   'cmm.webp', 'bushing:brass', pos='55% 50%') }}
 
 <section class="section">
   <div class="wrap">
@@ -31,6 +31,36 @@
         <h2 class="h3">{{ _('Integrált vállalatirányítás', 'Integrated ERP') }}</h2>
         <p>{{ _('SAP integrált vállalatirányítási rendszer és gyártásirányítás a rendelések, készletek és gyártási tételek nyomon követéséhez.', 'SAP integrated ERP and production management to track orders, stock and production lots.') }}</p>
       </article>
+    </div>
+  </div>
+</section>
+
+<section class="section section--dark">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <p class="eyebrow eyebrow--light">{{ _('Mérőszoba', 'Metrology') }}</p>
+        <h2 class="h2">{{ _('Mérőeszközeink', 'Our measuring equipment') }}</h2>
+      </div>
+      <p>{{ _('A gyártócsarnoktól elválasztott mérőszobában ellenőrizzük az első darabokat, a gyártásközi mintákat és a kiszállítás előtti tételeket.', 'First articles, in-process samples and lots before shipment are checked in a measuring room separated from the production hall.') }}</p>
+    </div>
+    <div class="instruments">
+      <figure class="instrument reveal">
+        <div class="instrument__img"><img src="{{ asset }}img/cmm.webp" alt="{{ _('3D koordináta-mérőgép mérés közben', '3D coordinate measuring machine measuring a part') }}" loading="lazy" width="1448" height="1086"></div>
+        <figcaption>
+          <span class="instrument__tag">CMM</span>
+          <strong>{{ _('3D koordináta-mérőgép', '3D coordinate measuring machine') }}</strong>
+          <span>{{ _('Tapintós mérés gránit mérőasztalon: furattávolságok, pozíció- és alaktűrések, összetett mart és esztergált alkatrészek teljes geometriája.', 'Touch-probe measurement on a granite table: hole spacing, position and form tolerances, full geometry of complex milled and turned parts.') }}</span>
+        </figcaption>
+      </figure>
+      <figure class="instrument reveal">
+        <div class="instrument__img"><img src="{{ asset }}img/meroszoba.webp" alt="{{ _('Optikai mérőrendszer automatikus méréssel', 'Optical measuring system with automatic measurement') }}" loading="lazy" width="1448" height="1086" style="object-position: 62% 45%"></div>
+        <figcaption>
+          <span class="instrument__tag">{{ _('Optikai', 'Optical') }}</span>
+          <strong>{{ _('Optikai mérőrendszer', 'Optical measuring system') }}</strong>
+          <span>{{ _('Esztergált alkatrészek érintésmentes, automatikus mérése másodpercek alatt – átmérők, hosszak, menetek, OK/NOK kiértékeléssel.', 'Non-contact, automatic measurement of turned parts in seconds – diameters, lengths, threads, with OK/NOK evaluation.') }}</span>
+        </figcaption>
+      </figure>
     </div>
   </div>
 </section>

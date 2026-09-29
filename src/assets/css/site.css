@@ -1037,3 +1037,21 @@ a:hover .photo img, .photo:hover img { transform: scale(calc(var(--zoom, 1) * 1.
   .hcphoto .hcband { grid-template-columns: 1fr; padding-block: 8px 64px; }
   .hcphoto .hcband > div:first-child, .hcphoto .hcband__specs { grid-column: 1; }
 }
+
+/* v10 – measuring equipment */
+.instruments { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.instrument { margin: 0; border-radius: 12px; overflow: hidden; background: var(--ink-850); border: 1px solid var(--ink-700); display: flex; flex-direction: column; transition: transform .4s var(--ease), box-shadow .4s var(--ease); }
+.instrument:hover { transform: translateY(-4px); box-shadow: 0 30px 70px rgba(0,0,0,.45); }
+.instrument__img { aspect-ratio: 4 / 3; overflow: hidden; }
+.instrument__img img { width: 100%; height: 100%; object-fit: cover; transition: transform 1.2s var(--ease); }
+.instrument:hover .instrument__img img { transform: scale(1.04); }
+.instrument figcaption { padding: 24px 26px 28px; display: grid; gap: 8px; color: var(--steel-400); font-size: 0.96rem; }
+.instrument strong { font: 700 1.3rem/1.2 var(--font-display); font-stretch: 108%; color: var(--white); }
+.instrument__tag { justify-self: start; font: 500 0.7rem var(--font-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--brass-300); border: 1px solid rgba(209,171,98,.4); padding: 4px 9px; border-radius: 99px; }
+@media (max-width: 800px) { .instruments { grid-template-columns: 1fr; } }
+.metro__photo { overflow: visible; }
+.metro__photo > img:first-child { border-radius: 12px; }
+.metro__inset { position: absolute; right: -24px; top: -28px; width: 38%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 10px; border: 4px solid var(--ink-900); box-shadow: 0 24px 50px rgba(0,0,0,.5); }
+@media (max-width: 900px) { .metro__inset { right: 10px; top: 10px; width: 36%; border-width: 3px; } }
+.metro__photo .metro__inset { position: absolute; right: -24px; top: -28px; width: 38%; height: auto; aspect-ratio: 4 / 3; object-fit: cover; }
+@media (max-width: 900px) { .metro__photo .metro__inset { right: 10px; top: 10px; width: 36%; } }
