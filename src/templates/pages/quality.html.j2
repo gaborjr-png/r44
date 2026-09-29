@@ -95,13 +95,21 @@
           <span>{{ _('Esztergált alkatrészek érintésmentes, automatikus mérése másodpercek alatt – átmérők, hosszak, menetek, OK/NOK kiértékeléssel.', 'Non-contact, automatic measurement of turned parts in seconds – diameters, lengths, threads, with OK/NOK evaluation.') }}</span>
         </figcaption>
       </figure>
+      <figure class="instrument reveal">
+        <div class="instrument__img"><img src="{{ asset }}img/mikrometer.webp" alt="{{ _('Digitális mikrométer mérőállványon a gépsor mellett', 'Digital micrometer on a stand next to the machines') }}" loading="lazy" width="1086" height="1448" style="object-position: 50% 45%"></div>
+        <figcaption>
+          <span class="instrument__tag">{{ _('Gépközeli', 'At the machine') }}</span>
+          <strong>{{ _('Digitális mikrométerek', 'Digital micrometers') }}</strong>
+          <span>{{ _('A gépek mellett, mérőállványon: a kezelők 0,001 mm felbontással ellenőrzik a kritikus átmérőket a sorozat közben, kalibrált mérőeszközökkel.', 'Next to the machines, on stands: operators check critical diameters during the run with 0.001 mm resolution, using calibrated instruments.') }}</span>
+        </figcaption>
+      </figure>
     </div>
   </div>
 </section>
 
 <section class="section section--tint">
-  <div class="wrap split">
-    {{ m.photo('szallitas.webp', _('Végellenőrzött alkatrészek tálcákban', 'Inspected parts in trays'), '', '4/3', pos='40% 55%', zoom=1.15) }}
+  <div class="wrap split inspect">
+    {{ m.photo('meres-tolomero.webp', _('Esztergált rozsdamentes csatlakozó mérése digitális tolómérővel a műszaki rajz mellett, menetgyűrűvel és határidomszerekkel', 'Measuring a turned stainless fitting with a digital caliper next to the drawing, with thread ring and plug gauges'), 'inspect__photo', '4/5', pos='50% 50%', caption=_('Első darab ellenőrzése a rajz alapján', 'First-article check against the drawing')) }}
     <div>
       <p class="eyebrow">{{ _('Ellenőrzés', 'Inspection') }}</p>
       <h2 class="h2">{{ _('Ellenőrzés a teljes folyamatban', 'Inspection throughout the process') }}</h2>
@@ -111,6 +119,9 @@
         <li><strong>{{ _('Gyártásközi ellenőrzés', 'In-process inspection') }}</strong><span>{{ _('Rendszeres mintavétel és mérés a sorozat alatt.', 'Regular sampling and measurement during the run.') }}</span></li>
         <li><strong>{{ _('Végellenőrzés', 'Final inspection') }}</strong><span>{{ _('Kiszállítás előtti ellenőrzés és dokumentálás.', 'Inspection and documentation before shipment.') }}</span></li>
       </ol>
+      <ul class="inspect__tools">
+        <li>{{ _('Digitális tolómérők', 'Digital calipers') }}</li><li>{{ _('Menetgyűrűk, menetdugók', 'Thread ring & plug gauges') }}</li><li>{{ _('Határidomszerek', 'Limit gauges') }}</li><li>{{ _('Mikrométerek', 'Micrometers') }}</li><li>CMM</li><li>{{ _('Optikai mérés', 'Optical measurement') }}</li>
+      </ul>
     </div>
   </div>
 </section>

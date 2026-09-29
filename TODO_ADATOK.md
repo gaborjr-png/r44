@@ -16,6 +16,7 @@ majd futtassuk a `python3 src/build.py` parancsot.
 | 7 | Széchenyi 2020 infoblokk: a rajzolt változatot a **hivatalos képfájlra** cserélni | `src/templates/_infoblokk.html.j2` | HTML/SVG utánzat |
 | 8 | Google Analytics 4 mérési azonosító | `SITE["ga4"]` | `G-XXXXXXXXXX` (így a mérés ki van kapcsolva) |
 | 8 | Google Cégprofil értékelési link (`g.page/r/…/review`) | `SITE["review_url"]` | Google Térkép keresés |
+| – | Alapanyagraktár állításai (3.1 bizonylat minden kötegnél, SAP tételkövetés) és a mikrométer 0,001 mm felbontása – ellenőrizni | `services.html.j2` → `#anyagok`; `quality.html.j2` | ahogy a képek alapján feltételeztük |
 | – | Munkásszálló: férőhely, szobák, távolság, szolgáltatások | `src/templates/pages/careers.html.j2` → `#szallas` | 24 férőhely, 2–3 ágyas (a 20 m-es távolság valós) |
 
 ## Tárhely-követelmények
