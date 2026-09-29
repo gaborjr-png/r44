@@ -32,3 +32,4 @@ Amíg egy fájl hiányzik, a helyén a 3D motor valós idejű alkatrész-renderj
 
 Csere után futtassa: `python3 src/build.py`
 - `munkasszallo.webp` – a munkásszálló drónfotója (Karrier → Szállás)
+- `felso-uzem.webp` – a felső üzem drónfotója, a STAR hosszesztergák csarnoka (Géppark → Felső üzem)

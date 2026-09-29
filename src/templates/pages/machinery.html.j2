@@ -98,6 +98,30 @@
   </div>
 </section>
 
+{% set ns = namespace(star=0) %}{% for i in machines[0]['items'] if i.model.startswith('STAR') %}{% set ns.star = ns.star + i.qty %}{% endfor %}
+<section class="section section--dark hostel plant" id="felso-uzem">
+  <div class="wrap hostel__grid">
+    <div class="hostel__text reveal">
+      <p class="eyebrow eyebrow--light">{{ _('Telephely · Felső üzem', 'Site · Upper plant') }}</p>
+      <h2 class="h2">{{ _('A felső üzem – itt készülnek az esztergált alkatrészek', 'The upper plant – home of our turned parts') }}</h2>
+      <p class="lead">{{ _('Gépparkunk legnagyobb része a felső üzemben dolgozik. Itt működnek a STAR hosszesztergák és az automata esztergák: a rúdanyagból itt lesz kész, sorjázott, mért alkatrész – nagy sorozatban, 3 műszakban.', 'Most of our machine park works in the upper plant. This is where the STAR Swiss-type lathes and automatic lathes run: bar stock becomes finished, deburred and measured parts – in large series, in 3 shifts.') }}</p>
+      <dl class="hostel__facts">
+        <div><dt>{{ _('STAR hosszeszterga', 'STAR Swiss-type lathes') }}</dt><dd>{{ ns.star }}</dd></div>
+        <div><dt>{{ _('rúdátmérő, mm', 'bar diameter, mm') }}</dt><dd>4–35</dd></div>
+        <div><dt>{{ _('műszak', 'shifts') }}</dt><dd>3</dd></div>
+        <div><dt>{{ _('vezérlés', 'control') }}</dt><dd>Fanuc</dd></div>
+      </dl>
+      <ul class="checks checks--light">
+        <li>{{ _('STAR SA 12, SB 16, SR 16, SR 20, SB 20, SR 32 J és SR 32 JII automaták', 'STAR SA 12, SB 16, SR 16, SR 20, SB 20, SR 32 J and SR 32 JII automatics') }}</li>
+        <li>{{ _('Rúdadagolós, felügyelt folyamatos gyártás', 'Bar-fed, supervised continuous production') }}</li>
+        <li>{{ _('Fedett anyagfogadó és kiszállítási terület közvetlenül a csarnok mellett', 'Covered goods-in and dispatch area right next to the hall') }}</li>
+      </ul>
+      <a class="link-arrow link-arrow--light" href="{{ href('services') }}#hogyan-keszul">{{ _('Nézze meg, hogyan készül egy esztergált alkatrész', 'See how a turned part is made') }}</a>
+    </div>
+    {{ m.photo('felso-uzem.webp', _('A Steel Riders felső üzeme drónfelvételen: sárga homlokzatú csarnok fedett rakodóval, itt dolgoznak a STAR hosszesztergák', 'The Steel Riders upper plant from a drone: yellow-fronted hall with covered loading bay, home of the STAR Swiss-type lathes'), 'hostel__photo reveal', ratio='4/3', render='series:brass', pos='50% 40%', caption=_('Felső üzem · STAR hosszesztergák', 'Upper plant · STAR Swiss-type lathes')) }}
+  </div>
+</section>
+
 <section class="section section--tint">
   <div class="wrap">
     <div class="section-head">
