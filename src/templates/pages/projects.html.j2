@@ -4,60 +4,51 @@
 {% block content %}
 
 {{ m.page_head(_('Projektek', 'Projects'),
-   _('Fejlesztések és pályázati projektek', 'Developments and funded projects'),
-   _('Folyamatosan fejlesztjük gépparkunkat, gyártóterületünket és gyártásirányítási rendszereinket, hogy megfeleljünk a hazai és nemzetközi beszállítói piac elvárásainak.', 'We continuously develop our machine park, production floor and production management systems to meet the requirements of the domestic and international supplier market.'),
-   'telephely.webp', 'bushing:brass', pos='50% 55%') }}
+   _('Beruházások és pályázati projektek', 'Investments and funded projects'),
+   _('2012 óta ' ~ grants|length ~ ' uniós és hazai támogatással megvalósult fejlesztés: új CNC gépek, mérőeszközök, gyártócsarnok, SAP, napelemes rendszer és saját helikopterfejlesztés.', 'Since 2012, ' ~ grants|length ~ ' developments completed with EU and national funding: new CNC machines, measuring equipment, a production hall, SAP, solar power and our own helicopter development.'),
+   'telephely.webp', 'bushing:brass', stats=[(_('támogatott projekt', 'funded projects'), grants|length), (_('óta', 'since'), 2012), (_('új CNC gép', 'new CNC machines'), 6), (_('napelem', 'solar PV'), '48,96 kWp' if lang == 'hu' else '48.96 kWp')], pos='50% 55%') }}
+
+<nav class="subnav subnav--years" aria-label="{{ _('Projektek évek szerint', 'Projects by year') }}">
+  <div class="wrap subnav__inner">
+    {% for g in grants %}<a href="#{{ g.id }}"><b>{{ g.year }}</b> {{ _(g.tag[0], g.tag[1]) }}</a>{% endfor %}
+  </div>
+</nav>
 
 <section class="section">
   <div class="wrap">
     <div class="projects">
-      <article class="project reveal">
+      {% for g in grants %}
+      <article class="project reveal" id="{{ g.id }}">
         <div class="project__meta">
-          <span class="project__year">2020</span>
-          <span class="project__tag">{{ _('Irinyi Terv', 'Irinyi Plan') }}</span>
+          <span class="project__year">{{ g.year }}</span>
+          <span class="project__tag">{{ _(g.tag[0], g.tag[1]) }}</span>
         </div>
         <div class="project__body">
-          <h2 class="h3">{{ _('Beszállítói tevékenység fejlesztése', 'Development of supplier activities') }}</h2>
-          <p>{{ _('A projekt célja a vállalat beszállítói tevékenységének fejlesztése volt. A beruházás keretében két STAR SB-20R type G típusú CNC automata eszterga beszerzésére és egy hatékonyságnövelő gyártásirányítási rendszer bevezetésére került sor. Munkatársaink képzésen vettek részt az új gyártásirányítási rendszer használatának elsajátítására.', 'The aim of the project was to develop the company’s supplier activities. It included the purchase of two STAR SB-20R type G CNC automatic lathes and the introduction of an efficiency-boosting production management system. Our employees took part in training on the new production management system.') }}</p>
-          <dl class="specs">
-            <div><dt>{{ _('Beszerzett gépek', 'Machines purchased') }}</dt><dd>2 × STAR SB-20R type G</dd></div>
-            <div><dt>{{ _('Rendszer', 'System') }}</dt><dd>{{ _('Gyártásirányítási rendszer', 'Production management system') }}</dd></div>
-            <div><dt>{{ _('Fizikai befejezés', 'Physical completion') }}</dt><dd>{{ _('2020. március 31.', '31 March 2020') }}</dd></div>
-            <div><dt>{{ _('Projektazonosító', 'Project ID') }}</dt><dd class="mono">GINOP-1.2.8-20-2019-00123</dd></div>
-            <div><dt>{{ _('Támogatás összege', 'Grant amount') }}</dt><dd>{{ _('58,2 millió Ft', 'HUF 58.2 million') }}</dd></div>
-            <div><dt>{{ _('Támogatás mértéke', 'Aid intensity') }}</dt><dd>50%</dd></div>
+          <h2 class="h3">{{ _(g.title[0], g.title[1]) }}</h2>
+          {% if g.full is defined %}<p class="project__full">{{ _(g.full[0], g.full[1]) }}</p>{% endif %}
+          <p class="project__lead">{{ _(g.lead[0], g.lead[1]) }}</p>
+          <dl class="project__facts">
+            {% for k, v in g.facts %}<div><dt>{{ _(k[0], k[1]) }}</dt><dd{% if v[0].startswith('GINOP') %} class="mono"{% endif %}>{{ _(v[0], v[1]) }}</dd></div>{% endfor %}
           </dl>
+          <p class="project__sub">{{ _('A projekt tartalma', 'Project scope') }}</p>
+          <ul class="project__items">
+            {% for it in g['items'] %}<li>{{ _(it[0], it[1]) }}</li>{% endfor %}
+          </ul>
+          <details class="project__more">
+            <summary>{{ _('A projekt részletes bemutatása', 'Full project description') }}</summary>
+            <div class="project__text">
+              {% for para in g.body %}<p>{{ _(para[0], para[1]) }}</p>{% endfor %}
+              {% if g.extra is defined %}
+              <dl class="specs">
+                {% for k, v in g.extra %}<div><dt>{{ _(k[0], k[1]) }}</dt><dd>{{ _(v[0], v[1]) }}</dd></div>{% endfor %}
+              </dl>
+              {% endif %}
+            </div>
+          </details>
+          {% if g.link is defined %}<a class="link-arrow" href="{{ href(g.link) }}">{{ _('A HC-02 helikopter projekt', 'The HC-02 helicopter project') }}</a>{% endif %}
         </div>
       </article>
-
-      <article class="project reveal">
-        <div class="project__meta">
-          <span class="project__year">2016</span>
-          <span class="project__tag">{{ _('Uniós támogatás', 'EU funding') }}</span>
-        </div>
-        <div class="project__body">
-          <h2 class="h3">{{ _('Új, 1200 m²-es gyártócsarnok', 'New 1,200 m² production hall') }}</h2>
-          <p>{{ _('Uniós támogatással elkészült a modern, 1200 m²-es gyártócsarnok verpeléti telephelyünkön, amely a sorozatgyártási kapacitás bővítését szolgálja.', 'With EU funding, a modern 1,200 m² production hall was completed at our Verpelét site to expand series production capacity.') }}</p>
-          <dl class="specs">
-            <div><dt>{{ _('Projektazonosító', 'Project ID') }}</dt><dd class="mono">GINOP-1.2.1-15-2015-00456</dd></div>
-            <div><dt>{{ _('Támogatás összege', 'Grant amount') }}</dt><dd>{{ _('149,6 millió Ft', 'HUF 149.6 million') }}</dd></div>
-            <div><dt>{{ _('Támogatás mértéke', 'Aid intensity') }}</dt><dd>45%</dd></div>
-            <div><dt>{{ _('Befejezés', 'Completion') }}</dt><dd>{{ _('2016. november 30.', '30 November 2016') }}</dd></div>
-          </dl>
-        </div>
-      </article>
-
-      <article class="project reveal">
-        <div class="project__meta">
-          <span class="project__year">2021</span>
-          <span class="project__tag">{{ _('Fejlesztés', 'Development') }}</span>
-        </div>
-        <div class="project__body">
-          <h2 class="h3">{{ _('Hungarocopter HC-02', 'Hungarocopter HC-02') }}</h2>
-          <p>{{ _('Az első magyar fejlesztésű és gyártású kétszemélyes helikopter gyártása a Hungaro-Copter Kft.-vel közösen. A HC-02.2 2021. június 8. óta rendelkezik a tesztrepülésekhez szükséges engedélyekkel.', 'Manufacture of the first Hungarian-designed and built two-seat helicopter together with Hungaro-Copter Kft. Since 8 June 2021 the HC-02.2 has held the permits required for test flights.') }}</p>
-          <a class="link-arrow" href="{{ href('hc02') }}">{{ _('A helikopter projekt', 'The helicopter project') }}</a>
-        </div>
-      </article>
+      {% endfor %}
     </div>
   </div>
 </section>
@@ -67,7 +58,7 @@
     <div>
       <p class="eyebrow">Széchenyi 2020</p>
       <h2 class="h2">{{ _('Európai uniós támogatással megvalósult fejlesztések', 'Developments co-funded by the European Union') }}</h2>
-      <p class="lead">{{ _('Gyártócsarnokunk és gépparkunk fejlesztése a Széchenyi 2020 program keretében, az Európai Unió támogatásával, az Európai Regionális Fejlesztési Alap társfinanszírozásával valósult meg.', 'The development of our production hall and machine park was implemented under the Széchenyi 2020 programme with the support of the European Union, co-financed by the European Regional Development Fund.') }}</p>
+      <p class="lead">{{ _('GINOP-projektjeink a Széchenyi 2020 program keretében, az Európai Unió támogatásával, az Európai Regionális Fejlesztési Alap társfinanszírozásával valósultak meg. 2012-es és 2013-as fejlesztéseink – köztük a csarnokátalakítás az Észak-magyarországi Operatív Program keretében – szintén uniós támogatással valósultak meg.', 'Our GINOP projects were implemented under the Széchenyi 2020 programme with the support of the European Union, co-financed by the European Regional Development Fund. Our 2012 and 2013 developments – including the hall conversion under the North Hungary Operational Programme – were also EU-funded.') }}</p>
       <dl class="specs">
         <div><dt>{{ _('Kedvezményezett', 'Beneficiary') }}</dt><dd>Steel Riders Kft.</dd></div>
         <div><dt>{{ _('Operatív program', 'Operational programme') }}</dt><dd>{{ _('Gazdaságfejlesztési és Innovációs Operatív Program (GINOP)', 'Economic Development and Innovation Operational Programme (GINOP)') }}</dd></div>

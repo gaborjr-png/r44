@@ -14,6 +14,8 @@ from pathlib import Path
 
 from jinja2 import Environment, FileSystemLoader, StrictUndefined
 
+from grants import GRANTS
+
 SRC = Path(__file__).resolve().parent
 OUT = SRC.parent / "public"
 SITE_URL = "https://steelriderskft.hu"
@@ -48,8 +50,8 @@ DESCRIPTIONS = {
                   "The Steel Riders machine park: CNC automatic lathes (INDEX, STAR), sub-spindle lathes, vertical machining centres, NC and conventional machines with controls."),
     "quality": ("ISO 9001 és ISO 14001, klimatizált mérőszoba 3D koordináta-mérőgéppel és optikai mérőrendszerrel, SAP alapú nyomon követés.",
                 "ISO 9001 and ISO 14001, an air-conditioned measuring room with a 3D coordinate measuring machine and optical measuring system, SAP-based traceability."),
-    "projects": ("A Steel Riders Kft. fejlesztései és pályázati projektjei: Irinyi Terv, új gyártócsarnok, Hungarocopter HC-02.",
-                 "Developments and funded projects of Steel Riders Kft.: Irinyi Plan, new production hall, Hungarocopter HC-02."),
+    "projects": ("A Steel Riders Kft. uniós és hazai támogatással megvalósult beruházásai 2012 óta: GINOP kapacitásbővítések, Irinyi Terv, napelemes rendszer, helikopterfejlesztés, csarnokátalakítás, SAP.",
+                 "EU and national funded investments of Steel Riders Kft. since 2012: GINOP capacity expansions, Irinyi Plan, solar PV, helicopter development, hall conversion, SAP."),
     "hc02": ("Hungarocopter HC-02 – az első magyar fejlesztésű és gyártású kétszemélyes helikopter, amelyet a Hungaro-Copter Kft. és a Steel Riders Kft. közösen gyárt.",
              "Hungarocopter HC-02 – the first Hungarian-designed and built two-seat helicopter, manufactured jointly by Hungaro-Copter Kft. and Steel Riders Kft."),
     "careers": ("Karrier a Steel Riders Kft.-nél: CNC gépkezelő munkatársakat keresünk verpeléti üzemünkbe.",
@@ -229,7 +231,7 @@ def render():
                 site_url=SITE_URL,
                 hu_url=f"{SITE_URL}/{'' if hu_file == 'index.html' else hu_file}",
                 en_url=f"{SITE_URL}/en/{'' if en_file == 'index.html' else en_file}",
-                machines=MACHINES, totals=TOTALS, site=SITE,
+                machines=MACHINES, totals=TOTALS, site=SITE, grants=GRANTS,
                 year=date.today().year, years=date.today().year - 1997,
             )
             html = env.get_template(f"pages/{key}.html.j2").render(**ctx)

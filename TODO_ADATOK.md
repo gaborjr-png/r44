@@ -12,7 +12,7 @@ majd futtassuk a `python3 src/build.py` parancsot.
 | 4 | Válaszidő ajánlatkérésre | `src/build.py` → `SITE["response_hours"]`; GYIK: `contact.html.j2` | 48 óra; ajánlat 3–5 / 5–10 munkanap |
 | 5 | ISO tanúsítványok: tanúsító, szám, érvényesség + **valós PDF-ek** | `SITE["certs"]`; fájlok: `src/assets/docs/iso-9001.pdf`, `iso-14001.pdf` | SGS Hungária Kft., 2027-06-30, „MINTA” PDF |
 | 6 | Referenciák (iparág, alkatrész, számok) – vagy partnerlogók írásos engedéllyel | `src/templates/pages/home.html.j2` → `#referenciak` | 3 kitalált esettanulmány |
-| 7 | Pályázatok: projektazonosító, támogatás összege és mértéke, befejezés | `src/templates/pages/projects.html.j2` | GINOP-1.2.8-20-2019-00123 (58,2 M Ft, 50%), GINOP-1.2.1-15-2015-00456 (149,6 M Ft, 45%) |
+| 7 | Pályázatok – **kész, valós adatok** (`src/grants.py`). Hiányzik: a 2017-es, a napelemes és az Irinyi projekt azonosítója/összege, ha kell | `src/grants.py` | – |
 | 7 | Széchenyi 2020 infoblokk: a rajzolt változatot a **hivatalos képfájlra** cserélni | `src/templates/_infoblokk.html.j2` | HTML/SVG utánzat |
 | 8 | Google Analytics 4 mérési azonosító | `SITE["ga4"]` | `G-XXXXXXXXXX` (így a mérés ki van kapcsolva) |
 | 8 | Google Cégprofil értékelési link (`g.page/r/…/review`) | `SITE["review_url"]` | Google Térkép keresés |
