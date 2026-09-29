@@ -31,75 +31,98 @@ PAGES = [
     ("contact",   "kapcsolat.html",     "contact.html",      "Kapcsolat",      "Contact"),
 ]
 
-# Machine park, as listed on the company's own "Géppark" page.
+# Machine park – official list supplied by Steel Riders Kft.
+# (model, description HU, description EN, controller, quantity)
+AUTO = ("automata eszterga", "automatic lathe")
+TWIN = ("két revolverfejes, C-tengelyes ellenorsós eszterga", "twin-turret lathe with C-axis and sub-spindle")
+VMC = ("vertikális maró megmunkálóközpont", "vertical machining centre")
 MACHINES = [
     {
-        "hu": "CNC automata esztergák", "en": "CNC automatic lathes",
+        "key": "auto", "hu": "CNC automata esztergák", "en": "CNC automatic lathes",
         "items": [
-            ("INDEX GS30", "MBL", 4),
-            ("INDEX GS30", "HydroBar", 1),
-            ("INDEX GS42", "FMB Turbo", 1),
-            ("STAR SR-20", "FMB Turbo", 3),
-            ("STAR SR-16", "FMB Turbo", 2),
-            ("STAR SA-12", "FMB Minimag", 2),
-            ("STAR SB-16", "FMB Minimag 18", 1),
-            ("STAR SB-20R type G", "LNS", 4),
-            ("STAR SR-32J II", "LNS", 1),
-            ("Hanwha ML26", "IEMCA Boss 542", 1),
-            ("Nakamura-Tome TW-10", "", 1),
-            ("Nakamura-Tome TW-20", "", 2),
+            ("INDEX GS30", "két revolverfejes, mellékorsós automata eszterga", "twin-turret automatic lathe with sub-spindle", "Sinumerik C200", 1),
+            ("STAR SA 12", *AUTO, "Fanuc 18i-T", 2),
+            ("STAR SB 16", *AUTO, "Fanuc 18i-TB", 1),
+            ("STAR SR 16", *AUTO, "Fanuc 16T", 2),
+            ("STAR SR 20", *AUTO, "Fanuc 16-TT", 3),
+            ("STAR SB 20", *AUTO, "Fanuc 0i-TF", 3),
+            ("STAR SR 32 JII", *AUTO, "Fanuc 32i", 1),
+            ("STAR SR 32 J", *AUTO, "Fanuc 18i-TB", 2),
         ],
     },
     {
-        "hu": "CNC megmunkálóközpontok", "en": "CNC machining centres",
+        "key": "lathe", "hu": "CNC esztergák", "en": "CNC lathes",
         "items": [
-            ("Chiron FZ16", "", 1),
-            ("Chiron FZ22", "", 1),
-            ("KIWA Excel Center E31504", "", 1),
-            ("OKK MCV-410", "", 1),
-            ("Akira-Seiki SR 42 XP", "", 1),
-            ("Bridgeport VMC 1000", "5 tengely / 5-axis", 1),
-            ("Bridgeport Interact 412H", "", 1),
-            ("Bridgeport Interact 720H", "", 2),
-            ("Bridgeport 760", "", 1),
+            ("Mori Seiki ZL 15", *TWIN, "Fanuc 0-TT", 1),
+            ("Mori Seiki ZL 25", "két revolverfejes eszterga", "twin-turret lathe", "Fanuc 15-TT", 1),
+            ("Nakamura TW10", *TWIN, "Fanuc", 3),
+            ("Nakamura TW20", *TWIN, "Fanuc", 1),
+            ("Takisawa NEX108", "CNC eszterga", "CNC lathe", "Fanuc", 1),
+            ("Takisawa NEX108Y", "CNC eszterga, Y-tengely", "CNC lathe, Y-axis", "Fanuc", 1),
+            ("Takisawa EX910", "CNC eszterga", "CNC lathe", "Fanuc", 1),
         ],
     },
     {
-        "hu": "Egyéb CNC esztergák", "en": "Other CNC lathes",
+        "key": "vmc", "hu": "CNC megmunkálóközpontok", "en": "CNC machining centres",
         "items": [
-            ("Mori Seiki ZL-15 SMC", "", 1),
-            ("Mori Seiki ZL-25", "", 1),
-            ("SZIM EEN-400", "", 3),
-            ("SZIM EEN-630", "", 3),
+            ("Bridgeport Interact INT720H", *VMC, "Heidenhain TNC2500", 1),
+            ("Bridgeport Interact VMC 760/22", *VMC, "Heidenhain TNC355", 1),
+            ("Bridgeport Interact VMC1000 3D", *VMC, "Heidenhain TNC355", 1),
+            ("Mori Seiki SV403", "vertikális megmunkálóközpont", "vertical machining centre", "Fanuc", 1),
+            ("OKK MCV-410", *VMC, "Fanuc", 1),
+            ("Akira Seiki SV1350", *VMC, "Mitsubishi", 1),
+            ("Akira Seiki SR42 XP", *VMC, "Mitsubishi", 1),
+            ("Akira Seiki V4 XP", *VMC, "Mitsubishi", 2),
+            ("Akira Seiki RMV 650", *VMC, "Mitsubishi", 1),
+            ("Akira Seiki RMV 700", *VMC, "Mitsubishi", 1),
         ],
     },
     {
-        "hu": "Fűrészelés és szerszámkezelés", "en": "Sawing & tool management",
+        "key": "nc", "hu": "NC csúcsesztergák", "en": "NC centre lathes",
         "items": [
-            ("Bomar STG 240 GANC", "CNC fűrész / CNC saw", 1),
-            ("Forte BA-251", "CNC fűrész / CNC saw", 2),
-            ("Matrix Maxi T", "Szerszámkiadó automata / Tool vending system", 1),
+            ("EEN400", "csúcseszterga", "centre lathe", "Hunor PNC721", 3),
+            ("EEN320", "csúcseszterga", "centre lathe", "Hunor PNC721", 1),
+            ("EEN630", "csúcseszterga", "centre lathe", "Hunor PNC721", 1),
+        ],
+    },
+    {
+        "key": "saw", "hu": "Fűrészgépek", "en": "Sawing machines",
+        "items": [
+            ("Bomar STG 240 GA", "NC szalagfűrészgép", "NC band saw", "NC", 1),
+            ("Forte BA-251", "szalagfűrészgép", "band saw", "–", 1),
+        ],
+    },
+    {
+        "key": "conv", "hu": "Hagyományos gépek", "en": "Conventional machines",
+        "items": [
+            ("E3N-01", "csúcseszterga", "centre lathe", "–", 2),
+            ("Kraszny Proletar", "csúcseszterga", "centre lathe", "–", 1),
+            ("FNGJ 32", "szerszámmarógép", "tool milling machine", "–", 1),
+            ("FUS 22", "marógép vésőfej opcióval", "milling machine with slotting head", "–", 1),
+            ("EZ 45-2", "oszlopos fúrógép", "column drilling machine", "–", 1),
+            ("MM 435", "palástköszörű", "cylindrical grinder", "–", 1),
+            ("TOS AT420", "síkköszörű", "surface grinder", "–", 1),
         ],
     },
 ]
-NOT_MACHINE_TOOLS = ("Matrix",)  # tool vending system, not a machine tool
-
-
-def is_machine(model):
-    return not model.startswith(NOT_MACHINE_TOOLS)
-
-
 for g in MACHINES:
-    g["total"] = sum(q for m, _, q in g["items"] if is_machine(m))
+    g["items"] = [dict(model=m, hu=h, en=e, ctrl=c, qty=q) for m, h, e, c, q in g["items"]]
+    g["total"] = sum(i["qty"] for i in g["items"])
+_by = {g["key"]: g["total"] for g in MACHINES}
 TOTALS = {
-    "lathes": MACHINES[0]["total"] + MACHINES[2]["total"],
-    "centres": MACHINES[1]["total"],
-    "cnc": sum(g["total"] for g in MACHINES[:3]) + 3,  # + 3 CNC saws
+    "auto": _by["auto"],
+    "cnc_lathes": _by["auto"] + _by["lathe"],     # CNC automatic + CNC lathes
+    "lathes": _by["auto"] + _by["lathe"] + _by["nc"],  # all CNC/NC lathes
+    "centres": _by["vmc"],
+    "cnc": _by["auto"] + _by["lathe"] + _by["vmc"] + _by["nc"],
+    "all": sum(_by.values()),
 }
 
 
 def brand(model):
-    for multi in ("Mori Seiki",):
+    if model.startswith("EEN"):
+        return "EEN"
+    for multi in ("Mori Seiki", "Akira Seiki", "Kraszny Proletar"):
         if model.startswith(multi):
             return multi
     return model.split(" ")[0]
@@ -113,7 +136,6 @@ def render():
         lstrip_blocks=True,
     )
     env.globals["brand"] = brand
-    env.globals["is_machine"] = is_machine
     if OUT.exists():
         shutil.rmtree(OUT)
     shutil.copytree(SRC / "assets", OUT / "assets")

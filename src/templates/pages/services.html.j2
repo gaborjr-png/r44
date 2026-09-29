@@ -28,12 +28,12 @@
       <h2 class="h2">{{ _('CNC esztergálás', 'CNC turning') }}</h2>
       <p class="lead">{{ _('Forgástest jellegű alkatrészek komplett megmunkálása CNC automata esztergákon és hosszesztergákon, rúdanyagból.', 'Complete machining of rotational parts from bar stock on CNC automatic and Swiss-type lathes.') }}</p>
       <ul class="checks">
-        <li>{{ _('INDEX GS30 / GS42, STAR SR, SA, SB és SR-32J, Hanwha és Nakamura-Tome gépek', 'INDEX GS30 / GS42, STAR SR, SA, SB and SR-32J, Hanwha and Nakamura-Tome machines') }}</li>
-        <li>{{ _('Automatikus rúdadagolás (FMB, LNS, MBL, IEMCA) – hosszú, felügyelt futásidők', 'Automatic bar feeding (FMB, LNS, MBL, IEMCA) for long, supervised run times') }}</li>
+        <li>{{ _('INDEX GS30 két revolverfejes, mellékorsós automata; STAR SA, SB, SR és SR 32 J automata esztergák', 'INDEX GS30 twin-turret sub-spindle automatic; STAR SA, SB, SR and SR 32 J automatic lathes') }}</li>
+        <li>{{ _('Két revolverfejes, C-tengelyes ellenorsós esztergák: Mori Seiki ZL, Nakamura TW', 'Twin-turret lathes with C-axis and sub-spindle: Mori Seiki ZL, Nakamura TW') }}</li>
         <li>{{ _('Kisméretű, összetett precíziós alkatrészek hosszesztergán', 'Small, complex precision parts on Swiss-type lathes') }}</li>
-        <li>{{ _('Tokmányos megmunkálás Mori Seiki és SZIM esztergákon', 'Chucking work on Mori Seiki and SZIM lathes') }}</li>
+        <li>{{ _('Takisawa NEX108 / NEX108Y (Y-tengely) és EX910 CNC esztergák, EEN NC csúcsesztergák', 'Takisawa NEX108 / NEX108Y (Y-axis) and EX910 CNC lathes, EEN NC centre lathes') }}</li>
       </ul>
-      <p class="service__meta"><strong>{{ totals.lathes }}</strong> {{ _('CNC eszterga a gépparkban', 'CNC lathes in our machine park') }} · <a href="{{ href('machinery') }}">{{ _('Géplista', 'Machine list') }}</a></p>
+      <p class="service__meta"><strong>{{ totals.cnc_lathes }}</strong> {{ _('CNC eszterga + ' ~ machines[3].total ~ ' NC csúcseszterga', 'CNC lathes + ' ~ machines[3].total ~ ' NC centre lathes') }} · <a href="{{ href('machinery') }}">{{ _('Géplista', 'Machine list') }}</a></p>
     </div>
   </div>
 </section>
@@ -44,11 +44,11 @@
     <div class="service__text">
       <p class="eyebrow">{{ _('Technológia', 'Technology') }} 02</p>
       <h2 class="h2">{{ _('CNC marás', 'CNC milling') }}</h2>
-      <p class="lead">{{ _('Prizmatikus alkatrészek marása, fúrása és menetkészítése függőleges és vízszintes megmunkálóközpontokon, 5 tengelyes megmunkálással is.', 'Milling, drilling and threading of prismatic parts on vertical and horizontal machining centres, including 5-axis machining.') }}</p>
+      <p class="lead">{{ _('Prizmatikus alkatrészek marása, fúrása és menetkészítése vertikális megmunkálóközpontokon, Fanuc, Heidenhain és Mitsubishi vezérléssel.', 'Milling, drilling and threading of prismatic parts on vertical machining centres with Fanuc, Heidenhain and Mitsubishi controls.') }}</p>
       <ul class="checks">
-        <li>{{ _('Chiron FZ16 / FZ22 nagy sebességű megmunkálóközpontok', 'Chiron FZ16 / FZ22 high-speed machining centres') }}</li>
-        <li>{{ _('Bridgeport VMC 1000 5 tengelyes megmunkálás', 'Bridgeport VMC 1000 5-axis machining') }}</li>
-        <li>{{ _('OKK, KIWA, Akira-Seiki és Bridgeport Interact gépek', 'OKK, KIWA, Akira-Seiki and Bridgeport Interact machines') }}</li>
+        <li>{{ _('Akira Seiki SV, SR, V4 és RMV vertikális megmunkálóközpontok', 'Akira Seiki SV, SR, V4 and RMV vertical machining centres') }}</li>
+        <li>{{ _('Bridgeport Interact VMC1000 3D, Heidenhain vezérléssel', 'Bridgeport Interact VMC1000 3D with Heidenhain control') }}</li>
+        <li>{{ _('Mori Seiki SV403 és OKK MCV-410, Fanuc vezérléssel', 'Mori Seiki SV403 and OKK MCV-410 with Fanuc control') }}</li>
         <li>{{ _('Esztergált alkatrészek utólagos marása, fúrása', 'Secondary milling and drilling of turned parts') }}</li>
       </ul>
       <p class="service__meta"><strong>{{ totals.centres }}</strong> {{ _('CNC megmunkálóközpont', 'CNC machining centres') }} · <a href="{{ href('machinery') }}">{{ _('Géplista', 'Machine list') }}</a></p>
@@ -97,7 +97,7 @@
       <p class="lead">{{ _('Közép- és nagysorozatú alkatrészgyártás 3 műszakban. Partnereink számára a teljes folyamatot biztosítjuk az alapanyag beszerzésétől a késztermék kiszállításáig.', 'Medium and large series production in 3 shifts. We cover the entire process for our partners, from raw material sourcing to delivery of the finished product.') }}</p>
       <ul class="checks">
         <li>{{ _('Alapanyag-beszerzés és -kezelés', 'Raw material sourcing and handling') }}</li>
-        <li>{{ _('CNC fűrészek az anyagdaraboláshoz (Bomar, Forte)', 'CNC saws for material cutting (Bomar, Forte)') }}</li>
+        <li>{{ _('Szalagfűrészgépek az anyagdaraboláshoz (Bomar, Forte)', 'Band saws for material cutting (Bomar, Forte)') }}</li>
         <li>{{ _('Gyártásirányítás és SAP alapú nyomon követés', 'Production management and SAP-based traceability') }}</li>
         <li>{{ _('Csomagolás és kiszállítás a partner igényei szerint', 'Packaging and delivery to customer requirements') }}</li>
         <li>{{ _('Egyedi alkatrészek és kissorozatok hagyományos és NC gépeken is', 'One-off parts and small batches on conventional and NC machines as well') }}</li>

@@ -3,20 +3,25 @@
 {% block title %}{{ _('Géppark', 'Machinery') }}{% endblock %}
 {% block content %}
 
-{% set brands = {} %}
-{% for g in machines %}{% for model, extra, qty in g['items'] if is_machine(model) %}
-  {% set b = brand(model) %}
-  {% set _x = brands.update({b: brands.get(b, 0) + qty}) %}
+{# Manufacturer and controller breakdown of the CNC / NC machines #}
+{% set brands = {} %}{% set ctrls = {} %}
+{% for g in machines if g.key in ('auto', 'lathe', 'vmc', 'nc') %}{% for it in g['items'] %}
+  {% set b = brand(it.model) %}
+  {% set _x = brands.update({b: brands.get(b, 0) + it.qty}) %}
+  {% set c = it.ctrl.split(' ')[0] %}
+  {% set _y = ctrls.update({c: ctrls.get(c, 0) + it.qty}) %}
 {% endfor %}{% endfor %}
 {% set brand_max = brands.values() | max %}
+{% set ctrl_max = ctrls.values() | max %}
 
 {{ m.page_head(_('Géppark', 'Machinery'),
-   _('38 CNC eszterga, 7 megmunkálóközpont', '38 CNC lathes, 7 machining centres'),
-   _('Termelésünk gerincét 38 CNC eszterga és 7 megmunkálóközpont adja, számtalan más szerszámgéppel kiegészülve – INDEX, STAR, Chiron és további vezető gyártók gépei, automatikus rúdadagolással.', 'Our production is built on 38 CNC lathes and 7 machining centres, complemented by numerous other machine tools – from INDEX, STAR, Chiron and other leading makers, with automatic bar feeding.'),
+   _(totals.all ~ ' gép egy telephelyen', totals.all ~ ' machines on one site'),
+   _('CNC automata esztergák, két revolverfejes ellenorsós esztergák és vertikális megmunkálóközpontok – INDEX, STAR, Mori Seiki, Nakamura, Takisawa, Akira Seiki, OKK és Bridgeport gépek Fanuc, Heidenhain, Mitsubishi és Sinumerik vezérlőkkel, amelyeket NC és hagyományos gépek egészítenek ki.', 'CNC automatic lathes, twin-turret sub-spindle lathes and vertical machining centres – INDEX, STAR, Mori Seiki, Nakamura, Takisawa, Akira Seiki, OKK and Bridgeport machines with Fanuc, Heidenhain, Mitsubishi and Sinumerik controls, complemented by NC and conventional machines.'),
    'geppark.jpg', 'series:alu',
-   [(_('CNC eszterga', 'CNC lathes'), 38),
-    (_('Megmunkálóközpont', 'Machining centres'), 7),
-    (_('Műszak', 'Shifts'), 3)]) }}
+   [(_('CNC eszterga', 'CNC lathes'), totals.cnc_lathes),
+    (_('Megmunkálóközpont', 'Machining centres'), totals.centres),
+    (_('NC eszterga', 'NC lathes'), machines[3].total),
+    (_('Hagyományos gép', 'Conventional'), machines[5].total)]) }}
 
 <section class="section">
   <div class="wrap">
@@ -32,51 +37,62 @@
           </button></li>
           {% endfor %}
         </ul>
-        <p class="mpark__note">{{ _('Kattintson egy gyártóra a szűréshez.', 'Click a manufacturer to filter.') }}</p>
+        <h2 class="mpark__h mpark__h--gap">{{ _('Vezérlők szerint', 'By control') }}</h2>
+        <ul class="brandbars">
+          {% for c, n in ctrls | dictsort(by='value', reverse=true) %}
+          <li><button type="button" data-ctrl="{{ c }}" aria-pressed="false">
+            <span class="brandbars__name">{{ c }}</span>
+            <span class="brandbars__track"><span style="width: {{ (n / ctrl_max * 100) | round(1) }}%"></span></span>
+            <span class="brandbars__n">{{ n }}</span>
+          </button></li>
+          {% endfor %}
+        </ul>
+        <p class="mpark__note">{{ _('Kattintson egy sávra a szűréshez. CNC és NC gépek.', 'Click a bar to filter. CNC and NC machines.') }}</p>
       </aside>
 
       <div class="mpark__main">
         <div class="mpark__tools">
           <div class="chips" role="group" aria-label="{{ _('Kategória', 'Category') }}">
-            <button type="button" class="chip" data-group="" aria-pressed="true">{{ _('Összes', 'All') }}</button>
+            <button type="button" class="chip" data-group="" aria-pressed="true">{{ _('Összes', 'All') }} <span>{{ totals.all }}</span></button>
             {% for g in machines %}
-            <button type="button" class="chip" data-group="{{ loop.index }}" aria-pressed="false">{{ g[lang] }} <span>{{ g.total }}</span></button>
+            <button type="button" class="chip" data-group="{{ g.key }}" aria-pressed="false">{{ g[lang] }} <span>{{ g.total }}</span></button>
             {% endfor %}
           </div>
           <label class="search">
-            <span class="sr-only">{{ _('Keresés típusra', 'Search by model') }}</span>
+            <span class="sr-only">{{ _('Keresés', 'Search') }}</span>
             <svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="8.5" cy="8.5" r="5.5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M13 13l4.5 4.5" stroke="currentColor" stroke-width="1.6"/></svg>
-            <input type="search" id="mSearch" placeholder="{{ _('Keresés: pl. STAR, Chiron, LNS…', 'Search: e.g. STAR, Chiron, LNS…') }}" autocomplete="off">
+            <input type="search" id="mSearch" placeholder="{{ _('Keresés: pl. STAR, Fanuc, ellenorsós, köszörű…', 'Search: e.g. STAR, Fanuc, sub-spindle, grinder…') }}" autocomplete="off">
           </label>
         </div>
 
-        <p class="mpark__count" aria-live="polite"><strong id="mCount">{{ machines | sum(attribute='total') }}</strong> <span data-unit>{{ _('gép a gépparklistában', 'machines in the machine list') }}</span> <button type="button" class="mpark__reset" id="mReset" hidden>{{ _('Szűrés törlése', 'Clear filters') }}</button></p>
+        <p class="mpark__count" aria-live="polite"><strong id="mCount">{{ totals.all }}</strong> <span>{{ _('gép', 'machines') }}</span> <button type="button" class="mpark__reset" id="mReset" hidden>{{ _('Szűrés törlése', 'Clear filters') }}</button></p>
 
         <div class="table-wrap">
           <table class="table table--machines" id="mTable">
             <thead>
               <tr>
                 <th scope="col">{{ _('Típus', 'Model') }}</th>
-                <th scope="col">{{ _('Kategória', 'Category') }}</th>
-                <th scope="col">{{ _('Kiegészítő', 'Option') }}</th>
+                <th scope="col">{{ _('Kivitel', 'Type') }}</th>
+                <th scope="col">{{ _('Vezérlő', 'Control') }}</th>
                 <th scope="col" class="num">{{ _('db', 'qty') }}</th>
               </tr>
             </thead>
-            <tbody>
-              {% for g in machines %}{% set gi = loop.index %}
-              {% for model, extra, qty in g['items'] %}
-              <tr data-group="{{ gi }}" data-brand="{{ brand(model) }}" data-qty="{{ qty if is_machine(model) else 0 }}">
-                <th scope="row">{{ model }}</th>
-                <td><span class="tag tag--g{{ gi }}">{{ g[lang] }}</span></td>
-                <td>{{ extra or '–' }}</td>
-                <td class="num">{{ qty }}</td>
+            {% for g in machines %}
+            <tbody data-group="{{ g.key }}">
+              <tr class="table__group"><th colspan="4" scope="rowgroup">{{ g[lang] }} <span>{{ g.total }} {{ _('db', 'units') }}</span></th></tr>
+              {% for it in g['items'] %}
+              <tr data-group="{{ g.key }}" data-brand="{{ brand(it.model) }}" data-ctrl="{{ it.ctrl.split(' ')[0] }}" data-qty="{{ it.qty }}">
+                <th scope="row">{{ it.model }}</th>
+                <td>{{ it[lang] }}</td>
+                <td>{% if it.ctrl not in ('–', 'NC') %}<span class="ctrl ctrl--{{ it.ctrl.split(' ')[0] | lower }}">{{ it.ctrl }}</span>{% else %}{{ it.ctrl }}{% endif %}</td>
+                <td class="num">{{ it.qty }}</td>
               </tr>
-              {% endfor %}{% endfor %}
+              {% endfor %}
             </tbody>
+            {% endfor %}
           </table>
           <p class="mpark__empty" id="mEmpty" hidden>{{ _('Nincs a keresésnek megfelelő gép.', 'No machines match your search.') }}</p>
         </div>
-        <p class="footnote">{{ _('A géplista tájékoztató jellegű; a gépek pontos műszaki adatait (megmunkálható átmérő, útok, tengelyszám) ajánlatkéréskor megküldjük.', 'The machine list is for information only; detailed specifications (bar capacity, travels, number of axes) are provided with quotations.') }}</p>
       </div>
     </div>
   </div>
@@ -93,9 +109,9 @@
     <div class="gallery">
       {{ m.photo('geppark.jpg', _('CNC gyártócsarnok', 'CNC production hall'), 'gallery__wide', '21/9', 'series:brass') }}
       {{ m.photo('index-gs30.jpg', _('INDEX GS30 automata eszterga', 'INDEX GS30 automatic lathe'), '', '4/3', 'bushing:brass') }}
-      {{ m.photo('star-sr20.jpg', _('STAR SR-20 hosszeszterga', 'STAR SR-20 Swiss-type lathe'), '', '4/3', 'spool:alu') }}
-      {{ m.photo('chiron.jpg', _('Chiron megmunkálóközpont', 'Chiron machining centre'), '', '4/3', 'manifold:alu') }}
-      {{ m.photo('rudadagolo.jpg', _('Automatikus rúdadagolók', 'Automatic bar feeders'), '', '4/3', 'bushing:pom') }}
+      {{ m.photo('star-sr20.jpg', _('STAR SR 20 automata eszterga', 'STAR SR 20 automatic lathe'), '', '4/3', 'spool:steel') }}
+      {{ m.photo('akira-seiki.jpg', _('Akira Seiki megmunkálóközpont', 'Akira Seiki machining centre'), '', '4/3', 'manifold:alu') }}
+      {{ m.photo('nakamura.jpg', _('Nakamura TW két revolverfejes eszterga', 'Nakamura TW twin-turret lathe'), '', '4/3', 'fitting:brass') }}
     </div>
   </div>
 </section>

@@ -19,7 +19,8 @@ public/                  – a kész, feltölthető weboldal (generált)
 
 Oldalak: Főoldal, Rólunk, Tevékenységek, Géppark, Minőség, HC-02, Karrier, Kapcsolat –
 magyarul a gyökérben (`/rolunk.html`), angolul az `/en/` alatt (`/en/about.html`).
-A géplista a `src/build.py` `MACHINES` listájában van, a darabszámokat a build számolja.
+A géplista (típus, kivitel, vezérlő, darabszám) a `src/build.py` `MACHINES` listájában van;
+minden összesítést (CNC esztergák, megmunkálóközpontok, összes gép) a build számol belőle.
 
 ## Interaktív elemek
 
@@ -31,7 +32,7 @@ A géplista a `src/build.py` `MACHINES` listájában van, a darabszámokat a bui
   munkahenger-fedél, szelepblokk.
 - Fotók: amíg egy kép hiányzik az `assets/img/` mappából, a helyén a 3D motor által
   renderelt alkatrészkép jelenik meg. A valódi fotó feltöltése után automatikusan az látszik.
-- Géppark: kategória- és gyártószűrő, keresés, gyártónkénti megoszlás.
+- Géppark: kategória-, gyártó- és vezérlőszűrő, keresés, gyártónkénti és vezérlőnkénti megoszlás.
 - Ajánlatkérés: háromlépéses varázsló összesítéssel.
 
 ## Build

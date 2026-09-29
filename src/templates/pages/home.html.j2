@@ -79,8 +79,8 @@
   <div class="hero__facts">
     <dl class="wrap facts">
       <div><dt>{{ _('Eladott termék', 'Parts sold') }}</dt><dd><span data-count="70">70</span>&nbsp;M+</dd></div>
-      <div><dt>{{ _('CNC eszterga', 'CNC lathes') }}</dt><dd><span data-count="38">38</span></dd></div>
-      <div><dt>{{ _('Megmunkálóközpont', 'Machining centres') }}</dt><dd><span data-count="7">7</span></dd></div>
+      <div><dt>{{ _('CNC eszterga', 'CNC lathes') }}</dt><dd><span data-count="{{ totals.cnc_lathes }}">{{ totals.cnc_lathes }}</span></dd></div>
+      <div><dt>{{ _('Megmunkálóközpont', 'Machining centres') }}</dt><dd><span data-count="{{ totals.centres }}">{{ totals.centres }}</span></dd></div>
       <div><dt>{{ _('Munkatárs', 'Employees') }}</dt><dd><span data-count="50">50</span></dd></div>
       <div><dt>{{ _('Munkarend', 'Operation') }}</dt><dd>{{ _('3 műszak', '3 shifts') }}</dd></div>
     </dl>
@@ -91,7 +91,7 @@
   <div class="wrap brands__inner">
     <p class="brands__label">{{ _('Gépparkunk', 'Our machine park') }}</p>
     <ul class="brands__list">
-      <li>INDEX</li><li>STAR</li><li>CHIRON</li><li>MORI SEIKI</li><li>NAKAMURA-TOME</li><li>HANWHA</li><li>BRIDGEPORT</li><li>OKK</li>
+      <li>INDEX</li><li>STAR</li><li>MORI SEIKI</li><li>NAKAMURA</li><li>TAKISAWA</li><li>AKIRA SEIKI</li><li>BRIDGEPORT</li><li>OKK</li>
     </ul>
   </div>
 </section>
@@ -154,7 +154,7 @@
         <p class="eyebrow">{{ _('Tevékenység', 'Activities') }}</p>
         <h2 class="h2">{{ _('CNC megmunkálás és általános fémforgácsolás', 'CNC machining and general metal cutting') }}</h2>
       </div>
-      <p>{{ _('Termelésünk gerincét 38 CNC eszterga és 7 megmunkálóközpont adja, számtalan más szerszámgéppel kiegészülve.', 'Our production is built on 38 CNC lathes and 7 machining centres, complemented by numerous other machine tools.') }}</p>
+      <p>{{ _('Termelésünk gerincét ' ~ totals.cnc_lathes ~ ' CNC eszterga és ' ~ totals.centres ~ ' megmunkálóközpont adja, NC csúcsesztergákkal és hagyományos gépekkel kiegészülve.', 'Our production is built on ' ~ totals.cnc_lathes ~ ' CNC lathes and ' ~ totals.centres ~ ' machining centres, complemented by NC centre lathes and conventional machines.') }}</p>
     </div>
 
     <div class="tabs" data-tabs>
@@ -170,8 +170,8 @@
           <h3 class="h3">{{ _('Közép- és nagysorozat nagy pontossággal', 'Medium and large series, high precision') }}</h3>
           <p>{{ _('Alkatrészgyártás CNC automata esztergákon és hosszesztergákon, kiemelten alumínium, sárgaréz és műanyag alkatrészek.', 'Component production on CNC automatic and Swiss-type lathes, with a focus on aluminium, brass and plastic parts.') }}</p>
           <dl class="specs">
-            <div><dt>{{ _('Gépek', 'Machines') }}</dt><dd>{{ _('38 CNC eszterga', '38 CNC lathes') }}</dd></div>
-            <div><dt>{{ _('Gyártók', 'Makes') }}</dt><dd>INDEX, STAR, Nakamura-Tome, Hanwha, Mori Seiki</dd></div>
+            <div><dt>{{ _('Gépek', 'Machines') }}</dt><dd>{{ totals.cnc_lathes }} {{ _('CNC eszterga', 'CNC lathes') }}</dd></div>
+            <div><dt>{{ _('Gyártók', 'Makes') }}</dt><dd>INDEX, STAR, Nakamura, Takisawa, Mori Seiki</dd></div>
             <div><dt>{{ _('Anyagok', 'Materials') }}</dt><dd>{{ _('Alumínium, sárgaréz, műanyag', 'Aluminium, brass, plastics') }}</dd></div>
           </dl>
           <a class="link-arrow" href="{{ href('services') }}#esztergalas">{{ _('Részletek', 'Details') }}</a>
@@ -181,10 +181,10 @@
         {{ m.photo('cnc-maras.jpg', _('Mart alumínium szelepblokk', 'Milled aluminium manifold'), ratio='4/3', render='manifold:alu') }}
         <div class="tabs__body">
           <h3 class="h3">{{ _('Marási munkák megmunkálóközpontokon', 'Milling on machining centres') }}</h3>
-          <p>{{ _('Prizmatikus alkatrészek marása, fúrása, menetkészítése, esztergált alkatrészek utólagos megmunkálása – 5 tengelyig.', 'Milling, drilling and threading of prismatic parts and secondary machining of turned parts – up to 5 axes.') }}</p>
+          <p>{{ _('Prizmatikus alkatrészek marása, fúrása, menetkészítése, esztergált alkatrészek utólagos megmunkálása 11 vertikális megmunkálóközponton.', 'Milling, drilling and threading of prismatic parts and secondary machining of turned parts on 11 vertical machining centres.') }}</p>
           <dl class="specs">
-            <div><dt>{{ _('Gépek', 'Machines') }}</dt><dd>{{ _('7 megmunkálóközpont', '7 machining centres') }}</dd></div>
-            <div><dt>{{ _('Gyártók', 'Makes') }}</dt><dd>Chiron, Bridgeport, OKK, KIWA, Akira-Seiki</dd></div>
+            <div><dt>{{ _('Gépek', 'Machines') }}</dt><dd>{{ totals.centres }} {{ _('megmunkálóközpont', 'machining centres') }}</dd></div>
+            <div><dt>{{ _('Gyártók', 'Makes') }}</dt><dd>Akira Seiki, Bridgeport, Mori Seiki, OKK</dd></div>
           </dl>
           <a class="link-arrow" href="{{ href('services') }}#maras">{{ _('Részletek', 'Details') }}</a>
         </div>

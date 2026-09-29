@@ -215,29 +215,36 @@
   /* ---------- Machine park filter ---------- */
   var mp = $('[data-mpark]');
   if (mp) {
-    var rows = $$('#mTable tbody tr'), search = $('#mSearch'), count = $('#mCount'), empty = $('#mEmpty'), reset = $('#mReset');
-    var state = { group: '', brand: '', q: '' };
-    function apply() {
+    var rows = $$('#mTable tbody tr[data-qty]'), groups = $$('#mTable tbody'), search = $('#mSearch');
+    var count = $('#mCount'), empty = $('#mEmpty'), reset = $('#mReset');
+    var state = { group: '', brand: '', ctrl: '', q: '' };
+    var apply = function () {
       var n = 0, q = state.q.toLowerCase();
       rows.forEach(function (tr) {
         var show = (!state.group || tr.dataset.group === state.group) &&
                    (!state.brand || tr.dataset.brand === state.brand) &&
+                   (!state.ctrl || tr.dataset.ctrl === state.ctrl) &&
                    (!q || tr.textContent.toLowerCase().indexOf(q) !== -1);
         tr.hidden = !show;
         if (show) n += +tr.dataset.qty;
       });
+      groups.forEach(function (tb) { tb.hidden = !$$('tr[data-qty]', tb).some(function (tr) { return !tr.hidden; }); });
       count.textContent = n;
       empty.hidden = n > 0;
-      reset.hidden = !(state.group || state.brand || state.q);
+      reset.hidden = !(state.group || state.brand || state.ctrl || state.q);
       $$('.chip', mp).forEach(function (c) { c.setAttribute('aria-pressed', String(c.dataset.group === state.group)); });
-      $$('[data-brand]', $('.brandbars', mp)).forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.brand === state.brand)); });
-    }
+      $$('.brandbars [data-brand]', mp).forEach(function (x) { x.setAttribute('aria-pressed', String(x.dataset.brand === state.brand)); });
+      $$('.brandbars [data-ctrl]', mp).forEach(function (x) { x.setAttribute('aria-pressed', String(x.dataset.ctrl === state.ctrl)); });
+    };
     $$('.chip', mp).forEach(function (c) { c.addEventListener('click', function () { state.group = c.dataset.group; apply(); }); });
-    $$('.brandbars button', mp).forEach(function (b) {
-      b.addEventListener('click', function () { state.brand = state.brand === b.dataset.brand ? '' : b.dataset.brand; apply(); });
+    $$('.brandbars [data-brand]', mp).forEach(function (x) {
+      x.addEventListener('click', function () { state.brand = state.brand === x.dataset.brand ? '' : x.dataset.brand; apply(); });
+    });
+    $$('.brandbars [data-ctrl]', mp).forEach(function (x) {
+      x.addEventListener('click', function () { state.ctrl = state.ctrl === x.dataset.ctrl ? '' : x.dataset.ctrl; apply(); });
     });
     search.addEventListener('input', function () { state.q = search.value.trim(); apply(); });
-    reset.addEventListener('click', function () { state = { group: '', brand: '', q: '' }; search.value = ''; apply(); });
+    reset.addEventListener('click', function () { state = { group: '', brand: '', ctrl: '', q: '' }; search.value = ''; apply(); });
   }
 
   /* ---------- Request for quotation wizard ---------- */
