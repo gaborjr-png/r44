@@ -35,6 +35,40 @@
   </div>
 </section>
 
+<section class="section section--tint" id="tanusitvanyok">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <p class="eyebrow">{{ _('Letöltések', 'Downloads') }}</p>
+        <h2 class="h2">{{ _('Tanúsítványaink', 'Our certificates') }}</h2>
+      </div>
+      <p class="section-head__lead">{{ _('Beszállítói auditokhoz és minősítésekhez tanúsítványainkat PDF formátumban töltheti le. Beszállítói kérdőívet, anyagbizonylatot vagy RoHS/REACH nyilatkozatot kérésre küldünk.', 'Download our certificates as PDF for supplier audits and approvals. Supplier questionnaires, material certificates or RoHS/REACH declarations are available on request.') }}</p>
+    </div>
+    <div class="certs">
+      {% for c in site.certs %}
+      <a class="cert reveal" href="{{ asset }}docs/{{ c.file }}" download>
+        <span class="cert__seal" aria-hidden="true"><b>ISO</b>{{ c.std.split(' ')[1].split(':')[0] }}</span>
+        <span class="cert__body">
+          <span class="cert__std">{{ c.std }}</span>
+          <span class="cert__title">{{ _(c.hu, c.en) }}</span>
+          <span class="cert__meta">{{ _('Tanúsító', 'Certified by') }}: {{ c.body }} · {{ _('Érvényes', 'Valid until') }}: {{ c.valid | replace('-', '.') }}{{ _('.', '') }}</span>
+        </span>
+        <span class="cert__dl">PDF ↓</span>
+      </a>
+      {% endfor %}
+      <a class="cert cert--ask reveal" href="mailto:info1@steelriderskft.hu?subject={{ _('Minőségügyi dokumentum kérése', 'Quality document request') | urlencode }}">
+        <span class="cert__seal" aria-hidden="true"><b>QA</b>+</span>
+        <span class="cert__body">
+          <span class="cert__std">{{ _('Kérésre', 'On request') }}</span>
+          <span class="cert__title">{{ _('Beszállítói dokumentáció', 'Supplier documentation') }}</span>
+          <span class="cert__meta">{{ _('Első minta jelentés (FAI / PPAP), anyagbizonylat 3.1, RoHS, REACH', 'First article report (FAI / PPAP), 3.1 material certificate, RoHS, REACH') }}</span>
+        </span>
+        <span class="cert__dl">✉</span>
+      </a>
+    </div>
+  </div>
+</section>
+
 <section class="section section--dark">
   <div class="wrap">
     <div class="section-head">

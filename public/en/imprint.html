@@ -26,10 +26,10 @@
   <link rel="stylesheet" href="../assets/css/site.css">
   <script>document.documentElement.classList.replace('no-js', 'js');</script>
   <script type="application/ld+json">
-  {"@context":"https://schema.org","@type":"LocalBusiness","@id":"https://steelriderskft.hu/#org","name":"Steel Riders Kft.","description":"Company details of Steel Riders Kft.: registered office, VAT number, company registration number, contacts.","url":"https://steelriderskft.hu/","logo":"https://steelriderskft.hu/assets/img/logo-badge.webp","image":"https://steelriderskft.hu/assets/img/og.jpg","foundingDate":"1997-03","email":"info1@steelriderskft.hu","telephone":"+36 36 494 183","taxID":"11174864-2-10","numberOfEmployees":50,"address":{"@type":"PostalAddress","streetAddress":"Kossuth út 64.","postalCode":"3351","addressLocality":"Verpelét","addressRegion":"Heves","addressCountry":"HU"},"geo":{"@type":"GeoCoordinates","latitude":47.85,"longitude":20.23},"sameAs":["https://www.facebook.com/steelriderskft/"],"knowsAbout":["CNC turning","CNC milling","Series production","Swiss-type turning"]}
+  {"@context":"https://schema.org","@type":"LocalBusiness","@id":"https://steelriderskft.hu/#org","name":"Steel Riders Kft.","description":"Company details of Steel Riders Kft.: registered office, VAT number, company registration number, contacts.","url":"https://steelriderskft.hu/","logo":"https://steelriderskft.hu/assets/img/logo-badge.webp","image":"https://steelriderskft.hu/assets/img/og.jpg","foundingDate":"1997-03","email":"info1@steelriderskft.hu","telephone":"+36 36 494 183","taxID":"11174864-2-10","numberOfEmployees":50,"address":{"@type":"PostalAddress","streetAddress":"Kossuth út 64.","postalCode":"3351","addressLocality":"Verpelét","addressRegion":"Heves","addressCountry":"HU"},"geo":{"@type":"GeoCoordinates","latitude":47.85,"longitude":20.23},"hasMap":"https://www.google.com/maps/search/?api=1&query=Steel+Riders+Kft+Verpel%C3%A9t+Kossuth+%C3%BAt+64","sameAs":["https://www.facebook.com/steelriderskft/"],"knowsAbout":["CNC turning","CNC milling","Series production","Swiss-type turning"]}
   </script>
 </head>
-<body class="page-imprint">
+<body class="page-imprint" data-ga="G-XXXXXXXXXX">
   <a class="skip" href="#main">Skip to content</a>
   <div class="progress" aria-hidden="true"><span id="scrollProgress"></span></div>
 
@@ -104,6 +104,14 @@
         <div><dt>Phone</dt><dd><a href="tel:+3636494183">+36 36 494 183</a></dd></div>
         <div><dt>E-mail</dt><dd><a href="mailto:info1@steelriderskft.hu">info1@steelriderskft.hu</a></dd></div>
       </dl>
+      <h2 class="h3 imprint__h">Hosting provider</h2>
+      <dl class="datasheet imprint__sheet">
+        <div><dt>Name</dt><dd>Rackhost Zrt.</dd></div>
+        <div><dt>Address</dt><dd>6722 Szeged, Tisza Lajos krt. 41.</dd></div>
+        <div><dt>E-mail</dt><dd><a href="mailto:info@rackhost.hu">info@rackhost.hu</a></dd></div>
+        <div><dt>Web</dt><dd><a href="https://www.rackhost.hu" target="_blank" rel="noopener">www.rackhost.hu</a></dd></div>
+      </dl>
+      <p class="imprint__note">The content of this website – texts, photos, graphics and the Steel Riders logo – is the intellectual property of Steel Riders Kft. and may only be used with prior written permission. For the processing of personal data, see our <a href="privacy.html">privacy notice</a>.</p>
     </div>
   </div>
 </section>
@@ -130,7 +138,7 @@
         <img class="footer__logo" src="../assets/img/logo-badge.webp" alt="Steel Riders Kft." width="120" height="120" loading="lazy">
         <p>Precision CNC turning and milling in medium and large series. Supplier since 1997.</p>
         <ul class="footer__certs">
-          <li>ISO 9001</li><li>ISO 14001</li>
+          <li><a href="quality.html#tanusitvanyok">ISO 9001</a></li><li><a href="quality.html#tanusitvanyok">ISO 14001</a></li>
         </ul>
       </div>
       <div>
@@ -167,10 +175,30 @@
       <span>VAT no.: 11174864-2-10</span>
       <span>Company reg. no.: 10-09-022629</span>
       <a href="imprint.html">Imprint</a>
+      <a href="privacy.html">Privacy</a>
+      <a href="privacy.html#sutik" data-cookie-settings>Cookie settings</a>
       <a href="https://www.facebook.com/steelriderskft/" rel="noopener" target="_blank">Facebook</a>
       <a class="footer__top" href="#main">Back to top ↑</a>
     </div>
   </footer>
+
+  <div class="cookie" id="cookie" role="dialog" aria-labelledby="ckTitle" aria-live="polite" hidden>
+    <div class="cookie__main">
+      <p class="cookie__title" id="ckTitle">Cookies on this website</p>
+      <p>We always use the cookies needed for the site to work. With your consent we also collect visitor statistics and load Google Maps. <a href="privacy.html#sutik">Details</a></p>
+    </div>
+    <div class="cookie__detail">
+      <label class="check check--on"><input type="checkbox" checked disabled> <span><b>Necessary</b> — language, saving your settings</span></label>
+      <label class="check"><input type="checkbox" id="ckStats"> <span><b>Statistics</b> — Google Analytics with anonymised IP</span></label>
+      <label class="check"><input type="checkbox" id="ckMaps"> <span><b>External content</b> — embedded Google Maps</span></label>
+    </div>
+    <div class="cookie__actions">
+      <button class="btn btn--text" type="button" id="ckMore">Settings</button>
+      <button class="btn btn--outline" type="button" id="ckNone">Necessary only</button>
+      <button class="btn btn--outline cookie__save" type="button" id="ckSave">Save selection</button>
+      <button class="btn btn--brass" type="button" id="ckAll">Accept all</button>
+    </div>
+  </div>
 
   <script src="../assets/vendor/three.min.js" defer></script>
   <script src="../assets/vendor/three-post.js" defer></script>

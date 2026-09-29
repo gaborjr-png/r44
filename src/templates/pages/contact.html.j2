@@ -36,11 +36,17 @@
 
 <section class="section section--tint" id="ajanlatkeres">
   <div class="wrap contact-grid">
-    <form class="rfq" id="rfq" novalidate data-to="info1@steelriderskft.hu"
+    <form class="rfq" id="rfq" novalidate data-to="{{ site.rfq_email }}" data-endpoint="{{ root }}api/ajanlatkeres.php" data-lang="{{ lang }}"
           data-msg-invalid="{{ _('Kérjük, töltse ki a *-gal jelölt mezőket.', 'Please complete the fields marked *.') }}"
-          data-msg-subject="{{ _('Ajánlatkérés', 'Request for quotation') }}">
+          data-msg-subject="{{ _('Ajánlatkérés', 'Request for quotation') }}"
+          data-msg-type="{{ _('Nem támogatott fájltípus', 'Unsupported file type') }}"
+          data-msg-size="{{ _('Legfeljebb 5 fájl, összesen 20 MB csatolható.', 'Up to 5 files, 20 MB in total.') }}"
+          data-msg-sending="{{ _('Küldés…', 'Sending…') }}"
+          data-msg-remove="{{ _('Eltávolítás', 'Remove') }}"
+          data-msg-files="{{ _('Csatolmányok', 'Attachments') }}">
       <h2 class="h2">{{ _('Ajánlatkérés', 'Request for quotation') }}</h2>
-      <p>{{ _('Adja meg az alkatrész főbb adatait. A műszaki rajzot (PDF) és a 3D modellt (STEP) a megnyíló e-mailhez csatolhatja.', 'Enter the main details of the part. You can attach the drawing (PDF) and 3D model (STEP) to the e-mail that opens.') }}</p>
+      <p>{{ _('Adja meg az alkatrész főbb adatait, és csatolja a műszaki rajzot (PDF) vagy a 3D modellt (STEP). Munkatársunk ' ~ site.response_hours ~ ' órán belül felveszi Önnel a kapcsolatot.', 'Enter the main details of the part and attach the drawing (PDF) or 3D model (STEP). A colleague will get back to you within ' ~ site.response_hours ~ ' hours.') }}</p>
+      <p class="rfq__sla"><span class="rfq__sla-dot" aria-hidden="true"></span>{{ _('Válaszidő: ' ~ site.response_hours ~ ' órán belül, munkanapokon', 'Response time: within ' ~ site.response_hours ~ ' hours on working days') }}</p>
 
       <ol class="stepper" aria-hidden="true">
         <li class="is-active"><span>1</span>{{ _('Kapcsolattartó', 'Contact') }}</li>
@@ -90,19 +96,44 @@
           <div class="field"><label for="f-qty">{{ _('Éves mennyiség (db)', 'Annual quantity (pcs)') }}</label><input id="f-qty" name="qty" inputmode="numeric"></div>
         </div>
         <div class="field"><label for="f-msg">{{ _('Megjegyzés', 'Notes') }} *</label><textarea id="f-msg" name="message" rows="5" required placeholder="{{ _('Pl. tűrések, felületkezelés, szállítási ütemezés', 'e.g. tolerances, surface treatment, delivery schedule') }}"></textarea></div>
+        <div class="field">
+          <label for="f-files">{{ _('Műszaki rajz, 3D modell', 'Drawing, 3D model') }}</label>
+          <div class="drop" id="rfqDrop">
+            <input id="f-files" type="file" multiple accept=".pdf,.step,.stp,.igs,.iges,.dxf,.dwg,.x_t,.sldprt,.zip,.png,.jpg,.jpeg" aria-describedby="f-files-hint">
+            <svg class="drop__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4m0 0-4.5 4.5M12 4l4.5 4.5M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <p><b>{{ _('Húzza ide a fájlokat', 'Drop files here') }}</b> {{ _('vagy kattintson a tallózáshoz', 'or click to browse') }}</p>
+            <small id="f-files-hint">PDF · STEP · IGES · DXF · DWG · ZIP — {{ _('max. 5 fájl, összesen 20 MB', 'max. 5 files, 20 MB in total') }}</small>
+          </div>
+          <ul class="drop__list" id="rfqList"></ul>
+        </div>
+        <label class="check"><input type="checkbox" name="consent" id="f-consent" required> <span>{{ _('Elolvastam és elfogadom az', 'I have read and accept the') }} <a href="{{ href('privacy') }}" target="_blank">{{ _('adatkezelési tájékoztatót', 'privacy notice') }}</a>. *</span></label>
+        <div class="hp" aria-hidden="true"><label for="f-website">Website</label><input id="f-website" name="website" tabindex="-1" autocomplete="off"></div>
         <div class="rfq__nav"><button class="btn btn--outline" type="button" data-prev>← {{ _('Vissza', 'Back') }}</button><button class="btn btn--brass" type="submit">{{ _('Összesítés', 'Review') }} <span class="btn__arrow" aria-hidden="true">→</span></button></div>
       </fieldset>
 
       <p class="rfq__status" id="rfqStatus" role="status" aria-live="polite"></p>
 
       <div class="rfq__result rfq__step" data-step="3" id="rfqResult" hidden>
-        <p><strong>{{ _('Az ajánlatkérés elkészült.', 'Your request is ready.') }}</strong> {{ _('Küldje el e-mailben a', 'Send it by e-mail to') }} <span class="mono">info1@steelriderskft.hu</span> {{ _('címre, a rajzokat csatolva.', 'with your drawings attached.') }}</p>
+        <p><strong>{{ _('Kérjük, ellenőrizze az adatokat.', 'Please review your request.') }}</strong> {{ _('A küldés után visszaigazoló e-mailt kap.', 'You will receive a confirmation e-mail after sending.') }}</p>
         <pre class="rfq__text" id="rfqText"></pre>
-        <div class="rfq__buttons">
-          <a class="btn btn--brass" id="rfqMail" href="mailto:info1@steelriderskft.hu">{{ _('Megnyitás levelezőben', 'Open in e-mail client') }}</a>
-          <button class="btn btn--outline" type="button" id="rfqCopy" data-done="{{ _('Kimásolva', 'Copied') }}">{{ _('Szöveg másolása', 'Copy text') }}</button>
+        <div class="rfq__buttons" id="rfqActions">
+          <button class="btn btn--brass" type="button" id="rfqSend">{{ _('Ajánlatkérés elküldése', 'Send request') }} <span class="btn__arrow" aria-hidden="true">→</span></button>
           <button class="btn btn--text" type="button" data-prev>← {{ _('Módosítás', 'Edit') }}</button>
         </div>
+        <div class="rfq__fallback" id="rfqFallback" hidden>
+          <p>{{ _('Az online küldés most nem érhető el. Küldje el e-mailben a', 'Online sending is not available right now. Please e-mail it to') }} <span class="mono">{{ site.rfq_email }}</span> {{ _('címre, a rajzokat csatolva.', 'with your drawings attached.') }}</p>
+          <div class="rfq__buttons">
+            <a class="btn btn--brass" id="rfqMail" href="mailto:{{ site.rfq_email }}">{{ _('Megnyitás levelezőben', 'Open in e-mail client') }}</a>
+            <button class="btn btn--outline" type="button" id="rfqCopy" data-done="{{ _('Kimásolva', 'Copied') }}">{{ _('Szöveg másolása', 'Copy text') }}</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="rfq__done" id="rfqDone" hidden tabindex="-1">
+        <span class="rfq__tick" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        <h3 class="h3">{{ _('Köszönjük, megkaptuk ajánlatkérését!', 'Thank you, we have received your request!') }}</h3>
+        <p>{{ _('Azonosító:', 'Reference:') }} <b class="mono" id="rfqRef"></b></p>
+        <p>{{ _('Munkatársunk ' ~ site.response_hours ~ ' órán belül felveszi Önnel a kapcsolatot. Visszaigazolást küldtünk a megadott e-mail-címre.', 'A colleague will contact you within ' ~ site.response_hours ~ ' hours. We have sent a confirmation to your e-mail address.') }}</p>
       </div>
     </form>
 
@@ -115,12 +146,23 @@
         {{ _('Magyarország', 'Hungary') }}
       </address>
       <p class="visit__note">{{ _('Verpelét Heves megyében, Eger és Gyöngyös között található.', 'Verpelét is in Heves County, between Eger and Gyöngyös.') }}</p>
-      <a class="btn btn--outline btn--block" href="https://www.google.com/maps/search/?api=1&amp;query=Steel+Riders+Kft+Verpel%C3%A9t+Kossuth+%C3%BAt+64" target="_blank" rel="noopener">{{ _('Útvonaltervezés', 'Get directions') }}</a>
+      <div class="mapbox" id="mapbox" data-src="{{ site.maps_embed }}">
+        <button class="mapbox__load" type="button" id="mapLoad">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21Z" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="9.5" r="2.5" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
+          <b>{{ _('Térkép megjelenítése', 'Show map') }}</b>
+          <small>{{ _('A Google Térkép betöltésével a Google sütiket helyezhet el.', 'Loading Google Maps lets Google set cookies.') }}</small>
+        </button>
+      </div>
+      <a class="btn btn--outline btn--block" href="{{ site.maps_url }}" target="_blank" rel="noopener">{{ _('Útvonaltervezés', 'Get directions') }}</a>
       <dl class="visit__data">
         <div><dt>{{ _('Cégnév', 'Company') }}</dt><dd>Steel Riders Kft.</dd></div>
         <div><dt>{{ _('Adószám', 'VAT no.') }}</dt><dd>11174864-2-10</dd></div>
         <div><dt>{{ _('Cégjegyzékszám', 'Reg. no.') }}</dt><dd>10-09-022629</dd></div>
       </dl>
+      <a class="review" href="{{ site.review_url }}" target="_blank" rel="noopener">
+        <span class="review__stars" aria-hidden="true">★★★★★</span>
+        <span><b>{{ _('Dolgozott már velünk?', 'Worked with us?') }}</b> {{ _('Értékeljen minket a Google-ön', 'Rate us on Google') }} →</span>
+      </a>
     </aside>
   </div>
 </section>
@@ -134,6 +176,10 @@
       <p class="faq__lead">{{ _('Nem találja a választ? Hívjon minket:', 'Can’t find the answer? Call us:') }} <a href="tel:+3636494183">+36 36 494 183</a></p>
     </div>
     <div class="faq__list">
+      <details class="faq__item">
+        <summary>{{ _('Mennyi idő alatt kapok ajánlatot?', 'How quickly will I receive a quote?') }}</summary>
+        <p>{{ _('' ~ site.response_hours ~ ' órán belül visszajelzünk, és egyeztetjük a nyitott műszaki kérdéseket. Egyszerűbb alkatrészekre jellemzően 3–5 munkanapon belül, összetett, több műveletes alkatrészekre 5–10 munkanapon belül adunk ajánlatot.', 'We get back to you within ' ~ site.response_hours ~ ' hours to clarify any open technical questions. For simpler parts we typically quote within 3–5 working days, for complex multi-operation parts within 5–10 working days.') }}</p>
+      </details>
       <details class="faq__item">
         <summary>{{ _('Milyen formátumban küldjem a műszaki rajzot?', 'In which format should I send the drawing?') }}</summary>
         <p>{{ _('Legjobb a méretezett műszaki rajz PDF-ben és a 3D modell STEP formátumban. DXF rajzot is fogadunk. Kérjük, adja meg az anyagminőséget, a felületkezelést és a várható éves mennyiséget is.', 'Ideally a dimensioned drawing as PDF and the 3D model as STEP. We also accept DXF. Please include the material grade, surface treatment and expected annual quantity.') }}</p>
@@ -160,7 +206,7 @@
       </details>
     </div>
   </div>
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"{{ _('Milyen formátumban küldjem a műszaki rajzot?', 'In which format should I send the drawing?') }}","acceptedAnswer":{"@type":"Answer","text":"{{ _('Legjobb a méretezett műszaki rajz PDF-ben és a 3D modell STEP formátumban. DXF rajzot is fogadunk. Kérjük, adja meg az anyagminőséget, a felületkezelést és a várható éves mennyiséget is.', 'Ideally a dimensioned drawing as PDF and the 3D model as STEP. We also accept DXF. Please include the material grade, surface treatment and expected annual quantity.') }}"}},{"@type":"Question","name":"{{ _('Milyen anyagokat munkálnak meg?', 'Which materials do you machine?') }}","acceptedAnswer":{"@type":"Answer","text":"{{ _('Kiemelten alumínium, sárgaréz és műszaki műanyag alkatrészeket gyártunk, emellett acél alkatrészeket, valamint alumínium- és sárgaréz-öntvényeket is megmunkálunk.', 'Mainly aluminium, brass and engineering plastic parts, as well as steel components and aluminium and brass castings.') }}"}},{"@type":"Question","name":"{{ _('Az alapanyagot önök szerzik be?', 'Do you source the raw material?') }}","acceptedAnswer":{"@type":"Answer","text":"{{ _('Igen. Partnereink számára a teljes folyamatot biztosítjuk az alapanyag beszerzésétől a késztermék kiszállításáig.', 'Yes. We cover the whole process for our partners, from raw material sourcing to delivery of the finished product.') }}"}},{"@type":"Question","name":"{{ _('Milyen sorozatnagyságot vállalnak?', 'What batch sizes do you take on?') }}","acceptedAnswer":{"@type":"Answer","text":"{{ _('Mintadarabokat és kis sorozatokat is készítünk, fő profilunk azonban a közép- és nagysorozatú gyártás 3 műszakban.', 'We make prototypes and small batches, but our main focus is medium and large series production in 3 shifts.') }}"}},{"@type":"Question","name":"{{ _('Kaphatok mérési jegyzőkönyvet?', 'Can I get an inspection report?') }}","acceptedAnswer":{"@type":"Answer","text":"{{ _('Igen, kérésre. Az első darabokat és a sorozatmintákat klimatizált mérőszobánkban, 3D koordináta-mérőgéppel és optikai mérőrendszerrel ellenőrizzük.', 'Yes, on request. First articles and series samples are checked in our air-conditioned measuring room with a 3D coordinate measuring machine and an optical measuring system.') }}"}},{"@type":"Question","name":"{{ _('Milyen minőségirányítási rendszer szerint dolgoznak?', 'Which management systems do you work to?') }}","acceptedAnswer":{"@type":"Answer","text":"{{ _('ISO 9001 minőségirányítási és ISO 14001 környezetirányítási rendszer szerint, SAP alapú nyomon követéssel.', 'ISO 9001 quality management and ISO 14001 environmental management, with SAP-based traceability.') }}"}}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"{{ _('Mennyi idő alatt kapok ajánlatot?', 'How quickly will I receive a quote?') }}","acceptedAnswer":{"@type":"Answer","text":"{{ _('' ~ site.response_hours ~ ' órán belül visszajelzünk, és egyeztetjük a nyitott műszaki kérdéseket. Egyszerűbb alkatrészekre jellemzően 3–5 munkanapon belül, összetett, több műveletes alkatrészekre 5–10 munkanapon belül adunk ajánlatot.', 'We get back to you within ' ~ site.response_hours ~ ' hours to clarify any open technical questions. For simpler parts we typically quote within 3–5 working days, for complex multi-operation parts within 5–10 working days.') }}"}},{"@type":"Question","name":"{{ _('Milyen formátumban küldjem a műszaki rajzot?', 'In which format should I send the drawing?') }}","acceptedAnswer":{"@type":"Answer","text":"{{ _('Legjobb a méretezett műszaki rajz PDF-ben és a 3D modell STEP formátumban. DXF rajzot is fogadunk. Kérjük, adja meg az anyagminőséget, a felületkezelést és a várható éves mennyiséget is.', 'Ideally a dimensioned drawing as PDF and the 3D model as STEP. We also accept DXF. Please include the material grade, surface treatment and expected annual quantity.') }}"}},{"@type":"Question","name":"{{ _('Milyen anyagokat munkálnak meg?', 'Which materials do you machine?') }}","acceptedAnswer":{"@type":"Answer","text":"{{ _('Kiemelten alumínium, sárgaréz és műszaki műanyag alkatrészeket gyártunk, emellett acél alkatrészeket, valamint alumínium- és sárgaréz-öntvényeket is megmunkálunk.', 'Mainly aluminium, brass and engineering plastic parts, as well as steel components and aluminium and brass castings.') }}"}},{"@type":"Question","name":"{{ _('Az alapanyagot önök szerzik be?', 'Do you source the raw material?') }}","acceptedAnswer":{"@type":"Answer","text":"{{ _('Igen. Partnereink számára a teljes folyamatot biztosítjuk az alapanyag beszerzésétől a késztermék kiszállításáig.', 'Yes. We cover the whole process for our partners, from raw material sourcing to delivery of the finished product.') }}"}},{"@type":"Question","name":"{{ _('Milyen sorozatnagyságot vállalnak?', 'What batch sizes do you take on?') }}","acceptedAnswer":{"@type":"Answer","text":"{{ _('Mintadarabokat és kis sorozatokat is készítünk, fő profilunk azonban a közép- és nagysorozatú gyártás 3 műszakban.', 'We make prototypes and small batches, but our main focus is medium and large series production in 3 shifts.') }}"}},{"@type":"Question","name":"{{ _('Kaphatok mérési jegyzőkönyvet?', 'Can I get an inspection report?') }}","acceptedAnswer":{"@type":"Answer","text":"{{ _('Igen, kérésre. Az első darabokat és a sorozatmintákat klimatizált mérőszobánkban, 3D koordináta-mérőgéppel és optikai mérőrendszerrel ellenőrizzük.', 'Yes, on request. First articles and series samples are checked in our air-conditioned measuring room with a 3D coordinate measuring machine and an optical measuring system.') }}"}},{"@type":"Question","name":"{{ _('Milyen minőségirányítási rendszer szerint dolgoznak?', 'Which management systems do you work to?') }}","acceptedAnswer":{"@type":"Answer","text":"{{ _('ISO 9001 minőségirányítási és ISO 14001 környezetirányítási rendszer szerint, SAP alapú nyomon követéssel.', 'ISO 9001 quality management and ISO 14001 environmental management, with SAP-based traceability.') }}"}}]}</script>
 </section>
 
 {% endblock %}

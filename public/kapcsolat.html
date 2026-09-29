@@ -26,10 +26,10 @@
   <link rel="stylesheet" href="assets/css/site.css">
   <script>document.documentElement.classList.replace('no-js', 'js');</script>
   <script type="application/ld+json">
-  {"@context":"https://schema.org","@type":"LocalBusiness","@id":"https://steelriderskft.hu/#org","name":"Steel Riders Kft.","description":"Kapcsolat és ajánlatkérés: Steel Riders Kft., 3351 Verpelét, Kossuth út 64. Tel.: +36 36 494 183.","url":"https://steelriderskft.hu/","logo":"https://steelriderskft.hu/assets/img/logo-badge.webp","image":"https://steelriderskft.hu/assets/img/og.jpg","foundingDate":"1997-03","email":"info1@steelriderskft.hu","telephone":"+36 36 494 183","taxID":"11174864-2-10","numberOfEmployees":50,"address":{"@type":"PostalAddress","streetAddress":"Kossuth út 64.","postalCode":"3351","addressLocality":"Verpelét","addressRegion":"Heves","addressCountry":"HU"},"geo":{"@type":"GeoCoordinates","latitude":47.85,"longitude":20.23},"sameAs":["https://www.facebook.com/steelriderskft/"],"knowsAbout":["CNC turning","CNC milling","Series production","Swiss-type turning"]}
+  {"@context":"https://schema.org","@type":"LocalBusiness","@id":"https://steelriderskft.hu/#org","name":"Steel Riders Kft.","description":"Kapcsolat és ajánlatkérés: Steel Riders Kft., 3351 Verpelét, Kossuth út 64. Tel.: +36 36 494 183.","url":"https://steelriderskft.hu/","logo":"https://steelriderskft.hu/assets/img/logo-badge.webp","image":"https://steelriderskft.hu/assets/img/og.jpg","foundingDate":"1997-03","email":"info1@steelriderskft.hu","telephone":"+36 36 494 183","taxID":"11174864-2-10","numberOfEmployees":50,"address":{"@type":"PostalAddress","streetAddress":"Kossuth út 64.","postalCode":"3351","addressLocality":"Verpelét","addressRegion":"Heves","addressCountry":"HU"},"geo":{"@type":"GeoCoordinates","latitude":47.85,"longitude":20.23},"hasMap":"https://www.google.com/maps/search/?api=1&query=Steel+Riders+Kft+Verpel%C3%A9t+Kossuth+%C3%BAt+64","sameAs":["https://www.facebook.com/steelriderskft/"],"knowsAbout":["CNC turning","CNC milling","Series production","Swiss-type turning"]}
   </script>
 </head>
-<body class="page-contact">
+<body class="page-contact" data-ga="G-XXXXXXXXXX">
   <a class="skip" href="#main">Ugrás a tartalomhoz</a>
   <div class="progress" aria-hidden="true"><span id="scrollProgress"></span></div>
 
@@ -120,11 +120,17 @@
 
 <section class="section section--tint" id="ajanlatkeres">
   <div class="wrap contact-grid">
-    <form class="rfq" id="rfq" novalidate data-to="info1@steelriderskft.hu"
+    <form class="rfq" id="rfq" novalidate data-to="info1@steelriderskft.hu" data-endpoint="api/ajanlatkeres.php" data-lang="hu"
           data-msg-invalid="Kérjük, töltse ki a *-gal jelölt mezőket."
-          data-msg-subject="Ajánlatkérés">
+          data-msg-subject="Ajánlatkérés"
+          data-msg-type="Nem támogatott fájltípus"
+          data-msg-size="Legfeljebb 5 fájl, összesen 20 MB csatolható."
+          data-msg-sending="Küldés…"
+          data-msg-remove="Eltávolítás"
+          data-msg-files="Csatolmányok">
       <h2 class="h2">Ajánlatkérés</h2>
-      <p>Adja meg az alkatrész főbb adatait. A műszaki rajzot (PDF) és a 3D modellt (STEP) a megnyíló e-mailhez csatolhatja.</p>
+      <p>Adja meg az alkatrész főbb adatait, és csatolja a műszaki rajzot (PDF) vagy a 3D modellt (STEP). Munkatársunk 48 órán belül felveszi Önnel a kapcsolatot.</p>
+      <p class="rfq__sla"><span class="rfq__sla-dot" aria-hidden="true"></span>Válaszidő: 48 órán belül, munkanapokon</p>
 
       <ol class="stepper" aria-hidden="true">
         <li class="is-active"><span>1</span>Kapcsolattartó</li>
@@ -174,19 +180,44 @@
           <div class="field"><label for="f-qty">Éves mennyiség (db)</label><input id="f-qty" name="qty" inputmode="numeric"></div>
         </div>
         <div class="field"><label for="f-msg">Megjegyzés *</label><textarea id="f-msg" name="message" rows="5" required placeholder="Pl. tűrések, felületkezelés, szállítási ütemezés"></textarea></div>
+        <div class="field">
+          <label for="f-files">Műszaki rajz, 3D modell</label>
+          <div class="drop" id="rfqDrop">
+            <input id="f-files" type="file" multiple accept=".pdf,.step,.stp,.igs,.iges,.dxf,.dwg,.x_t,.sldprt,.zip,.png,.jpg,.jpeg" aria-describedby="f-files-hint">
+            <svg class="drop__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4m0 0-4.5 4.5M12 4l4.5 4.5M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <p><b>Húzza ide a fájlokat</b> vagy kattintson a tallózáshoz</p>
+            <small id="f-files-hint">PDF · STEP · IGES · DXF · DWG · ZIP — max. 5 fájl, összesen 20 MB</small>
+          </div>
+          <ul class="drop__list" id="rfqList"></ul>
+        </div>
+        <label class="check"><input type="checkbox" name="consent" id="f-consent" required> <span>Elolvastam és elfogadom az <a href="adatvedelem.html" target="_blank">adatkezelési tájékoztatót</a>. *</span></label>
+        <div class="hp" aria-hidden="true"><label for="f-website">Website</label><input id="f-website" name="website" tabindex="-1" autocomplete="off"></div>
         <div class="rfq__nav"><button class="btn btn--outline" type="button" data-prev>← Vissza</button><button class="btn btn--brass" type="submit">Összesítés <span class="btn__arrow" aria-hidden="true">→</span></button></div>
       </fieldset>
 
       <p class="rfq__status" id="rfqStatus" role="status" aria-live="polite"></p>
 
       <div class="rfq__result rfq__step" data-step="3" id="rfqResult" hidden>
-        <p><strong>Az ajánlatkérés elkészült.</strong> Küldje el e-mailben a <span class="mono">info1@steelriderskft.hu</span> címre, a rajzokat csatolva.</p>
+        <p><strong>Kérjük, ellenőrizze az adatokat.</strong> A küldés után visszaigazoló e-mailt kap.</p>
         <pre class="rfq__text" id="rfqText"></pre>
-        <div class="rfq__buttons">
-          <a class="btn btn--brass" id="rfqMail" href="mailto:info1@steelriderskft.hu">Megnyitás levelezőben</a>
-          <button class="btn btn--outline" type="button" id="rfqCopy" data-done="Kimásolva">Szöveg másolása</button>
+        <div class="rfq__buttons" id="rfqActions">
+          <button class="btn btn--brass" type="button" id="rfqSend">Ajánlatkérés elküldése <span class="btn__arrow" aria-hidden="true">→</span></button>
           <button class="btn btn--text" type="button" data-prev>← Módosítás</button>
         </div>
+        <div class="rfq__fallback" id="rfqFallback" hidden>
+          <p>Az online küldés most nem érhető el. Küldje el e-mailben a <span class="mono">info1@steelriderskft.hu</span> címre, a rajzokat csatolva.</p>
+          <div class="rfq__buttons">
+            <a class="btn btn--brass" id="rfqMail" href="mailto:info1@steelriderskft.hu">Megnyitás levelezőben</a>
+            <button class="btn btn--outline" type="button" id="rfqCopy" data-done="Kimásolva">Szöveg másolása</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="rfq__done" id="rfqDone" hidden tabindex="-1">
+        <span class="rfq__tick" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        <h3 class="h3">Köszönjük, megkaptuk ajánlatkérését!</h3>
+        <p>Azonosító: <b class="mono" id="rfqRef"></b></p>
+        <p>Munkatársunk 48 órán belül felveszi Önnel a kapcsolatot. Visszaigazolást küldtünk a megadott e-mail-címre.</p>
       </div>
     </form>
 
@@ -199,12 +230,23 @@
         Magyarország
       </address>
       <p class="visit__note">Verpelét Heves megyében, Eger és Gyöngyös között található.</p>
-      <a class="btn btn--outline btn--block" href="https://www.google.com/maps/search/?api=1&amp;query=Steel+Riders+Kft+Verpel%C3%A9t+Kossuth+%C3%BAt+64" target="_blank" rel="noopener">Útvonaltervezés</a>
+      <div class="mapbox" id="mapbox" data-src="https://www.google.com/maps?q=Steel+Riders+Kft,+Verpel%C3%A9t,+Kossuth+%C3%BAt+64&output=embed">
+        <button class="mapbox__load" type="button" id="mapLoad">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21Z" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="9.5" r="2.5" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
+          <b>Térkép megjelenítése</b>
+          <small>A Google Térkép betöltésével a Google sütiket helyezhet el.</small>
+        </button>
+      </div>
+      <a class="btn btn--outline btn--block" href="https://www.google.com/maps/search/?api=1&query=Steel+Riders+Kft+Verpel%C3%A9t+Kossuth+%C3%BAt+64" target="_blank" rel="noopener">Útvonaltervezés</a>
       <dl class="visit__data">
         <div><dt>Cégnév</dt><dd>Steel Riders Kft.</dd></div>
         <div><dt>Adószám</dt><dd>11174864-2-10</dd></div>
         <div><dt>Cégjegyzékszám</dt><dd>10-09-022629</dd></div>
       </dl>
+      <a class="review" href="https://www.google.com/maps/search/?api=1&query=Steel+Riders+Kft+Verpel%C3%A9t" target="_blank" rel="noopener">
+        <span class="review__stars" aria-hidden="true">★★★★★</span>
+        <span><b>Dolgozott már velünk?</b> Értékeljen minket a Google-ön →</span>
+      </a>
     </aside>
   </div>
 </section>
@@ -218,6 +260,10 @@
       <p class="faq__lead">Nem találja a választ? Hívjon minket: <a href="tel:+3636494183">+36 36 494 183</a></p>
     </div>
     <div class="faq__list">
+      <details class="faq__item">
+        <summary>Mennyi idő alatt kapok ajánlatot?</summary>
+        <p>48 órán belül visszajelzünk, és egyeztetjük a nyitott műszaki kérdéseket. Egyszerűbb alkatrészekre jellemzően 3–5 munkanapon belül, összetett, több műveletes alkatrészekre 5–10 munkanapon belül adunk ajánlatot.</p>
+      </details>
       <details class="faq__item">
         <summary>Milyen formátumban küldjem a műszaki rajzot?</summary>
         <p>Legjobb a méretezett műszaki rajz PDF-ben és a 3D modell STEP formátumban. DXF rajzot is fogadunk. Kérjük, adja meg az anyagminőséget, a felületkezelést és a várható éves mennyiséget is.</p>
@@ -244,7 +290,7 @@
       </details>
     </div>
   </div>
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Milyen formátumban küldjem a műszaki rajzot?","acceptedAnswer":{"@type":"Answer","text":"Legjobb a méretezett műszaki rajz PDF-ben és a 3D modell STEP formátumban. DXF rajzot is fogadunk. Kérjük, adja meg az anyagminőséget, a felületkezelést és a várható éves mennyiséget is."}},{"@type":"Question","name":"Milyen anyagokat munkálnak meg?","acceptedAnswer":{"@type":"Answer","text":"Kiemelten alumínium, sárgaréz és műszaki műanyag alkatrészeket gyártunk, emellett acél alkatrészeket, valamint alumínium- és sárgaréz-öntvényeket is megmunkálunk."}},{"@type":"Question","name":"Az alapanyagot önök szerzik be?","acceptedAnswer":{"@type":"Answer","text":"Igen. Partnereink számára a teljes folyamatot biztosítjuk az alapanyag beszerzésétől a késztermék kiszállításáig."}},{"@type":"Question","name":"Milyen sorozatnagyságot vállalnak?","acceptedAnswer":{"@type":"Answer","text":"Mintadarabokat és kis sorozatokat is készítünk, fő profilunk azonban a közép- és nagysorozatú gyártás 3 műszakban."}},{"@type":"Question","name":"Kaphatok mérési jegyzőkönyvet?","acceptedAnswer":{"@type":"Answer","text":"Igen, kérésre. Az első darabokat és a sorozatmintákat klimatizált mérőszobánkban, 3D koordináta-mérőgéppel és optikai mérőrendszerrel ellenőrizzük."}},{"@type":"Question","name":"Milyen minőségirányítási rendszer szerint dolgoznak?","acceptedAnswer":{"@type":"Answer","text":"ISO 9001 minőségirányítási és ISO 14001 környezetirányítási rendszer szerint, SAP alapú nyomon követéssel."}}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Mennyi idő alatt kapok ajánlatot?","acceptedAnswer":{"@type":"Answer","text":"48 órán belül visszajelzünk, és egyeztetjük a nyitott műszaki kérdéseket. Egyszerűbb alkatrészekre jellemzően 3–5 munkanapon belül, összetett, több műveletes alkatrészekre 5–10 munkanapon belül adunk ajánlatot."}},{"@type":"Question","name":"Milyen formátumban küldjem a műszaki rajzot?","acceptedAnswer":{"@type":"Answer","text":"Legjobb a méretezett műszaki rajz PDF-ben és a 3D modell STEP formátumban. DXF rajzot is fogadunk. Kérjük, adja meg az anyagminőséget, a felületkezelést és a várható éves mennyiséget is."}},{"@type":"Question","name":"Milyen anyagokat munkálnak meg?","acceptedAnswer":{"@type":"Answer","text":"Kiemelten alumínium, sárgaréz és műszaki műanyag alkatrészeket gyártunk, emellett acél alkatrészeket, valamint alumínium- és sárgaréz-öntvényeket is megmunkálunk."}},{"@type":"Question","name":"Az alapanyagot önök szerzik be?","acceptedAnswer":{"@type":"Answer","text":"Igen. Partnereink számára a teljes folyamatot biztosítjuk az alapanyag beszerzésétől a késztermék kiszállításáig."}},{"@type":"Question","name":"Milyen sorozatnagyságot vállalnak?","acceptedAnswer":{"@type":"Answer","text":"Mintadarabokat és kis sorozatokat is készítünk, fő profilunk azonban a közép- és nagysorozatú gyártás 3 műszakban."}},{"@type":"Question","name":"Kaphatok mérési jegyzőkönyvet?","acceptedAnswer":{"@type":"Answer","text":"Igen, kérésre. Az első darabokat és a sorozatmintákat klimatizált mérőszobánkban, 3D koordináta-mérőgéppel és optikai mérőrendszerrel ellenőrizzük."}},{"@type":"Question","name":"Milyen minőségirányítási rendszer szerint dolgoznak?","acceptedAnswer":{"@type":"Answer","text":"ISO 9001 minőségirányítási és ISO 14001 környezetirányítási rendszer szerint, SAP alapú nyomon követéssel."}}]}</script>
 </section>
 
   </main>
@@ -256,7 +302,7 @@
         <img class="footer__logo" src="assets/img/logo-badge.webp" alt="Steel Riders Kft." width="120" height="120" loading="lazy">
         <p>Precíziós CNC esztergálás és marás közép- és nagysorozatban. Beszállító 1997 óta.</p>
         <ul class="footer__certs">
-          <li>ISO 9001</li><li>ISO 14001</li>
+          <li><a href="minosegugy.html#tanusitvanyok">ISO 9001</a></li><li><a href="minosegugy.html#tanusitvanyok">ISO 14001</a></li>
         </ul>
       </div>
       <div>
@@ -293,10 +339,30 @@
       <span>Adószám: 11174864-2-10</span>
       <span>Cégjegyzékszám: 10-09-022629</span>
       <a href="impresszum.html">Impresszum</a>
+      <a href="adatvedelem.html">Adatvédelem</a>
+      <a href="adatvedelem.html#sutik" data-cookie-settings>Süti-beállítások</a>
       <a href="https://www.facebook.com/steelriderskft/" rel="noopener" target="_blank">Facebook</a>
       <a class="footer__top" href="#main">Vissza a tetejére ↑</a>
     </div>
   </footer>
+
+  <div class="cookie" id="cookie" role="dialog" aria-labelledby="ckTitle" aria-live="polite" hidden>
+    <div class="cookie__main">
+      <p class="cookie__title" id="ckTitle">Sütik a weboldalon</p>
+      <p>A weboldal működéséhez szükséges sütiket mindig használjuk. Az Ön hozzájárulásával látogatottsági statisztikát is készítünk, és betöltjük a Google Térképet. <a href="adatvedelem.html#sutik">Részletek</a></p>
+    </div>
+    <div class="cookie__detail">
+      <label class="check check--on"><input type="checkbox" checked disabled> <span><b>Szükséges</b> — nyelv, beállítások mentése</span></label>
+      <label class="check"><input type="checkbox" id="ckStats"> <span><b>Statisztika</b> — Google Analytics, anonimizált IP-címmel</span></label>
+      <label class="check"><input type="checkbox" id="ckMaps"> <span><b>Külső tartalom</b> — beágyazott Google Térkép</span></label>
+    </div>
+    <div class="cookie__actions">
+      <button class="btn btn--text" type="button" id="ckMore">Beállítások</button>
+      <button class="btn btn--outline" type="button" id="ckNone">Csak a szükségesek</button>
+      <button class="btn btn--outline cookie__save" type="button" id="ckSave">Kiválasztottak mentése</button>
+      <button class="btn btn--brass" type="button" id="ckAll">Összes elfogadása</button>
+    </div>
+  </div>
 
   <script src="assets/vendor/three.min.js" defer></script>
   <script src="assets/vendor/three-post.js" defer></script>

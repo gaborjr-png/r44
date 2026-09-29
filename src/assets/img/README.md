@@ -31,3 +31,4 @@ Amíg egy fájl hiányzik, a helyén a 3D motor valós idejű alkatrész-renderj
 | csapat.jpg | Karrier fejléc | Munkatársak a gépeknél |
 
 Csere után futtassa: `python3 src/build.py`
+- `munkasszallo.webp` – a munkásszálló drónfotója (Karrier → Szállás)

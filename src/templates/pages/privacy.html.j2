@@ -1,0 +1,90 @@
+{% extends "base.html.j2" %}
+{% import "_macros.html.j2" as m with context %}
+{% block title %}{{ _('Adatkezelési tájékoztató', 'Privacy notice') }}{% endblock %}
+{% block content %}
+
+{{ m.page_head(_('Adatvédelem', 'Privacy'), _('Adatkezelési tájékoztató', 'Privacy notice'),
+   _('Tájékoztatjuk, hogyan kezeljük a weboldalon, e-mailben vagy telefonon megadott személyes adatait az Európai Unió általános adatvédelmi rendelete (GDPR) alapján.', 'How we process the personal data you provide on this website, by e-mail or by phone under the EU General Data Protection Regulation (GDPR).')) }}
+
+<section class="section">
+  <div class="wrap legal">
+    <nav class="legal__toc" aria-label="{{ _('Tartalom', 'Contents') }}">
+      <p class="eyebrow">{{ _('Tartalom', 'Contents') }}</p>
+      <ol>
+        <li><a href="#adatkezelo">{{ _('Az adatkezelő', 'Controller') }}</a></li>
+        <li><a href="#celok">{{ _('Adatkezelési célok', 'Purposes of processing') }}</a></li>
+        <li><a href="#feldolgozok">{{ _('Adatfeldolgozók', 'Processors') }}</a></li>
+        <li><a href="#sutik">{{ _('Sütik', 'Cookies') }}</a></li>
+        <li><a href="#biztonsag">{{ _('Adatbiztonság', 'Data security') }}</a></li>
+        <li><a href="#jogok">{{ _('Az Ön jogai', 'Your rights') }}</a></li>
+        <li><a href="#jogorvoslat">{{ _('Jogorvoslat', 'Remedies') }}</a></li>
+      </ol>
+      <p class="legal__date">{{ _('Hatályos: 2026. október 1-jétől', 'Effective from 1 October 2026') }}</p>
+    </nav>
+
+    <div class="legal__body prose">
+      <h2 class="h3" id="adatkezelo">1. {{ _('Az adatkezelő', 'The controller') }}</h2>
+      <dl class="datasheet imprint__sheet">
+        <div><dt>{{ _('Név', 'Name') }}</dt><dd>Steel Riders Kft.</dd></div>
+        <div><dt>{{ _('Székhely', 'Registered office') }}</dt><dd>3351 Verpelét, Kossuth út 64.</dd></div>
+        <div><dt>{{ _('Cégjegyzékszám', 'Company reg. no.') }}</dt><dd>10-09-022629</dd></div>
+        <div><dt>{{ _('Képviselő', 'Represented by') }}</dt><dd>{{ _('Farkas Gábor ügyvezető', 'Gábor Farkas, managing director') }}</dd></div>
+        <div><dt>{{ _('Adatvédelmi kapcsolattartás', 'Data protection contact') }}</dt><dd><a href="mailto:info1@steelriderskft.hu">info1@steelriderskft.hu</a>, +36 36 494 183</dd></div>
+      </dl>
+      <p>{{ _('Cégünk nem köteles adatvédelmi tisztviselőt kijelölni. Adatvédelmi kérdésekben a fenti elérhetőségeken fordulhat hozzánk.', 'We are not required to appoint a data protection officer. You can contact us about data protection at the details above.') }}</p>
+
+      <h2 class="h3" id="celok">2. {{ _('Adatkezelési célok', 'Purposes of processing') }}</h2>
+      <div class="legal__table" role="region" aria-label="{{ _('Adatkezelési célok', 'Purposes of processing') }}" tabindex="0">
+      <table>
+        <thead><tr><th>{{ _('Cél', 'Purpose') }}</th><th>{{ _('Kezelt adatok', 'Data') }}</th><th>{{ _('Jogalap', 'Legal basis') }}</th><th>{{ _('Időtartam', 'Retention') }}</th></tr></thead>
+        <tbody>
+          <tr><td>{{ _('Ajánlatkérés, kapcsolatfelvétel', 'Quotation requests, enquiries') }}</td><td>{{ _('név, cégnév, e-mail, telefon, üzenet, csatolt műszaki dokumentumok', 'name, company, e-mail, phone, message, attached technical documents') }}</td><td>{{ _('GDPR 6. cikk (1) b) – szerződéskötést megelőző lépések; f) – jogos érdek', 'Art. 6(1)(b) GDPR – pre-contractual steps; (f) – legitimate interest') }}</td><td>{{ _('az ajánlattól számított 2 év; szerződés esetén a számviteli megőrzési idő (8 év)', '2 years from the quotation; if a contract follows, the statutory accounting retention period (8 years)') }}</td></tr>
+          <tr><td>{{ _('Álláspályázat', 'Job applications') }}</td><td>{{ _('név, elérhetőség, önéletrajz, végzettség, tapasztalat', 'name, contact details, CV, qualifications, experience') }}</td><td>{{ _('GDPR 6. cikk (1) a) – hozzájárulás', 'Art. 6(1)(a) GDPR – consent') }}</td><td>{{ _('a pozíció betöltéséig, hozzájárulással legfeljebb 1 évig', 'until the position is filled, with consent for up to 1 year') }}</td></tr>
+          <tr><td>{{ _('Üzleti kapcsolattartás', 'Business relations') }}</td><td>{{ _('partnereink kapcsolattartóinak neve, beosztása, elérhetősége', 'names, positions and contact details of our partners’ contacts') }}</td><td>{{ _('GDPR 6. cikk (1) f) – jogos érdek', 'Art. 6(1)(f) GDPR – legitimate interest') }}</td><td>{{ _('az üzleti kapcsolat fennállásáig', 'for the duration of the business relationship') }}</td></tr>
+          <tr><td>{{ _('Látogatottsági statisztika', 'Visitor statistics') }}</td><td>{{ _('anonimizált IP-cím, böngésző, megtekintett oldalak', 'anonymised IP address, browser, pages viewed') }}</td><td>{{ _('GDPR 6. cikk (1) a) – hozzájárulás (süti-sáv)', 'Art. 6(1)(a) GDPR – consent (cookie banner)') }}</td><td>{{ _('14 hónap', '14 months') }}</td></tr>
+          <tr><td>{{ _('Szerver naplófájlok', 'Server log files') }}</td><td>{{ _('IP-cím, időpont, lekért oldal', 'IP address, time, requested page') }}</td><td>{{ _('GDPR 6. cikk (1) f) – a weboldal biztonsága', 'Art. 6(1)(f) GDPR – website security') }}</td><td>{{ _('30 nap', '30 days') }}</td></tr>
+        </tbody>
+      </table>
+      </div>
+
+      <h2 class="h3" id="feldolgozok">3. {{ _('Adatfeldolgozók és címzettek', 'Processors and recipients') }}</h2>
+      <ul class="checks">
+        <li><b>{{ site.host.name }}</b> ({{ site.host.address }}) – {{ _('tárhelyszolgáltatás, e-mail továbbítás', 'web hosting, e-mail delivery') }}</li>
+        <li><b>Google Ireland Ltd.</b> (Gordon House, Barrow Street, Dublin 4, {{ _('Írország', 'Ireland') }}) – {{ _('Google Analytics és Google Térkép, csak hozzájárulás esetén', 'Google Analytics and Google Maps, only with consent') }}</li>
+        <li>{{ _('Könyvelő és informatikai szolgáltató – szerződéses titoktartás mellett, kizárólag a feladatuk ellátásához szükséges mértékben', 'Accountant and IT service provider – under contractual confidentiality, only as far as needed for their tasks') }}</li>
+      </ul>
+      <p>{{ _('Személyes adatait nem adjuk el, és harmadik félnek marketingcélra nem továbbítjuk.', 'We do not sell your personal data or pass it on to third parties for marketing.') }}</p>
+
+      <h2 class="h3" id="sutik">4. {{ _('Sütik (cookie-k)', 'Cookies') }}</h2>
+      <p>{{ _('A sütik kis adatfájlok, amelyeket a böngésző tárol. A weboldal első megnyitásakor a süti-sávon választhat, milyen kategóriákhoz járul hozzá; döntését bármikor módosíthatja.', 'Cookies are small data files stored by your browser. When you first open the site, the cookie banner lets you choose which categories you consent to; you can change your choice at any time.') }}</p>
+      <div class="legal__table" role="region" aria-label="{{ _('Sütik', 'Cookies') }}" tabindex="0">
+      <table>
+        <thead><tr><th>{{ _('Kategória', 'Category') }}</th><th>{{ _('Név', 'Name') }}</th><th>{{ _('Cél', 'Purpose') }}</th><th>{{ _('Élettartam', 'Lifetime') }}</th></tr></thead>
+        <tbody>
+          <tr><td>{{ _('Szükséges', 'Necessary') }}</td><td class="mono">sr-consent</td><td>{{ _('süti-beállításainak megjegyzése (helyi tároló)', 'remembers your cookie choice (local storage)') }}</td><td>{{ _('törlésig', 'until deleted') }}</td></tr>
+          <tr><td>{{ _('Statisztika', 'Statistics') }}</td><td class="mono">_ga, _ga_*</td><td>{{ _('Google Analytics – látogatók megkülönböztetése', 'Google Analytics – distinguishes visitors') }}</td><td>{{ _('14 hónap', '14 months') }}</td></tr>
+          <tr><td>{{ _('Külső tartalom', 'External content') }}</td><td class="mono">NID, AEC</td><td>{{ _('Google Térkép beágyazás', 'embedded Google Maps') }}</td><td>{{ _('6 hónap', '6 months') }}</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <p><button class="btn btn--outline" type="button" data-cookie-settings>{{ _('Süti-beállítások módosítása', 'Change cookie settings') }}</button></p>
+
+      <h2 class="h3" id="biztonsag">5. {{ _('Adatbiztonság', 'Data security') }}</h2>
+      <p>{{ _('A weboldal titkosított (HTTPS) kapcsolaton érhető el. Az ajánlatkérésekhez csatolt műszaki dokumentumokat bizalmasan kezeljük, kizárólag az ajánlatadásban és a gyártásban részt vevő munkatársaink férnek hozzá; kérésre titoktartási megállapodást (NDA) kötünk.', 'The website is served over an encrypted (HTTPS) connection. Technical documents attached to quotation requests are treated as confidential and are accessible only to the staff involved in quoting and production; we sign a non-disclosure agreement (NDA) on request.') }}</p>
+
+      <h2 class="h3" id="jogok">6. {{ _('Az Ön jogai', 'Your rights') }}</h2>
+      <ul class="checks">
+        <li>{{ _('tájékoztatás és hozzáférés a kezelt adatokhoz', 'information about and access to your data') }}</li>
+        <li>{{ _('helyesbítés, törlés („elfeledtetéshez való jog”)', 'rectification and erasure (“right to be forgotten”)') }}</li>
+        <li>{{ _('az adatkezelés korlátozása, tiltakozás', 'restriction of processing, objection') }}</li>
+        <li>{{ _('adathordozhatóság, a hozzájárulás bármikori visszavonása', 'data portability, withdrawing consent at any time') }}</li>
+      </ul>
+      <p>{{ _('Kérelmét az info1@steelriderskft.hu címre küldheti; legfeljebb 30 napon belül válaszolunk.', 'Send your request to info1@steelriderskft.hu; we will respond within 30 days at the latest.') }}</p>
+
+      <h2 class="h3" id="jogorvoslat">7. {{ _('Jogorvoslat', 'Remedies') }}</h2>
+      <p>{{ _('Panaszával a Nemzeti Adatvédelmi és Információszabadság Hatósághoz (NAIH) fordulhat: 1055 Budapest, Falk Miksa utca 9–11.; postacím: 1363 Budapest, Pf. 9.; e-mail: ugyfelszolgalat@naih.hu; web: naih.hu. Jogai megsértése esetén bírósághoz is fordulhat, a per – választása szerint – lakóhelye szerinti törvényszék előtt is megindítható.', 'You may lodge a complaint with the Hungarian National Authority for Data Protection and Freedom of Information (NAIH): Falk Miksa utca 9–11, 1055 Budapest; postal address: 1363 Budapest, Pf. 9; e-mail: ugyfelszolgalat@naih.hu; web: naih.hu. You may also take legal action; proceedings can be brought before the regional court of your place of residence.') }}</p>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

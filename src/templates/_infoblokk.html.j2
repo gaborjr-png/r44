@@ -1,0 +1,14 @@
+{# Széchenyi 2020 infoblokk. PLACEHOLDER: before going live replace this
+   drawing with the official infoblokk image (palyazat.gov.hu → Arculati kézikönyv). #}
+<a class="infoblokk{{ ' infoblokk--float' if infoblokk_float is defined else '' }}" href="{{ href('projects') }}#szechenyi" aria-label="Széchenyi 2020 – {{ _('Európai Unió, Európai Regionális Fejlesztési Alap, Magyarország Kormánya. Befektetés a jövőbe.', 'European Union, European Regional Development Fund, Government of Hungary. Investing in your future.') }}">
+  <span class="infoblokk__brand">Széchenyi<b>2020</b></span>
+  <span class="infoblokk__row">
+    <svg class="infoblokk__flag" viewBox="0 0 30 20" aria-hidden="true"><rect width="30" height="20" fill="#039"/>{% for i in range(12) %}<circle cx="{{ 15 + 6 * [0,0.5,0.866,1,0.866,0.5,0,-0.5,-0.866,-1,-0.866,-0.5][i] }}" cy="{{ 10 - 6 * ([1,0.866,0.5,0,-0.5,-0.866,-1,-0.866,-0.5,0,0.5,0.866][i]) }}" r="0.9" fill="#fc0"/>{% endfor %}</svg>
+    <span>{{ _('Európai Unió', 'European Union') }}<small>{{ _('Európai Regionális Fejlesztési Alap', 'European Regional Development Fund') }}</small></span>
+  </span>
+  <span class="infoblokk__row">
+    <svg class="infoblokk__flag" viewBox="0 0 30 20" aria-hidden="true"><rect width="30" height="6.67" fill="#ce2939"/><rect y="6.67" width="30" height="6.67" fill="#fff"/><rect y="13.33" width="30" height="6.67" fill="#477050"/></svg>
+    <span>{{ _('Magyarország Kormánya', 'Government of Hungary') }}</span>
+  </span>
+  <span class="infoblokk__motto">{{ _('Befektetés a jövőbe', 'Investing in your future') }}</span>
+</a>

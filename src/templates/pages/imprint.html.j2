@@ -18,6 +18,14 @@
         <div><dt>{{ _('Telefon', 'Phone') }}</dt><dd><a href="tel:+3636494183">+36 36 494 183</a></dd></div>
         <div><dt>E-mail</dt><dd><a href="mailto:info1@steelriderskft.hu">info1@steelriderskft.hu</a></dd></div>
       </dl>
+      <h2 class="h3 imprint__h">{{ _('Tárhelyszolgáltató', 'Hosting provider') }}</h2>
+      <dl class="datasheet imprint__sheet">
+        <div><dt>{{ _('Név', 'Name') }}</dt><dd>{{ site.host.name }}</dd></div>
+        <div><dt>{{ _('Cím', 'Address') }}</dt><dd>{{ site.host.address }}</dd></div>
+        <div><dt>E-mail</dt><dd><a href="mailto:{{ site.host.email }}">{{ site.host.email }}</a></dd></div>
+        <div><dt>Web</dt><dd><a href="{{ site.host.web }}" target="_blank" rel="noopener">{{ site.host.web | replace('https://', '') }}</a></dd></div>
+      </dl>
+      <p class="imprint__note">{{ _('A weboldal tartalma – szövegek, fotók, grafikai elemek és a Steel Riders logó – a Steel Riders Kft. szellemi tulajdona; felhasználásuk kizárólag előzetes írásos engedéllyel lehetséges. Személyes adatok kezeléséről az', 'The content of this website – texts, photos, graphics and the Steel Riders logo – is the intellectual property of Steel Riders Kft. and may only be used with prior written permission. For the processing of personal data, see our') }} <a href="{{ href('privacy') }}">{{ _('adatkezelési tájékoztatóban', 'privacy notice') }}</a>{{ _(' olvashat.', '.') }}</p>
     </div>
   </div>
 </section>

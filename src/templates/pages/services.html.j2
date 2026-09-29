@@ -16,6 +16,7 @@
     <a href="#ontveny">{{ _('Öntvény-megmunkálás', 'Casting machining') }}</a>
     <a href="#altalanos">{{ _('Általános fémforgácsolás', 'General machining') }}</a>
     <a href="#sorozatgyartas">{{ _('Sorozatgyártás', 'Series production') }}</a>
+    <a href="#parameterek">{{ _('Paraméterek', 'Capabilities') }}</a>
     <a href="#anyagok">{{ _('Anyagok', 'Materials') }}</a>
     <a href="#folyamat">{{ _('Folyamat', 'Process') }}</a>
   </div>
@@ -181,6 +182,62 @@
         <li>{{ _('Egyedi alkatrészek és kissorozatok hagyományos és NC gépeken is', 'One-off parts and small batches on conventional and NC machines as well') }}</li>
       </ul>
     </div>
+  </div>
+</section>
+
+<section class="section" id="parameterek">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <p class="eyebrow">{{ _('Technológiai paraméterek', 'Technical capabilities') }}</p>
+        <h2 class="h2">{{ _('Mit tudunk legyártani?', 'What can we make?') }}</h2>
+      </div>
+      <p class="section-head__lead">{{ _('A jellemző megmunkálási tartományok gépparkunk alapján. A határértékek közelében lévő alkatrészeknél kérje egyedi ajánlatunkat.', 'Typical machining envelopes based on our machine park. For parts close to the limits, ask for an individual quotation.') }}</p>
+    </div>
+    <div class="caps">
+      <article class="cap reveal">
+        <p class="cap__kind">{{ _('Hosszesztergálás rúdból', 'Swiss-type bar turning') }}</p>
+        <p class="cap__big">Ø 1–32<small> mm</small></p>
+        <dl>
+          <div><dt>{{ _('Munkadarab hossz', 'Part length') }}</dt><dd>{{ _('max. 320 mm / befogás', 'max. 320 mm / chucking') }}</dd></div>
+          <div><dt>{{ _('Gépek', 'Machines') }}</dt><dd>STAR SA/SB/SR, INDEX GS30</dd></div>
+          <div><dt>{{ _('Műveletek', 'Operations') }}</dt><dd>{{ _('esztergálás, fúrás, menet, keresztfúrás, marás, hátoldali megmunkálás', 'turning, drilling, threading, cross-drilling, milling, back working') }}</dd></div>
+        </dl>
+      </article>
+      <article class="cap reveal">
+        <p class="cap__kind">{{ _('Tokmányos CNC esztergálás', 'CNC chucker turning') }}</p>
+        <p class="cap__big">Ø 250<small> mm</small></p>
+        <dl>
+          <div><dt>{{ _('Munkadarab hossz', 'Part length') }}</dt><dd>{{ _('max. 400 mm', 'max. 400 mm') }}</dd></div>
+          <div><dt>{{ _('Rúdátmérő', 'Bar capacity') }}</dt><dd>{{ _('max. Ø 65 mm', 'max. Ø 65 mm') }}</dd></div>
+          <div><dt>{{ _('Gépek', 'Machines') }}</dt><dd>Nakamura TW, Mori Seiki ZL, Takisawa</dd></div>
+        </dl>
+      </article>
+      <article class="cap reveal">
+        <p class="cap__kind">{{ _('NC csúcsesztergálás', 'NC centre lathe turning') }}</p>
+        <p class="cap__big">Ø 630<small> mm</small></p>
+        <dl>
+          <div><dt>{{ _('Csúcstávolság', 'Between centres') }}</dt><dd>{{ _('max. 1500 mm', 'max. 1,500 mm') }}</dd></div>
+          <div><dt>{{ _('Gépek', 'Machines') }}</dt><dd>EEN320 / 400 / 630</dd></div>
+          <div><dt>{{ _('Jellemző', 'Typical') }}</dt><dd>{{ _('tengelyek, tárcsák, kis sorozat', 'shafts, discs, small batches') }}</dd></div>
+        </dl>
+      </article>
+      <article class="cap reveal">
+        <p class="cap__kind">{{ _('CNC marás', 'CNC milling') }}</p>
+        <p class="cap__big">1020 × 510<small> mm</small></p>
+        <dl>
+          <div><dt>X / Y / Z</dt><dd>1020 × 510 × 510 mm</dd></div>
+          <div><dt>{{ _('Asztalterhelés', 'Table load') }}</dt><dd>{{ _('max. 600 kg', 'max. 600 kg') }}</dd></div>
+          <div><dt>{{ _('Kiegészítés', 'Options') }}</dt><dd>{{ _('4. tengely, osztófej, többdarabos készülékek', '4th axis, indexer, multi-part fixtures') }}</dd></div>
+        </dl>
+      </article>
+    </div>
+    <dl class="captol">
+      <div><dt>{{ _('Méretpontosság', 'Dimensional tolerance') }}</dt><dd>± 0,01 mm</dd><span>{{ _('IT7, kritikus méreteken IT6', 'IT7, IT6 on critical features') }}</span></div>
+      <div><dt>{{ _('Felületi érdesség', 'Surface roughness') }}</dt><dd>Ra 0,4 µm</dd><span>{{ _('esztergált felületen, jellemzően Ra 0,8–1,6', 'turned surface, typically Ra 0.8–1.6') }}</span></div>
+      <div><dt>{{ _('Sorozatnagyság', 'Batch size') }}</dt><dd>100 – 1 000 000+</dd><span>{{ _('db / év, keretszerződéssel', 'pcs / year, with blanket orders') }}</span></div>
+      <div><dt>{{ _('Átfutási idő', 'Lead time') }}</dt><dd>{{ _('2–4 hét', '2–4 weeks') }}</dd><span>{{ _('mintadarab: 5–10 munkanap', 'samples: 5–10 working days') }}</span></div>
+    </dl>
   </div>
 </section>
 

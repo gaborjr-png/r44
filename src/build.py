@@ -30,9 +30,10 @@ PAGES = [
     ("careers",   "karrier.html",       "careers.html",      "Karrier",        "Careers"),
     ("contact",   "kapcsolat.html",     "contact.html",      "Kapcsolat",      "Contact"),
     ("imprint",   "impresszum.html",    "imprint.html",      "Impresszum",     "Imprint"),
+    ("privacy",   "adatvedelem.html",   "privacy.html",      "Adatvédelem",    "Privacy"),
     ("notfound",  "404.html",           "404.html",          "404",            "404"),
 ]
-HIDDEN = {"home", "imprint", "notfound"}          # not in the main navigation
+HIDDEN = {"home", "imprint", "privacy", "notfound"}          # not in the main navigation
 NO_INDEX = {"notfound"}                           # not in the sitemap
 
 # Search / share descriptions per page (hu, en)
@@ -57,7 +58,39 @@ DESCRIPTIONS = {
                 "Contact and quotation requests: Steel Riders Kft., Kossuth út 64, 3351 Verpelét, Hungary. Phone: +36 36 494 183."),
     "imprint": ("A Steel Riders Kft. cégadatai: székhely, adószám, cégjegyzékszám, elérhetőségek.",
                 "Company details of Steel Riders Kft.: registered office, VAT number, company registration number, contacts."),
+    "privacy": ("A Steel Riders Kft. adatkezelési tájékoztatója és süti-szabályzata.",
+                "Privacy notice and cookie policy of Steel Riders Kft."),
     "notfound": ("Az oldal nem található.", "Page not found."),
+}
+
+# Company data used across the site.
+# Values marked PLACEHOLDER are approximate sample data – replace them with the
+# real figures before going live (see TODO_ADATOK.md in the repository root).
+SITE = {
+    # Where the RFQ form is delivered (also set in src/api/config.php)
+    "rfq_email": "info1@steelriderskft.hu",
+    "response_hours": 48,                                   # PLACEHOLDER
+    # Hosting provider – legally required in the imprint (Ektv. 4. §)
+    "host": {                                               # PLACEHOLDER
+        "name": "Rackhost Zrt.",
+        "address": "6722 Szeged, Tisza Lajos krt. 41.",
+        "email": "info@rackhost.hu",
+        "web": "https://www.rackhost.hu",
+    },
+    # Google Analytics 4 measurement ID – loaded only after cookie consent.
+    # Leave as "G-XXXXXXXXXX" to disable analytics entirely.
+    "ga4": "G-XXXXXXXXXX",                                  # PLACEHOLDER
+    # Google Business Profile
+    "maps_url": "https://www.google.com/maps/search/?api=1&query=Steel+Riders+Kft+Verpel%C3%A9t+Kossuth+%C3%BAt+64",
+    "review_url": "https://www.google.com/maps/search/?api=1&query=Steel+Riders+Kft+Verpel%C3%A9t",  # PLACEHOLDER: g.page/r/…/review
+    "maps_embed": "https://www.google.com/maps?q=Steel+Riders+Kft,+Verpel%C3%A9t,+Kossuth+%C3%BAt+64&output=embed",
+    # Certificates (PDFs in src/assets/docs/)
+    "certs": [                                              # PLACEHOLDER
+        {"std": "ISO 9001:2015", "hu": "Minőségirányítási rendszer", "en": "Quality management system",
+         "body": "SGS Hungária Kft.", "no": "HU25/000000", "valid": "2027-06-30", "file": "iso-9001.pdf"},
+        {"std": "ISO 14001:2015", "hu": "Környezetirányítási rendszer", "en": "Environmental management system",
+         "body": "SGS Hungária Kft.", "no": "HU25/000001", "valid": "2027-06-30", "file": "iso-14001.pdf"},
+    ],
 }
 
 # Machine park – official list supplied by Steel Riders Kft.
@@ -168,6 +201,7 @@ def render():
     if OUT.exists():
         shutil.rmtree(OUT)
     shutil.copytree(SRC / "assets", OUT / "assets")
+    shutil.copytree(SRC / "api", OUT / "api")
 
     for lang in ("hu", "en"):
         root = "" if lang == "hu" else "../"
@@ -195,7 +229,7 @@ def render():
                 site_url=SITE_URL,
                 hu_url=f"{SITE_URL}/{'' if hu_file == 'index.html' else hu_file}",
                 en_url=f"{SITE_URL}/en/{'' if en_file == 'index.html' else en_file}",
-                machines=MACHINES, totals=TOTALS,
+                machines=MACHINES, totals=TOTALS, site=SITE,
                 year=date.today().year, years=date.today().year - 1997,
             )
             html = env.get_template(f"pages/{key}.html.j2").render(**ctx)

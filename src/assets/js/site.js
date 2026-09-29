@@ -384,7 +384,11 @@
   if (form) {
     var steps = $$('.rfq__step', form), marks = $$('.stepper li', form);
     var status = $('#rfqStatus'), text = $('#rfqText'), mail = $('#rfqMail'), copy = $('#rfqCopy');
-    var current = 1;
+    var send = $('#rfqSend'), done = $('#rfqDone'), fallback = $('#rfqFallback'), actions = $('#rfqActions');
+    var fileInput = $('#f-files'), drop = $('#rfqDrop'), list = $('#rfqList');
+    var ds = form.dataset, files = [], opened = Date.now(), current = 1;
+    var EXT = /\.(pdf|step|stp|igs|iges|dxf|dwg|x_t|sldprt|zip|png|jpe?g)$/i, MAX_FILES = 5, MAX_BYTES = 20 * 1048576;
+
     function show(n, scroll) {
       current = n;
       steps.forEach(function (s) { s.hidden = +s.dataset.step !== n; });
@@ -397,14 +401,50 @@
     function valid(step) {
       var okAll = true;
       $$('[required]', step).forEach(function (f) {
-        var bad = !f.value.trim() || (f.type === 'email' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(f.value.trim()));
+        var bad = f.type === 'checkbox' ? !f.checked
+          : !f.value.trim() || (f.type === 'email' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(f.value.trim()));
         f.classList.toggle('is-invalid', bad);
         f.setAttribute('aria-invalid', String(bad));
         if (bad && okAll) { f.focus(); okAll = false; }
       });
-      if (!okAll) status.textContent = form.dataset.msgInvalid;
+      if (!okAll) status.textContent = ds.msgInvalid;
       return okAll;
     }
+    function size(b) { return b > 1048576 ? (b / 1048576).toFixed(1) + ' MB' : Math.max(1, Math.round(b / 1024)) + ' kB'; }
+    function renderFiles() {
+      list.innerHTML = '';
+      files.forEach(function (f, i) {
+        var li = document.createElement('li');
+        li.innerHTML = '<span class="drop__ext"></span><span class="drop__name"></span><span class="drop__size"></span><button type="button" class="drop__rm">×</button>';
+        li.children[0].textContent = (f.name.split('.').pop() || '').toUpperCase();
+        li.children[1].textContent = f.name;
+        li.children[2].textContent = size(f.size);
+        li.children[3].setAttribute('aria-label', ds.msgRemove + ': ' + f.name);
+        li.children[3].addEventListener('click', function () { files.splice(i, 1); renderFiles(); });
+        list.appendChild(li);
+      });
+    }
+    function addFiles(fl) {
+      var msg = '';
+      Array.prototype.forEach.call(fl, function (f) {
+        var total = files.reduce(function (a, x) { return a + x.size; }, 0);
+        if (!EXT.test(f.name)) msg = ds.msgType + ': ' + f.name;
+        else if (files.length >= MAX_FILES || total + f.size > MAX_BYTES) msg = ds.msgSize;
+        else if (!files.some(function (x) { return x.name === f.name && x.size === f.size; })) files.push(f);
+      });
+      status.textContent = msg;
+      renderFiles();
+    }
+    if (fileInput) {
+      fileInput.addEventListener('change', function () { addFiles(fileInput.files); fileInput.value = ''; });
+      ['dragenter', 'dragover'].forEach(function (ev) { drop.addEventListener(ev, function () { drop.classList.add('is-over'); }); });
+      ['dragleave', 'drop'].forEach(function (ev) { drop.addEventListener(ev, function () { drop.classList.remove('is-over'); }); });
+    }
+    $$('input, select, textarea', form).forEach(function (f) {
+      f.addEventListener(f.type === 'checkbox' ? 'change' : 'input', function () {
+        if (f.classList.contains('is-invalid')) { f.classList.remove('is-invalid'); f.removeAttribute('aria-invalid'); status.textContent = ''; }
+      });
+    });
     show(1);
 
     $$('[data-next]', form).forEach(function (b) { b.addEventListener('click', function () { if (valid(steps[current - 1])) show(current + 1, true); }); });
@@ -415,22 +455,100 @@
       if (!valid(steps[1])) return;
       var lines = [];
       $$('input, select, textarea', form).forEach(function (f) {
+        if (f.type === 'checkbox' || f.type === 'file' || f.name === 'website') return;
         var v = f.value.trim();
         if (!v || (f.tagName === 'SELECT' && f.selectedIndex === 0)) return;
         var label = $('label[for="' + f.id + '"]', form);
         lines.push((label ? label.textContent.replace('*', '').trim() : f.name) + ': ' + v);
       });
-      var subject = form.dataset.msgSubject + ' – ' + form.elements.company.value.trim();
+      if (files.length) lines.push(ds.msgFiles + ': ' + files.map(function (f) { return f.name; }).join(', '));
+      var subject = ds.msgSubject + ' – ' + form.elements.company.value.trim();
       var body = lines.join('\n');
       text.textContent = subject + '\n\n' + body;
-      mail.href = 'mailto:' + form.dataset.to + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+      mail.href = 'mailto:' + ds.to + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+      fallback.hidden = true; actions.hidden = false;
       show(3, true);
     });
 
+    send.addEventListener('click', function () {
+      var fd = new FormData(form);
+      fd.delete('files[]');
+      files.forEach(function (f) { fd.append('files[]', f, f.name); });
+      fd.append('lang', ds.lang);
+      fd.append('elapsed', String(Math.round((Date.now() - opened) / 1000)));
+      var label = send.innerHTML;
+      send.disabled = true; send.textContent = ds.msgSending;
+      fetch(ds.endpoint, { method: 'POST', body: fd, headers: { Accept: 'application/json' } })
+        .then(function (r) { return r.json().then(function (j) { return { ok: r.ok, j: j }; }); })
+        .then(function (res) {
+          if (res.ok && res.j.ok) {
+            $('#rfqRef').textContent = res.j.ref;
+            steps.forEach(function (s) { s.hidden = true; });
+            $('.stepper', form).hidden = true;
+            done.hidden = false; done.focus();
+            if (window.gtag) window.gtag('event', 'generate_lead', { method: 'rfq_form' });
+          } else if (res.j && res.j.message) {
+            status.textContent = res.j.message;
+          } else throw new Error('rfq');
+        })
+        .catch(function () { actions.hidden = true; fallback.hidden = false; })
+        .then(function () { send.disabled = false; send.innerHTML = label; });
+    });
+
     copy.addEventListener('click', function () {
-      var done = function () { copy.textContent = copy.dataset.done; };
+      var ok = function () { copy.textContent = copy.dataset.done; };
       var sel = function () { var r = document.createRange(); r.selectNodeContents(text); var s = getSelection(); s.removeAllRanges(); s.addRange(r); };
-      if (navigator.clipboard) navigator.clipboard.writeText(text.textContent).then(done, sel); else sel();
+      if (navigator.clipboard) navigator.clipboard.writeText(text.textContent).then(ok, sel); else sel();
     });
   }
+
+  /* ---------- Cookie consent, analytics, map ---------- */
+  var KEY = 'sr-consent';
+  function getConsent() { try { return JSON.parse(localStorage.getItem(KEY)); } catch (e) { return null; } }
+  function setConsent(c) { try { localStorage.setItem(KEY, JSON.stringify(c)); } catch (e) {} }
+  function loadAnalytics() {
+    var id = document.body.dataset.ga;
+    if (!id || /X{4}/.test(id) || window.gtag) return;
+    var s = document.createElement('script');
+    s.async = true; s.src = 'https://www.googletagmanager.com/gtag/js?id=' + id;
+    document.head.appendChild(s);
+    window.dataLayer = window.dataLayer || [];
+    window.gtag = function () { window.dataLayer.push(arguments); };
+    window.gtag('js', new Date());
+    window.gtag('config', id, { anonymize_ip: true });
+  }
+  function loadMap() {
+    var box = $('#mapbox');
+    if (!box || $('iframe', box)) return;
+    var f = document.createElement('iframe');
+    f.src = box.dataset.src; f.loading = 'lazy'; f.title = 'Google Maps'; f.referrerPolicy = 'no-referrer-when-downgrade';
+    box.innerHTML = ''; box.appendChild(f); box.classList.add('is-loaded');
+  }
+  function applyConsent(c) {
+    if (c && c.stats) loadAnalytics();
+    if (c && c.maps) loadMap();
+  }
+  var cb = $('#cookie');
+  if (cb) {
+    var boxes = { stats: $('#ckStats'), maps: $('#ckMaps') };
+    var openCookie = function (detail) {
+      var c = getConsent() || {};
+      boxes.stats.checked = !!c.stats; boxes.maps.checked = !!c.maps;
+      cb.classList.toggle('is-detail', !!detail);
+      cb.hidden = false;
+    };
+    var save = function (c) { c.t = Date.now(); setConsent(c); cb.hidden = true; applyConsent(c); };
+    $('#ckAll').addEventListener('click', function () { save({ stats: true, maps: true }); });
+    $('#ckNone').addEventListener('click', function () { save({ stats: false, maps: false }); });
+    $('#ckMore').addEventListener('click', function () { cb.classList.add('is-detail'); });
+    $('#ckSave').addEventListener('click', function () { save({ stats: boxes.stats.checked, maps: boxes.maps.checked }); });
+    $$('[data-cookie-settings]').forEach(function (a) { a.addEventListener('click', function (e) { e.preventDefault(); openCookie(true); }); });
+    var c0 = getConsent();
+    if (c0) applyConsent(c0); else openCookie(false);
+  }
+  var ml = $('#mapLoad');
+  if (ml) ml.addEventListener('click', function () {
+    var c = getConsent() || { stats: false };
+    c.maps = true; c.t = Date.now(); setConsent(c); loadMap();
+  });
 })();

@@ -29,6 +29,7 @@
       <div><dt>{{ _('Munkarend', 'Operation') }}</dt><dd>{{ _('3 műszak', '3 shifts') }}</dd></div>
     </dl>
   </div>
+  <div class="hero__grant">{% with infoblokk_float = true %}{% include "_infoblokk.html.j2" %}{% endwith %}</div>
 </section>
 
 <section class="brands" aria-label="{{ _('Gépparkunk gyártói', 'Machine manufacturers in our plant') }}">
@@ -302,6 +303,50 @@
       <li class="reveal"><span class="industries__code">06</span><strong>{{ _('Repülőgépipar', 'Aerospace') }}</strong><span>{{ _('Többek között a HC-02 helikopter', 'Including the HC-02 helicopter') }}</span></li>
       <li class="reveal"><span class="industries__code">07</span><strong>{{ _('Orvosi és vegyipar', 'Medical & chemical') }}</strong><span>{{ _('Orvosi és vegyipari berendezések', 'Medical and chemical equipment') }}</span></li>
     </ul>
+  </div>
+</section>
+
+<section class="section section--dark cases" id="referenciak">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <p class="eyebrow eyebrow--light">{{ _('Referenciák', 'References') }}</p>
+        <h2 class="h2">{{ _('Eredmények partnereinknél', 'Results for our partners') }}</h2>
+      </div>
+      <p>{{ _('Partnereink nevét titoktartási megállapodások miatt nem közöljük – a projekteket iparág szerint mutatjuk be. Részletes referenciát személyes egyeztetésen adunk.', 'Our partners’ names are not published due to non-disclosure agreements – projects are presented by industry. Detailed references are available in a personal meeting.') }}</p>
+    </div>
+    <div class="cases__grid">
+      <article class="case reveal">
+        <p class="case__ind">{{ _('Pneumatika', 'Pneumatics') }} · {{ _('német rendszerszállító', 'German system supplier') }}</p>
+        <h3 class="h3">{{ _('Sárgaréz szeleptest-család', 'Brass valve body family') }}</h3>
+        <p>{{ _('14 változatból álló alkatrészcsalád gyártásának átvétele. Közös szerszám- és készülékkoncepcióval a ciklusidőt csökkentettük, a változatok közti átállás 40 percre rövidült.', 'Took over a family of 14 variants. With a shared tooling and fixture concept we cut the cycle time and reduced changeover between variants to 40 minutes.') }}</p>
+        <dl class="case__kpi">
+          <div><dt>{{ _('db / év', 'pcs / year') }}</dt><dd>1,2 M</dd></div>
+          <div><dt>{{ _('ciklusidő', 'cycle time') }}</dt><dd>−28%</dd></div>
+          <div><dt>{{ _('reklamáció', 'rejects') }}</dt><dd>&lt;50 ppm</dd></div>
+        </dl>
+      </article>
+      <article class="case reveal">
+        <p class="case__ind">{{ _('Járműipar', 'Automotive') }} · {{ _('Tier-2 beszállító', 'Tier-2 supplier') }}</p>
+        <h3 class="h3">{{ _('Alumínium szenzorház', 'Aluminium sensor housing') }}</h3>
+        <p>{{ _('Esztergált-mart ház egy befogásban, STAR hosszesztergán. A mintadarabtól a sorozatindításig 6 hét, PPAP dokumentációval és 100%-os kritikus méret-ellenőrzéssel.', 'Turned and milled housing in one clamping on a STAR Swiss-type lathe. Six weeks from sample to series launch, with PPAP documentation and 100% critical-feature inspection.') }}</p>
+        <dl class="case__kpi">
+          <div><dt>{{ _('db / év', 'pcs / year') }}</dt><dd>350 e</dd></div>
+          <div><dt>{{ _('tűrés', 'tolerance') }}</dt><dd>±0,01</dd></div>
+          <div><dt>{{ _('sorozatig', 'to series') }}</dt><dd>{{ _('6 hét', '6 wks') }}</dd></div>
+        </dl>
+      </article>
+      <article class="case reveal">
+        <p class="case__ind">{{ _('Elektronika', 'Electronics') }} · {{ _('hazai gyártó', 'Hungarian OEM') }}</p>
+        <h3 class="h3">{{ _('Csatlakozó- és távtartó elemek', 'Connector and spacer parts') }}</h3>
+        <p>{{ _('Több mint 60 cikkszám kiszolgálása heti hívásos, konszignációs raktáras logisztikával. Az alapanyag-beszerzést és a felületkezelést is mi koordináljuk.', 'Supplying more than 60 part numbers with weekly call-offs and consignment stock. We also coordinate raw material sourcing and surface treatment.') }}</p>
+        <dl class="case__kpi">
+          <div><dt>{{ _('cikkszám', 'part numbers') }}</dt><dd>60+</dd></div>
+          <div><dt>{{ _('szállítási pontosság', 'on-time delivery') }}</dt><dd>98,6%</dd></div>
+          <div><dt>{{ _('együttműködés', 'partnership') }}</dt><dd>{{ _('12 év', '12 yrs') }}</dd></div>
+        </dl>
+      </article>
+    </div>
   </div>
 </section>
 

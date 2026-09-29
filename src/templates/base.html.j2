@@ -28,10 +28,10 @@
   <link rel="stylesheet" href="{{ asset }}css/site.css">
   <script>document.documentElement.classList.replace('no-js', 'js');</script>
   <script type="application/ld+json">
-  {"@context":"https://schema.org","@type":"LocalBusiness","@id":"{{ site_url }}/#org","name":"Steel Riders Kft.","description":"{{ description }}","url":"{{ site_url }}/","logo":"{{ site_url }}/assets/img/logo-badge.webp","image":"{{ site_url }}/assets/img/og.jpg","foundingDate":"1997-03","email":"info1@steelriderskft.hu","telephone":"+36 36 494 183","taxID":"11174864-2-10","numberOfEmployees":50,"address":{"@type":"PostalAddress","streetAddress":"Kossuth út 64.","postalCode":"3351","addressLocality":"Verpelét","addressRegion":"Heves","addressCountry":"HU"},"geo":{"@type":"GeoCoordinates","latitude":47.85,"longitude":20.23},"sameAs":["https://www.facebook.com/steelriderskft/"],"knowsAbout":["CNC turning","CNC milling","Series production","Swiss-type turning"]}
+  {"@context":"https://schema.org","@type":"LocalBusiness","@id":"{{ site_url }}/#org","name":"Steel Riders Kft.","description":"{{ description }}","url":"{{ site_url }}/","logo":"{{ site_url }}/assets/img/logo-badge.webp","image":"{{ site_url }}/assets/img/og.jpg","foundingDate":"1997-03","email":"info1@steelriderskft.hu","telephone":"+36 36 494 183","taxID":"11174864-2-10","numberOfEmployees":50,"address":{"@type":"PostalAddress","streetAddress":"Kossuth út 64.","postalCode":"3351","addressLocality":"Verpelét","addressRegion":"Heves","addressCountry":"HU"},"geo":{"@type":"GeoCoordinates","latitude":47.85,"longitude":20.23},"hasMap":"{{ site.maps_url }}","sameAs":["https://www.facebook.com/steelriderskft/"],"knowsAbout":["CNC turning","CNC milling","Series production","Swiss-type turning"]}
   </script>
 </head>
-<body class="page-{{ page }}">
+<body class="page-{{ page }}" data-ga="{{ site.ga4 }}">
   <a class="skip" href="#main">{{ _('Ugrás a tartalomhoz', 'Skip to content') }}</a>
   <div class="progress" aria-hidden="true"><span id="scrollProgress"></span></div>
 
@@ -105,7 +105,7 @@
         <img class="footer__logo" src="{{ asset }}img/logo-badge.webp" alt="Steel Riders Kft." width="120" height="120" loading="lazy">
         <p>{{ _('Precíziós CNC esztergálás és marás közép- és nagysorozatban. Beszállító 1997 óta.', 'Precision CNC turning and milling in medium and large series. Supplier since 1997.') }}</p>
         <ul class="footer__certs">
-          <li>ISO 9001</li><li>ISO 14001</li>
+          <li><a href="{{ href('quality') }}#tanusitvanyok">ISO 9001</a></li><li><a href="{{ href('quality') }}#tanusitvanyok">ISO 14001</a></li>
         </ul>
       </div>
       <div>
@@ -142,10 +142,30 @@
       <span>{{ _('Adószám', 'VAT no.') }}: 11174864-2-10</span>
       <span>{{ _('Cégjegyzékszám', 'Company reg. no.') }}: 10-09-022629</span>
       <a href="{{ href('imprint') }}">{{ _('Impresszum', 'Imprint') }}</a>
+      <a href="{{ href('privacy') }}">{{ _('Adatvédelem', 'Privacy') }}</a>
+      <a href="{{ href('privacy') }}#sutik" data-cookie-settings>{{ _('Süti-beállítások', 'Cookie settings') }}</a>
       <a href="https://www.facebook.com/steelriderskft/" rel="noopener" target="_blank">Facebook</a>
       <a class="footer__top" href="#main">{{ _('Vissza a tetejére', 'Back to top') }} ↑</a>
     </div>
   </footer>
+
+  <div class="cookie" id="cookie" role="dialog" aria-labelledby="ckTitle" aria-live="polite" hidden>
+    <div class="cookie__main">
+      <p class="cookie__title" id="ckTitle">{{ _('Sütik a weboldalon', 'Cookies on this website') }}</p>
+      <p>{{ _('A weboldal működéséhez szükséges sütiket mindig használjuk. Az Ön hozzájárulásával látogatottsági statisztikát is készítünk, és betöltjük a Google Térképet.', 'We always use the cookies needed for the site to work. With your consent we also collect visitor statistics and load Google Maps.') }} <a href="{{ href('privacy') }}#sutik">{{ _('Részletek', 'Details') }}</a></p>
+    </div>
+    <div class="cookie__detail">
+      <label class="check check--on"><input type="checkbox" checked disabled> <span><b>{{ _('Szükséges', 'Necessary') }}</b> — {{ _('nyelv, beállítások mentése', 'language, saving your settings') }}</span></label>
+      <label class="check"><input type="checkbox" id="ckStats"> <span><b>{{ _('Statisztika', 'Statistics') }}</b> — {{ _('Google Analytics, anonimizált IP-címmel', 'Google Analytics with anonymised IP') }}</span></label>
+      <label class="check"><input type="checkbox" id="ckMaps"> <span><b>{{ _('Külső tartalom', 'External content') }}</b> — {{ _('beágyazott Google Térkép', 'embedded Google Maps') }}</span></label>
+    </div>
+    <div class="cookie__actions">
+      <button class="btn btn--text" type="button" id="ckMore">{{ _('Beállítások', 'Settings') }}</button>
+      <button class="btn btn--outline" type="button" id="ckNone">{{ _('Csak a szükségesek', 'Necessary only') }}</button>
+      <button class="btn btn--outline cookie__save" type="button" id="ckSave">{{ _('Kiválasztottak mentése', 'Save selection') }}</button>
+      <button class="btn btn--brass" type="button" id="ckAll">{{ _('Összes elfogadása', 'Accept all') }}</button>
+    </div>
+  </div>
 
   <script src="{{ asset }}vendor/three.min.js" defer></script>
   <script src="{{ asset }}vendor/three-post.js" defer></script>
