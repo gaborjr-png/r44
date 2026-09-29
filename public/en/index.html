@@ -70,6 +70,7 @@
     </div>
   </header>
 
+  <a class="fab" href="contact.html#ajanlatkeres">Get a quote</a>
   <main id="main">
 
 
@@ -122,6 +123,13 @@
           <div><dt>T</dt><dd data-k="t">T0000</dd></div>
           <div><dt>M</dt><dd data-k="m">M09</dd></div>
         </dl>
+        <div class="meters">
+          <div><span>Cycle time</span><b id="mCycle">00:00.0</b></div>
+          <div><span>Parts</span><b id="mParts">0001</b></div>
+          <div><span>Modal</span><b id="mModal">G00</b></div>
+          <div class="meters__load"><span>Spindle load</span><i><em id="mLoad"></em></i></div>
+        </div>
+        <div class="plot"><canvas id="plot" aria-label="Tool path in the X–Z plane" role="img"></canvas><span>Tool path · X/Z</span></div>
         <div class="nc" id="nc" tabindex="0" aria-label="NC program"><ol id="ncList"></ol></div>
         <p class="ctrl__part">Part: M20×1.5 threaded bushing, Ø30 × 50 mm, O-ring groove, Ø10 through bore</p>
       </aside>
@@ -175,53 +183,158 @@
   </div>
 </section>
 
-<section class="section section--dark" id="alkatreszek">
+<section class="section section--dark showcase-sec" id="alkatreszek">
   <div class="wrap">
     <div class="section-head">
       <div>
-        <p class="eyebrow eyebrow--light">Typical components</p>
-        <h2 class="h2">Cylinders, pistons, valves – and much more</h2>
+        <p class="eyebrow eyebrow--light">From our production</p>
+        <h2 class="h2">Components that keep industry running</h2>
       </div>
-      <p>Rotate the models. Typical component types from mechanical engineering, pneumatics and hydraulics, automotive and electronics.</p>
+      <p>Housings, flanged bushings, shafts, valve components – milled and turned in aluminium, steel and brass. Click the markers for details.</p>
     </div>
 
-    <div class="viewer" id="viewer">
-      <div class="viewer__list" role="tablist" aria-label="Parts">
-        <button type="button" role="tab" aria-selected="true" data-part="bushing">
-          <span class="viewer__n">01</span>
-          <span class="viewer__name">Threaded bushing</span>
-          <span class="viewer__meta">CuZn39Pb3 · turning, drilling, threading</span>
-        </button>
-        <button type="button" role="tab" aria-selected="false" data-part="piston">
-          <span class="viewer__n">02</span>
-          <span class="viewer__name">Hydraulic piston</span>
-          <span class="viewer__meta">Steel · seal and guide-ring grooves</span>
-        </button>
-        <button type="button" role="tab" aria-selected="false" data-part="spool">
-          <span class="viewer__n">03</span>
-          <span class="viewer__name">Pneumatic valve spool</span>
-          <span class="viewer__meta">Steel · 4 control lands, M8 thread</span>
-        </button>
-        <button type="button" role="tab" aria-selected="false" data-part="fitting">
-          <span class="viewer__n">04</span>
-          <span class="viewer__name">Hex fitting</span>
-          <span class="viewer__meta">Brass · SW22, G1/4 thread</span>
-        </button>
-        <button type="button" role="tab" aria-selected="false" data-part="flange">
-          <span class="viewer__n">05</span>
-          <span class="viewer__name">Cylinder end cap</span>
-          <span class="viewer__meta">Aluminium · 6 holes, O-ring groove</span>
-        </button>
-        <button type="button" role="tab" aria-selected="false" data-part="manifold">
-          <span class="viewer__n">06</span>
-          <span class="viewer__name">Valve manifold</span>
-          <span class="viewer__meta">Aluminium · milling, counterbores</span>
-        </button>
+    <div class="showcase" data-showcase>
+      <div class="showcase__tabs" role="tablist" aria-label="Technology">
+        <button role="tab" aria-selected="true" data-scene="mill"><span>01</span>Milling · machining centre</button>
+        <button role="tab" aria-selected="false" data-scene="turn"><span>02</span>Automatic turning · STAR SR 16</button>
       </div>
-      <div class="viewer__stage">
-        <canvas id="viewerCanvas" role="img" aria-label="Rotatable 3D part"></canvas>
-        <p class="console__hint">Drag to rotate</p>
+
+      <figure class="showcase__scene is-active" data-scene="mill">
+        <img src="../assets/img/alkatreszek-maras.webp" alt="Milled and turned parts in front of the machining centre" loading="lazy" width="1448" height="1086">
+        <button type="button" class="spot" style="left: 19%; top: 55%" aria-describedby="spot-mill-1" data-i="0">
+          <span class="sr-only">Milled aluminium housing</span>
+        </button>
+        <div class="spot__card" id="spot-mill-1" role="tooltip" style="--x: 19; --y: 55" data-i="0">
+          <span class="spot__n">01</span>
+          <strong>Milled aluminium housing</strong>
+          <span>Multi-sided machining: large-diameter fitted bore, threaded holes, pockets and slots in one part.</span>
+        </div>
+        <button type="button" class="spot" style="left: 49%; top: 45%" aria-describedby="spot-mill-2" data-i="1">
+          <span class="sr-only">Flanged bushing</span>
+        </button>
+        <div class="spot__card" id="spot-mill-2" role="tooltip" style="--x: 49; --y: 45" data-i="1">
+          <span class="spot__n">02</span>
+          <strong>Flanged bushing</strong>
+          <span>Turned body and flange with holes on a pitch circle – a combination of turning and milling.</span>
+        </div>
+        <button type="button" class="spot" style="left: 79%; top: 51%" aria-describedby="spot-mill-3" data-i="2">
+          <span class="sr-only">Frame component</span>
+        </button>
+        <div class="spot__card" id="spot-mill-3" role="tooltip" style="--x: 79; --y: 51" data-i="2">
+          <span class="spot__n">03</span>
+          <strong>Frame component</strong>
+          <span>Pocket milling, internal contours and through holes in aluminium on a vertical machining centre.</span>
+        </div>
+        <button type="button" class="spot" style="left: 19%; top: 80%" aria-describedby="spot-mill-4" data-i="3">
+          <span class="sr-only">Spur gear</span>
+        </button>
+        <div class="spot__card" id="spot-mill-4" role="tooltip" style="--x: 19; --y: 80" data-i="3">
+          <span class="spot__n">04</span>
+          <strong>Spur gear</strong>
+          <span>Turned hub and toothed rim – one-off and small-batch drive components.</span>
+        </div>
+        <button type="button" class="spot" style="left: 78%; top: 73%" aria-describedby="spot-mill-5" data-i="4">
+          <span class="sr-only">Lever arm</span>
+        </button>
+        <div class="spot__card" id="spot-mill-5" role="tooltip" style="--x: 78; --y: 73" data-i="4">
+          <span class="spot__n">05</span>
+          <strong>Lever arm</strong>
+          <span>Contour milling, holes and counterbores in one set-up.</span>
+        </div>
+        <button type="button" class="spot" style="left: 26%; top: 16%" aria-describedby="spot-mill-6" data-i="5">
+          <span class="sr-only">Vertical machining centre</span>
+        </button>
+        <div class="spot__card" id="spot-mill-6" role="tooltip" style="--x: 26; --y: 16" data-i="5">
+          <span class="spot__n">06</span>
+          <strong>Vertical machining centre</strong>
+          <span>11 vertical machining centres: Akira Seiki, Bridgeport, Mori Seiki, OKK – with Fanuc, Heidenhain and Mitsubishi controls.</span>
+        </div>
+      </figure>
+      <figure class="showcase__scene" data-scene="turn" hidden>
+        <img src="../assets/img/star-sr16.webp" alt="STAR SR 16 automatic lathe with turned parts" loading="lazy" width="1448" height="1086">
+        <button type="button" class="spot" style="left: 78%; top: 40%" aria-describedby="spot-turn-1" data-i="0">
+          <span class="sr-only">STAR SR 16 automatic lathe</span>
+        </button>
+        <div class="spot__card" id="spot-turn-1" role="tooltip" style="--x: 78; --y: 40" data-i="0">
+          <span class="spot__n">01</span>
+          <strong>STAR SR 16 automatic lathe</strong>
+          <span>15 CNC automatic lathes (INDEX, STAR) for medium and large series production from bar stock.</span>
+        </div>
+        <button type="button" class="spot" style="left: 32%; top: 16%" aria-describedby="spot-turn-2" data-i="1">
+          <span class="sr-only">Fanuc control</span>
+        </button>
+        <div class="spot__card" id="spot-turn-2" role="tooltip" style="--x: 32; --y: 16" data-i="1">
+          <span class="spot__n">02</span>
+          <strong>Fanuc control</strong>
+          <span>The STAR lathes run on Fanuc 16T, 18i and 0i-TF controls.</span>
+        </div>
+        <button type="button" class="spot" style="left: 31%; top: 76%" aria-describedby="spot-turn-3" data-i="2">
+          <span class="sr-only">Brass components</span>
+        </button>
+        <div class="spot__card" id="spot-turn-3" role="tooltip" style="--x: 31; --y: 76" data-i="2">
+          <span class="spot__n">03</span>
+          <strong>Brass components</strong>
+          <span>Threaded and bored brass components – especially for electronics and pneumatics.</span>
+        </div>
+        <button type="button" class="spot" style="left: 39%; top: 81%" aria-describedby="spot-turn-4" data-i="3">
+          <span class="sr-only">Knurled part</span>
+        </button>
+        <div class="spot__card" id="spot-turn-4" role="tooltip" style="--x: 39; --y: 81" data-i="3">
+          <span class="spot__n">04</span>
+          <strong>Knurled part</strong>
+          <span>Knurling, cross holes and threads on a single machine, in one set-up.</span>
+        </div>
+        <button type="button" class="spot" style="left: 48%; top: 91%" aria-describedby="spot-turn-5" data-i="4">
+          <span class="sr-only">Shafts</span>
+        </button>
+        <div class="spot__card" id="spot-turn-5" role="tooltip" style="--x: 48; --y: 91" data-i="4">
+          <span class="spot__n">05</span>
+          <strong>Shafts</strong>
+          <span>Long, slender shafts by Swiss-type turning with tight tolerances.</span>
+        </div>
+        <button type="button" class="spot" style="left: 65%; top: 76%" aria-describedby="spot-turn-6" data-i="5">
+          <span class="sr-only">Cross-drilled parts</span>
+        </button>
+        <div class="spot__card" id="spot-turn-6" role="tooltip" style="--x: 65; --y: 76" data-i="5">
+          <span class="spot__n">06</span>
+          <strong>Cross-drilled parts</strong>
+          <span>Cross holes drilled and faces milled with driven tools on turned parts.</span>
+        </div>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <p class="eyebrow">Why Steel Riders?</p>
+        <h2 class="h2">A supplier you can trust with the whole series</h2>
       </div>
+      <p>More than 20 years in the supplier market and 70,000,000 parts sold – from drawing to delivered component.</p>
+    </div>
+    <div class="why">
+      <article class="why__item reveal">
+        <span class="why__n">50</span>
+        <h3 class="h3">Machines on one site</h3>
+        <p>CNC automatic and sub-spindle lathes, vertical machining centres, NC and conventional machines, grinders – the whole process chain in-house.</p>
+      </article>
+      <article class="why__item reveal">
+        <span class="why__n">3×8</span>
+        <h3 class="h3">Three shifts</h3>
+        <p>Continuous, plannable capacity for medium and large series with scheduled deliveries.</p>
+      </article>
+      <article class="why__item reveal">
+        <span class="why__n">ISO</span>
+        <h3 class="h3">Certified quality</h3>
+        <p>ISO 9001 and ISO 14001 systems, in-house measuring room, SAP-based traceability.</p>
+      </article>
+      <article class="why__item reveal">
+        <span class="why__n">1:1</span>
+        <h3 class="h3">Single source</h3>
+        <p>From material sourcing to delivery – lower logistics costs and one accountable partner.</p>
+      </article>
     </div>
   </div>
 </section>
@@ -244,8 +357,8 @@
         <button role="tab" id="t-gen" aria-controls="p-gen" aria-selected="false" tabindex="-1"><span>04</span>General machining</button>
       </div>
       <div class="tabs__panel" role="tabpanel" id="p-turn" aria-labelledby="t-turn">
-        <figure class="photo " style="--ratio: 4/3">
-  <img src="../assets/img/cnc-esztergalas.jpg" alt="Turned brass component" loading="lazy" decoding="async" data-render="fitting:brass">
+        <figure class="photo " style="--ratio: 4/3; --pos: 60% 50%; --zoom: 1">
+  <img src="../assets/img/star-sr16.webp" alt="STAR SR 16 automatic lathe with turned parts" loading="lazy" decoding="async" data-render="bushing:brass">
 </figure>
         <div class="tabs__body">
           <h3 class="h3">Medium and large series, high precision</h3>
@@ -259,8 +372,8 @@
         </div>
       </div>
       <div class="tabs__panel" role="tabpanel" id="p-mill" aria-labelledby="t-mill" hidden>
-        <figure class="photo " style="--ratio: 4/3">
-  <img src="../assets/img/cnc-maras.jpg" alt="Milled aluminium manifold" loading="lazy" decoding="async" data-render="manifold:alu">
+        <figure class="photo " style="--ratio: 4/3; --pos: 50% 50%; --zoom: 1">
+  <img src="../assets/img/alkatreszek-maras.webp" alt="Milled aluminium parts in front of a machining centre" loading="lazy" decoding="async" data-render="bushing:brass">
 </figure>
         <div class="tabs__body">
           <h3 class="h3">Milling on machining centres</h3>
@@ -273,8 +386,8 @@
         </div>
       </div>
       <div class="tabs__panel" role="tabpanel" id="p-cast" aria-labelledby="t-cast" hidden>
-        <figure class="photo " style="--ratio: 4/3">
-  <img src="../assets/img/ontveny.jpg" alt="Machined aluminium cover" loading="lazy" decoding="async" data-render="flange:alu">
+        <figure class="photo " style="--ratio: 4/3; --pos: 18% 62%; --zoom: 1.7">
+  <img src="../assets/img/alkatreszek-maras.webp" alt="Machined aluminium housing" loading="lazy" decoding="async" data-render="bushing:brass">
 </figure>
         <div class="tabs__body">
           <h3 class="h3">Aluminium and brass castings</h3>
@@ -283,8 +396,8 @@
         </div>
       </div>
       <div class="tabs__panel" role="tabpanel" id="p-gen" aria-labelledby="t-gen" hidden>
-        <figure class="photo " style="--ratio: 4/3">
-  <img src="../assets/img/altalanos.jpg" alt="Hardened and ground machine part" loading="lazy" decoding="async" data-render="spool:steel">
+        <figure class="photo " style="--ratio: 4/3; --pos: 30% 88%; --zoom: 1.9">
+  <img src="../assets/img/star-sr16.webp" alt="Turned shafts and bushings" loading="lazy" decoding="async" data-render="bushing:brass">
 </figure>
         <div class="tabs__body">
           <h3 class="h3">Custom parts with complex geometry</h3>
@@ -338,22 +451,20 @@
 </div>  </div>
 </section>
 
-<section class="section">
-  <div class="wrap feature">
-    <figure class="photo " style="--ratio: 16/10">
-  <img src="../assets/img/hc02.jpg" alt="Hungarocopter HC-02 helicopter" loading="lazy" decoding="async" data-render="piston:steel">
-</figure>
-    <div class="feature__text">
-      <p class="eyebrow">Aerospace</p>
+<section class="section section--dark">
+  <div class="wrap hcband">
+    <div>
+      <p class="eyebrow eyebrow--light">Aerospace</p>
       <h2 class="h2">Hungarocopter HC-02</h2>
-      <p>We manufacture the first Hungarian-designed and built two-seat helicopter as partner of Hungaro-Copter Kft.</p>
-      <dl class="specs specs--inline">
-        <div><dt>Engine</dt><dd>Rotax 915 iS3</dd></div>
-        <div><dt>Rotor</dt><dd>Ø 7000 mm</dd></div>
-        <div><dt>Cruise</dt><dd>160 km/h</dd></div>
-      </dl>
-      <a class="link-arrow" href="helicopter.html">The HC-02 project</a>
+      <p class="lead">We manufacture the first Hungarian-designed and built two-seat helicopter as partner of Hungaro-Copter Kft.</p>
+      <a class="link-arrow link-arrow--light" href="helicopter.html">The helicopter project</a>
     </div>
+    <dl class="hcband__specs">
+      <div><dt>Engine</dt><dd>Rotax 915 iS3</dd></div>
+      <div><dt>Power</dt><dd>141 hp</dd></div>
+      <div><dt>Rotor</dt><dd>7000 mm</dd></div>
+      <div><dt>Cruise</dt><dd>160 km/h</dd></div>
+    </dl>
   </div>
 </section>
 
@@ -421,6 +532,7 @@
   </footer>
 
   <script src="../assets/vendor/three.min.js" defer></script>
+  <script src="../assets/vendor/three-post.js" defer></script>
   <script src="../assets/js/part3d.js" defer></script>
   <script src="../assets/js/site.js" defer></script>
 </body>

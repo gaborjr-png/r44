@@ -70,6 +70,7 @@
     </div>
   </header>
 
+  <a class="fab" href="kapcsolat.html#ajanlatkeres">Ajánlatkérés</a>
   <main id="main">
 
 
@@ -122,6 +123,13 @@
           <div><dt>T</dt><dd data-k="t">T0000</dd></div>
           <div><dt>M</dt><dd data-k="m">M09</dd></div>
         </dl>
+        <div class="meters">
+          <div><span>Ciklusidő</span><b id="mCycle">00:00.0</b></div>
+          <div><span>Darab</span><b id="mParts">0001</b></div>
+          <div><span>Mód</span><b id="mModal">G00</b></div>
+          <div class="meters__load"><span>Orsóterhelés</span><i><em id="mLoad"></em></i></div>
+        </div>
+        <div class="plot"><canvas id="plot" aria-label="Szerszámpálya X–Z síkban" role="img"></canvas><span>Szerszámpálya · X/Z</span></div>
         <div class="nc" id="nc" tabindex="0" aria-label="NC program"><ol id="ncList"></ol></div>
         <p class="ctrl__part">Alkatrész: M20×1,5 menetes persely, Ø30 × 50 mm, O-gyűrű horonnyal, Ø10 átmenő furattal</p>
       </aside>
@@ -175,53 +183,158 @@
   </div>
 </section>
 
-<section class="section section--dark" id="alkatreszek">
+<section class="section section--dark showcase-sec" id="alkatreszek">
   <div class="wrap">
     <div class="section-head">
       <div>
-        <p class="eyebrow eyebrow--light">Jellemző alkatrészek</p>
-        <h2 class="h2">Munkahengerek, dugattyúk, szelepek – és még sok más</h2>
+        <p class="eyebrow eyebrow--light">Gyártásunkból</p>
+        <h2 class="h2">Alkatrészek, amelyek működtetik az ipart</h2>
       </div>
-      <p>Forgassa meg a modelleket. Jellemző alkatrésztípusok a gépészet, pneumatika és hidraulika, a járműipar és az elektronika területéről.</p>
+      <p>Házak, karimás perselyek, tengelyek, szelepalkatrészek – marva és esztergálva, alumíniumból, acélból és sárgarézből. Kattintson a jelölésekre a részletekért.</p>
     </div>
 
-    <div class="viewer" id="viewer">
-      <div class="viewer__list" role="tablist" aria-label="Alkatrészek">
-        <button type="button" role="tab" aria-selected="true" data-part="bushing">
-          <span class="viewer__n">01</span>
-          <span class="viewer__name">Menetes persely</span>
-          <span class="viewer__meta">CuZn39Pb3 · esztergálás, fúrás, menetvágás</span>
-        </button>
-        <button type="button" role="tab" aria-selected="false" data-part="piston">
-          <span class="viewer__n">02</span>
-          <span class="viewer__name">Hidraulikus dugattyú</span>
-          <span class="viewer__meta">Acél · tömítés- és vezetőgyűrű-hornyok</span>
-        </button>
-        <button type="button" role="tab" aria-selected="false" data-part="spool">
-          <span class="viewer__n">03</span>
-          <span class="viewer__name">Pneumatikus szeleptolattyú</span>
-          <span class="viewer__meta">Acél · 4 vezérlőél, M8 menet</span>
-        </button>
-        <button type="button" role="tab" aria-selected="false" data-part="fitting">
-          <span class="viewer__n">04</span>
-          <span class="viewer__name">Hatlapú csatlakozó</span>
-          <span class="viewer__meta">Sárgaréz · SW22, G1/4 menet</span>
-        </button>
-        <button type="button" role="tab" aria-selected="false" data-part="flange">
-          <span class="viewer__n">05</span>
-          <span class="viewer__name">Munkahenger-fedél</span>
-          <span class="viewer__meta">Alumínium · 6 furat, O-gyűrű horony</span>
-        </button>
-        <button type="button" role="tab" aria-selected="false" data-part="manifold">
-          <span class="viewer__n">06</span>
-          <span class="viewer__name">Szelepblokk</span>
-          <span class="viewer__meta">Alumínium · marás, süllyesztések</span>
-        </button>
+    <div class="showcase" data-showcase>
+      <div class="showcase__tabs" role="tablist" aria-label="Technológia">
+        <button role="tab" aria-selected="true" data-scene="mill"><span>01</span>Marás · megmunkálóközpont</button>
+        <button role="tab" aria-selected="false" data-scene="turn"><span>02</span>Automata esztergálás · STAR SR 16</button>
       </div>
-      <div class="viewer__stage">
-        <canvas id="viewerCanvas" role="img" aria-label="Forgatható 3D alkatrész"></canvas>
-        <p class="console__hint">Húzza a forgatáshoz</p>
+
+      <figure class="showcase__scene is-active" data-scene="mill">
+        <img src="assets/img/alkatreszek-maras.webp" alt="Mart és esztergált alkatrészek a megmunkálóközpont előtt" loading="lazy" width="1448" height="1086">
+        <button type="button" class="spot" style="left: 19%; top: 55%" aria-describedby="spot-mill-1" data-i="0">
+          <span class="sr-only">Mart alumínium ház</span>
+        </button>
+        <div class="spot__card" id="spot-mill-1" role="tooltip" style="--x: 19; --y: 55" data-i="0">
+          <span class="spot__n">01</span>
+          <strong>Mart alumínium ház</strong>
+          <span>Többoldali megmunkálás: nagy átmérőjű illesztett furat, menetes furatok, zsebek és hornyok egy darabon.</span>
+        </div>
+        <button type="button" class="spot" style="left: 49%; top: 45%" aria-describedby="spot-mill-2" data-i="1">
+          <span class="sr-only">Karimás persely</span>
+        </button>
+        <div class="spot__card" id="spot-mill-2" role="tooltip" style="--x: 49; --y: 45" data-i="1">
+          <span class="spot__n">02</span>
+          <strong>Karimás persely</strong>
+          <span>Esztergált test és karima, osztókörön elhelyezett furatokkal – esztergálás és marás kombinációja.</span>
+        </div>
+        <button type="button" class="spot" style="left: 79%; top: 51%" aria-describedby="spot-mill-3" data-i="2">
+          <span class="sr-only">Keretes alkatrész</span>
+        </button>
+        <div class="spot__card" id="spot-mill-3" role="tooltip" style="--x: 79; --y: 51" data-i="2">
+          <span class="spot__n">03</span>
+          <strong>Keretes alkatrész</strong>
+          <span>Zsebmarás, belső kontúrok és átmenő furatok alumíniumból, vertikális megmunkálóközponton.</span>
+        </div>
+        <button type="button" class="spot" style="left: 19%; top: 80%" aria-describedby="spot-mill-4" data-i="3">
+          <span class="sr-only">Fogaskerék</span>
+        </button>
+        <div class="spot__card" id="spot-mill-4" role="tooltip" style="--x: 19; --y: 80" data-i="3">
+          <span class="spot__n">04</span>
+          <strong>Fogaskerék</strong>
+          <span>Esztergált agy és fogazott kerület – egyedi és kis sorozatú hajtáselemek.</span>
+        </div>
+        <button type="button" class="spot" style="left: 78%; top: 73%" aria-describedby="spot-mill-5" data-i="4">
+          <span class="sr-only">Kar, hajtókar</span>
+        </button>
+        <div class="spot__card" id="spot-mill-5" role="tooltip" style="--x: 78; --y: 73" data-i="4">
+          <span class="spot__n">05</span>
+          <strong>Kar, hajtókar</strong>
+          <span>Kontúrmarás, furatok és süllyesztések egy felfogásban.</span>
+        </div>
+        <button type="button" class="spot" style="left: 26%; top: 16%" aria-describedby="spot-mill-6" data-i="5">
+          <span class="sr-only">Vertikális megmunkálóközpont</span>
+        </button>
+        <div class="spot__card" id="spot-mill-6" role="tooltip" style="--x: 26; --y: 16" data-i="5">
+          <span class="spot__n">06</span>
+          <strong>Vertikális megmunkálóközpont</strong>
+          <span>11 vertikális megmunkálóközpont: Akira Seiki, Bridgeport, Mori Seiki, OKK – Fanuc, Heidenhain és Mitsubishi vezérléssel.</span>
+        </div>
+      </figure>
+      <figure class="showcase__scene" data-scene="turn" hidden>
+        <img src="assets/img/star-sr16.webp" alt="STAR SR 16 automata eszterga esztergált alkatrészekkel" loading="lazy" width="1448" height="1086">
+        <button type="button" class="spot" style="left: 78%; top: 40%" aria-describedby="spot-turn-1" data-i="0">
+          <span class="sr-only">STAR SR 16 automata eszterga</span>
+        </button>
+        <div class="spot__card" id="spot-turn-1" role="tooltip" style="--x: 78; --y: 40" data-i="0">
+          <span class="spot__n">01</span>
+          <strong>STAR SR 16 automata eszterga</strong>
+          <span>15 CNC automata eszterga (INDEX, STAR) közép- és nagysorozatú alkatrészgyártáshoz, rúdanyagból.</span>
+        </div>
+        <button type="button" class="spot" style="left: 32%; top: 16%" aria-describedby="spot-turn-2" data-i="1">
+          <span class="sr-only">Fanuc vezérlés</span>
+        </button>
+        <div class="spot__card" id="spot-turn-2" role="tooltip" style="--x: 32; --y: 16" data-i="1">
+          <span class="spot__n">02</span>
+          <strong>Fanuc vezérlés</strong>
+          <span>A STAR esztergák Fanuc 16T, 18i és 0i-TF vezérléssel dolgoznak.</span>
+        </div>
+        <button type="button" class="spot" style="left: 31%; top: 76%" aria-describedby="spot-turn-3" data-i="2">
+          <span class="sr-only">Sárgaréz alkatrészek</span>
+        </button>
+        <div class="spot__card" id="spot-turn-3" role="tooltip" style="--x: 31; --y: 76" data-i="2">
+          <span class="spot__n">03</span>
+          <strong>Sárgaréz alkatrészek</strong>
+          <span>Menetes, furatos sárgaréz alkatrészek – kiemelten elektronikai és pneumatikai felhasználásra.</span>
+        </div>
+        <button type="button" class="spot" style="left: 39%; top: 81%" aria-describedby="spot-turn-4" data-i="3">
+          <span class="sr-only">Recézett alkatrész</span>
+        </button>
+        <div class="spot__card" id="spot-turn-4" role="tooltip" style="--x: 39; --y: 81" data-i="3">
+          <span class="spot__n">04</span>
+          <strong>Recézett alkatrész</strong>
+          <span>Recézés, keresztfuratok és menetek egyetlen gépen, egy felfogásban.</span>
+        </div>
+        <button type="button" class="spot" style="left: 48%; top: 91%" aria-describedby="spot-turn-5" data-i="4">
+          <span class="sr-only">Tengelyek</span>
+        </button>
+        <div class="spot__card" id="spot-turn-5" role="tooltip" style="--x: 48; --y: 91" data-i="4">
+          <span class="spot__n">05</span>
+          <strong>Tengelyek</strong>
+          <span>Hosszú, karcsú tengelyek hosszesztergálással, szűk tűréssel.</span>
+        </div>
+        <button type="button" class="spot" style="left: 65%; top: 76%" aria-describedby="spot-turn-6" data-i="5">
+          <span class="sr-only">Keresztfuratos alkatrészek</span>
+        </button>
+        <div class="spot__card" id="spot-turn-6" role="tooltip" style="--x: 65; --y: 76" data-i="5">
+          <span class="spot__n">06</span>
+          <strong>Keresztfuratos alkatrészek</strong>
+          <span>Hajtott szerszámokkal fúrt keresztfuratok és mart felületek esztergált alkatrészeken.</span>
+        </div>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <p class="eyebrow">Miért a Steel Riders?</p>
+        <h2 class="h2">Beszállító, akire a sorozatot is rá lehet bízni</h2>
       </div>
+      <p>Több mint 20 év a beszállítói piacon, 70 000 000 eladott termék – a rajztól a kiszállított alkatrészig.</p>
+    </div>
+    <div class="why">
+      <article class="why__item reveal">
+        <span class="why__n">50</span>
+        <h3 class="h3">Gép egy telephelyen</h3>
+        <p>CNC automata és ellenorsós esztergák, vertikális megmunkálóközpontok, NC és hagyományos gépek, köszörűk – a teljes technológiai lánc házon belül.</p>
+      </article>
+      <article class="why__item reveal">
+        <span class="why__n">3×8</span>
+        <h3 class="h3">Három műszak</h3>
+        <p>Folyamatos, tervezhető kapacitás közép- és nagysorozatokhoz, ütemezett szállításokkal.</p>
+      </article>
+      <article class="why__item reveal">
+        <span class="why__n">ISO</span>
+        <h3 class="h3">Tanúsított minőség</h3>
+        <p>ISO 9001 és ISO 14001 szerinti működés, saját mérőszoba, SAP alapú nyomon követés.</p>
+      </article>
+      <article class="why__item reveal">
+        <span class="why__n">1:1</span>
+        <h3 class="h3">Minden egy kézben</h3>
+        <p>Alapanyag-beszerzéstől a kiszállításig – kevesebb logisztikai költség, egy felelős partner.</p>
+      </article>
     </div>
   </div>
 </section>
@@ -244,8 +357,8 @@
         <button role="tab" id="t-gen" aria-controls="p-gen" aria-selected="false" tabindex="-1"><span>04</span>Általános fémforgácsolás</button>
       </div>
       <div class="tabs__panel" role="tabpanel" id="p-turn" aria-labelledby="t-turn">
-        <figure class="photo " style="--ratio: 4/3">
-  <img src="assets/img/cnc-esztergalas.jpg" alt="Esztergált sárgaréz alkatrész" loading="lazy" decoding="async" data-render="fitting:brass">
+        <figure class="photo " style="--ratio: 4/3; --pos: 60% 50%; --zoom: 1">
+  <img src="assets/img/star-sr16.webp" alt="STAR SR 16 automata eszterga esztergált alkatrészekkel" loading="lazy" decoding="async" data-render="bushing:brass">
 </figure>
         <div class="tabs__body">
           <h3 class="h3">Közép- és nagysorozat nagy pontossággal</h3>
@@ -259,8 +372,8 @@
         </div>
       </div>
       <div class="tabs__panel" role="tabpanel" id="p-mill" aria-labelledby="t-mill" hidden>
-        <figure class="photo " style="--ratio: 4/3">
-  <img src="assets/img/cnc-maras.jpg" alt="Mart alumínium szelepblokk" loading="lazy" decoding="async" data-render="manifold:alu">
+        <figure class="photo " style="--ratio: 4/3; --pos: 50% 50%; --zoom: 1">
+  <img src="assets/img/alkatreszek-maras.webp" alt="Mart alumínium alkatrészek megmunkálóközpont előtt" loading="lazy" decoding="async" data-render="bushing:brass">
 </figure>
         <div class="tabs__body">
           <h3 class="h3">Marási munkák megmunkálóközpontokon</h3>
@@ -273,8 +386,8 @@
         </div>
       </div>
       <div class="tabs__panel" role="tabpanel" id="p-cast" aria-labelledby="t-cast" hidden>
-        <figure class="photo " style="--ratio: 4/3">
-  <img src="assets/img/ontveny.jpg" alt="Megmunkált alumínium fedél" loading="lazy" decoding="async" data-render="flange:alu">
+        <figure class="photo " style="--ratio: 4/3; --pos: 18% 62%; --zoom: 1.7">
+  <img src="assets/img/alkatreszek-maras.webp" alt="Megmunkált alumínium ház" loading="lazy" decoding="async" data-render="bushing:brass">
 </figure>
         <div class="tabs__body">
           <h3 class="h3">Alumínium- és sárgaréz-öntvények</h3>
@@ -283,8 +396,8 @@
         </div>
       </div>
       <div class="tabs__panel" role="tabpanel" id="p-gen" aria-labelledby="t-gen" hidden>
-        <figure class="photo " style="--ratio: 4/3">
-  <img src="assets/img/altalanos.jpg" alt="Hőkezelt, köszörült gépalkatrész" loading="lazy" decoding="async" data-render="spool:steel">
+        <figure class="photo " style="--ratio: 4/3; --pos: 30% 88%; --zoom: 1.9">
+  <img src="assets/img/star-sr16.webp" alt="Esztergált tengelyek és persely" loading="lazy" decoding="async" data-render="bushing:brass">
 </figure>
         <div class="tabs__body">
           <h3 class="h3">Egyedi, bonyolult geometriájú alkatrészek</h3>
@@ -338,22 +451,20 @@
 </div>  </div>
 </section>
 
-<section class="section">
-  <div class="wrap feature">
-    <figure class="photo " style="--ratio: 16/10">
-  <img src="assets/img/hc02.jpg" alt="Hungarocopter HC-02 helikopter" loading="lazy" decoding="async" data-render="piston:steel">
-</figure>
-    <div class="feature__text">
-      <p class="eyebrow">Repülőipar</p>
+<section class="section section--dark">
+  <div class="wrap hcband">
+    <div>
+      <p class="eyebrow eyebrow--light">Repülőipar</p>
       <h2 class="h2">Hungarocopter HC-02</h2>
-      <p>Az első magyar fejlesztésű és gyártású kétszemélyes helikopter gyártásában a Hungaro-Copter Kft. partnereként veszünk részt.</p>
-      <dl class="specs specs--inline">
-        <div><dt>Hajtómű</dt><dd>Rotax 915 iS3</dd></div>
-        <div><dt>Rotor</dt><dd>Ø 7000 mm</dd></div>
-        <div><dt>Utazósebesség</dt><dd>160 km/h</dd></div>
-      </dl>
-      <a class="link-arrow" href="helikopter.html">A HC-02 projekt</a>
+      <p class="lead">Az első magyar fejlesztésű és gyártású kétszemélyes helikopter gyártásában a Hungaro-Copter Kft. partnereként veszünk részt.</p>
+      <a class="link-arrow link-arrow--light" href="helikopter.html">A helikopter projekt</a>
     </div>
+    <dl class="hcband__specs">
+      <div><dt>Hajtómű</dt><dd>Rotax 915 iS3</dd></div>
+      <div><dt>Teljesítmény</dt><dd>141 LE</dd></div>
+      <div><dt>Rotorátmérő</dt><dd>7000 mm</dd></div>
+      <div><dt>Utazósebesség</dt><dd>160 km/h</dd></div>
+    </dl>
   </div>
 </section>
 
@@ -421,6 +532,7 @@
   </footer>
 
   <script src="assets/vendor/three.min.js" defer></script>
+  <script src="assets/vendor/three-post.js" defer></script>
   <script src="assets/js/part3d.js" defer></script>
   <script src="assets/js/site.js" defer></script>
 </body>

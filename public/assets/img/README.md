@@ -1,6 +1,8 @@
 # Fotók / Photos
 
-Megvan: `logo-badge.webp` (logó), `telephely.webp` (üzemépület).
+Megvan: `logo-badge.webp` (logó), `telephely.webp` (üzemépület), `alkatreszek-maras.webp`
+(mart alkatrészek, megmunkálóközpont), `star-sr16.webp` (STAR SR-16 automata eszterga, alkatrészek).
+Ezek kivágásai (`pos`, `zoom` paraméter a sablonokban) töltik ki a legtöbb képhelyet.
 
 Tegye ide a fotókat az alábbi fájlnevekkel (JPG, kb. 2000 px széles, 80% minőség).
 Amíg egy fájl hiányzik, a helyén a 3D motor valós idejű alkatrész-renderje jelenik meg.

@@ -63,6 +63,13 @@
           <div><dt>T</dt><dd data-k="t">T0000</dd></div>
           <div><dt>M</dt><dd data-k="m">M09</dd></div>
         </dl>
+        <div class="meters">
+          <div><span>{{ _('Ciklusidő', 'Cycle time') }}</span><b id="mCycle">00:00.0</b></div>
+          <div><span>{{ _('Darab', 'Parts') }}</span><b id="mParts">0001</b></div>
+          <div><span>{{ _('Mód', 'Modal') }}</span><b id="mModal">G00</b></div>
+          <div class="meters__load"><span>{{ _('Orsóterhelés', 'Spindle load') }}</span><i><em id="mLoad"></em></i></div>
+        </div>
+        <div class="plot"><canvas id="plot" aria-label="{{ _('Szerszámpálya X–Z síkban', 'Tool path in the X–Z plane') }}" role="img"></canvas><span>{{ _('Szerszámpálya · X/Z', 'Tool path · X/Z') }}</span></div>
         <div class="nc" id="nc" tabindex="0" aria-label="{{ _('NC program', 'NC program') }}"><ol id="ncList"></ol></div>
         <p class="ctrl__part">{{ _('Alkatrész: M20×1,5 menetes persely, Ø30 × 50 mm, O-gyűrű horonnyal, Ø10 átmenő furattal', 'Part: M20×1.5 threaded bushing, Ø30 × 50 mm, O-ring groove, Ø10 through bore') }}</p>
       </aside>
@@ -111,38 +118,89 @@
   </div>
 </section>
 
-<section class="section section--dark" id="alkatreszek">
+<section class="section section--dark showcase-sec" id="alkatreszek">
   <div class="wrap">
     <div class="section-head">
       <div>
-        <p class="eyebrow eyebrow--light">{{ _('Jellemző alkatrészek', 'Typical components') }}</p>
-        <h2 class="h2">{{ _('Munkahengerek, dugattyúk, szelepek – és még sok más', 'Cylinders, pistons, valves – and much more') }}</h2>
+        <p class="eyebrow eyebrow--light">{{ _('Gyártásunkból', 'From our production') }}</p>
+        <h2 class="h2">{{ _('Alkatrészek, amelyek működtetik az ipart', 'Components that keep industry running') }}</h2>
       </div>
-      <p>{{ _('Forgassa meg a modelleket. Jellemző alkatrésztípusok a gépészet, pneumatika és hidraulika, a járműipar és az elektronika területéről.', 'Rotate the models. Typical component types from mechanical engineering, pneumatics and hydraulics, automotive and electronics.') }}</p>
+      <p>{{ _('Házak, karimás perselyek, tengelyek, szelepalkatrészek – marva és esztergálva, alumíniumból, acélból és sárgarézből. Kattintson a jelölésekre a részletekért.', 'Housings, flanged bushings, shafts, valve components – milled and turned in aluminium, steel and brass. Click the markers for details.') }}</p>
     </div>
 
-    <div class="viewer" id="viewer">
-      <div class="viewer__list" role="tablist" aria-label="{{ _('Alkatrészek', 'Parts') }}">
-        {% set parts = [
-          ('bushing',  _('Menetes persely', 'Threaded bushing'),        _('CuZn39Pb3 · esztergálás, fúrás, menetvágás', 'CuZn39Pb3 · turning, drilling, threading')),
-          ('piston',   _('Hidraulikus dugattyú', 'Hydraulic piston'),   _('Acél · tömítés- és vezetőgyűrű-hornyok', 'Steel · seal and guide-ring grooves')),
-          ('spool',    _('Pneumatikus szeleptolattyú', 'Pneumatic valve spool'), _('Acél · 4 vezérlőél, M8 menet', 'Steel · 4 control lands, M8 thread')),
-          ('fitting',  _('Hatlapú csatlakozó', 'Hex fitting'),          _('Sárgaréz · SW22, G1/4 menet', 'Brass · SW22, G1/4 thread')),
-          ('flange',   _('Munkahenger-fedél', 'Cylinder end cap'),      _('Alumínium · 6 furat, O-gyűrű horony', 'Aluminium · 6 holes, O-ring groove')),
-          ('manifold', _('Szelepblokk', 'Valve manifold'),              _('Alumínium · marás, süllyesztések', 'Aluminium · milling, counterbores')),
-        ] %}
-        {% for key, name, meta in parts %}
-        <button type="button" role="tab" aria-selected="{{ 'true' if loop.first else 'false' }}" data-part="{{ key }}">
-          <span class="viewer__n">{{ '%02d' % loop.index }}</span>
-          <span class="viewer__name">{{ name }}</span>
-          <span class="viewer__meta">{{ meta }}</span>
+    <div class="showcase" data-showcase>
+      <div class="showcase__tabs" role="tablist" aria-label="{{ _('Technológia', 'Technology') }}">
+        <button role="tab" aria-selected="true" data-scene="mill"><span>01</span>{{ _('Marás · megmunkálóközpont', 'Milling · machining centre') }}</button>
+        <button role="tab" aria-selected="false" data-scene="turn"><span>02</span>{{ _('Automata esztergálás · STAR SR 16', 'Automatic turning · STAR SR 16') }}</button>
+      </div>
+
+      {% set scenes = [
+        ('mill', 'alkatreszek-maras.webp', _('Mart és esztergált alkatrészek a megmunkálóközpont előtt', 'Milled and turned parts in front of the machining centre'), [
+          (19, 55, _('Mart alumínium ház', 'Milled aluminium housing'), _('Többoldali megmunkálás: nagy átmérőjű illesztett furat, menetes furatok, zsebek és hornyok egy darabon.', 'Multi-sided machining: large-diameter fitted bore, threaded holes, pockets and slots in one part.')),
+          (49, 45, _('Karimás persely', 'Flanged bushing'), _('Esztergált test és karima, osztókörön elhelyezett furatokkal – esztergálás és marás kombinációja.', 'Turned body and flange with holes on a pitch circle – a combination of turning and milling.')),
+          (79, 51, _('Keretes alkatrész', 'Frame component'), _('Zsebmarás, belső kontúrok és átmenő furatok alumíniumból, vertikális megmunkálóközponton.', 'Pocket milling, internal contours and through holes in aluminium on a vertical machining centre.')),
+          (19, 80, _('Fogaskerék', 'Spur gear'), _('Esztergált agy és fogazott kerület – egyedi és kis sorozatú hajtáselemek.', 'Turned hub and toothed rim – one-off and small-batch drive components.')),
+          (78, 73, _('Kar, hajtókar', 'Lever arm'), _('Kontúrmarás, furatok és süllyesztések egy felfogásban.', 'Contour milling, holes and counterbores in one set-up.')),
+          (26, 16, _('Vertikális megmunkálóközpont', 'Vertical machining centre'), _('11 vertikális megmunkálóközpont: Akira Seiki, Bridgeport, Mori Seiki, OKK – Fanuc, Heidenhain és Mitsubishi vezérléssel.', '11 vertical machining centres: Akira Seiki, Bridgeport, Mori Seiki, OKK – with Fanuc, Heidenhain and Mitsubishi controls.'))
+        ]),
+        ('turn', 'star-sr16.webp', _('STAR SR 16 automata eszterga esztergált alkatrészekkel', 'STAR SR 16 automatic lathe with turned parts'), [
+          (78, 40, _('STAR SR 16 automata eszterga', 'STAR SR 16 automatic lathe'), _('15 CNC automata eszterga (INDEX, STAR) közép- és nagysorozatú alkatrészgyártáshoz, rúdanyagból.', '15 CNC automatic lathes (INDEX, STAR) for medium and large series production from bar stock.')),
+          (32, 16, _('Fanuc vezérlés', 'Fanuc control'), _('A STAR esztergák Fanuc 16T, 18i és 0i-TF vezérléssel dolgoznak.', 'The STAR lathes run on Fanuc 16T, 18i and 0i-TF controls.')),
+          (31, 76, _('Sárgaréz alkatrészek', 'Brass components'), _('Menetes, furatos sárgaréz alkatrészek – kiemelten elektronikai és pneumatikai felhasználásra.', 'Threaded and bored brass components – especially for electronics and pneumatics.')),
+          (39, 81, _('Recézett alkatrész', 'Knurled part'), _('Recézés, keresztfuratok és menetek egyetlen gépen, egy felfogásban.', 'Knurling, cross holes and threads on a single machine, in one set-up.')),
+          (48, 91, _('Tengelyek', 'Shafts'), _('Hosszú, karcsú tengelyek hosszesztergálással, szűk tűréssel.', 'Long, slender shafts by Swiss-type turning with tight tolerances.')),
+          (65, 76, _('Keresztfuratos alkatrészek', 'Cross-drilled parts'), _('Hajtott szerszámokkal fúrt keresztfuratok és mart felületek esztergált alkatrészeken.', 'Cross holes drilled and faces milled with driven tools on turned parts.'))
+        ])
+      ] %}
+      {% for key, file, alt, spots in scenes %}
+      <figure class="showcase__scene{% if loop.first %} is-active{% endif %}" data-scene="{{ key }}"{% if not loop.first %} hidden{% endif %}>
+        <img src="{{ asset }}img/{{ file }}" alt="{{ alt }}" loading="lazy" width="1448" height="1086">
+        {% for x, y, title, text in spots %}
+        <button type="button" class="spot" style="left: {{ x }}%; top: {{ y }}%" aria-describedby="spot-{{ key }}-{{ loop.index }}" data-i="{{ loop.index0 }}">
+          <span class="sr-only">{{ title }}</span>
         </button>
+        <div class="spot__card" id="spot-{{ key }}-{{ loop.index }}" role="tooltip" style="--x: {{ x }}; --y: {{ y }}" data-i="{{ loop.index0 }}">
+          <span class="spot__n">{{ '%02d' % loop.index }}</span>
+          <strong>{{ title }}</strong>
+          <span>{{ text }}</span>
+        </div>
         {% endfor %}
+      </figure>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <p class="eyebrow">{{ _('Miért a Steel Riders?', 'Why Steel Riders?') }}</p>
+        <h2 class="h2">{{ _('Beszállító, akire a sorozatot is rá lehet bízni', 'A supplier you can trust with the whole series') }}</h2>
       </div>
-      <div class="viewer__stage">
-        <canvas id="viewerCanvas" role="img" aria-label="{{ _('Forgatható 3D alkatrész', 'Rotatable 3D part') }}"></canvas>
-        <p class="console__hint">{{ _('Húzza a forgatáshoz', 'Drag to rotate') }}</p>
-      </div>
+      <p>{{ _('Több mint 20 év a beszállítói piacon, 70 000 000 eladott termék – a rajztól a kiszállított alkatrészig.', 'More than 20 years in the supplier market and 70,000,000 parts sold – from drawing to delivered component.') }}</p>
+    </div>
+    <div class="why">
+      <article class="why__item reveal">
+        <span class="why__n">{{ totals.all }}</span>
+        <h3 class="h3">{{ _('Gép egy telephelyen', 'Machines on one site') }}</h3>
+        <p>{{ _('CNC automata és ellenorsós esztergák, vertikális megmunkálóközpontok, NC és hagyományos gépek, köszörűk – a teljes technológiai lánc házon belül.', 'CNC automatic and sub-spindle lathes, vertical machining centres, NC and conventional machines, grinders – the whole process chain in-house.') }}</p>
+      </article>
+      <article class="why__item reveal">
+        <span class="why__n">3×8</span>
+        <h3 class="h3">{{ _('Három műszak', 'Three shifts') }}</h3>
+        <p>{{ _('Folyamatos, tervezhető kapacitás közép- és nagysorozatokhoz, ütemezett szállításokkal.', 'Continuous, plannable capacity for medium and large series with scheduled deliveries.') }}</p>
+      </article>
+      <article class="why__item reveal">
+        <span class="why__n">ISO</span>
+        <h3 class="h3">{{ _('Tanúsított minőség', 'Certified quality') }}</h3>
+        <p>{{ _('ISO 9001 és ISO 14001 szerinti működés, saját mérőszoba, SAP alapú nyomon követés.', 'ISO 9001 and ISO 14001 systems, in-house measuring room, SAP-based traceability.') }}</p>
+      </article>
+      <article class="why__item reveal">
+        <span class="why__n">1:1</span>
+        <h3 class="h3">{{ _('Minden egy kézben', 'Single source') }}</h3>
+        <p>{{ _('Alapanyag-beszerzéstől a kiszállításig – kevesebb logisztikai költség, egy felelős partner.', 'From material sourcing to delivery – lower logistics costs and one accountable partner.') }}</p>
+      </article>
     </div>
   </div>
 </section>
@@ -165,7 +223,7 @@
         <button role="tab" id="t-gen" aria-controls="p-gen" aria-selected="false" tabindex="-1"><span>04</span>{{ _('Általános fémforgácsolás', 'General machining') }}</button>
       </div>
       <div class="tabs__panel" role="tabpanel" id="p-turn" aria-labelledby="t-turn">
-        {{ m.photo('cnc-esztergalas.jpg', _('Esztergált sárgaréz alkatrész', 'Turned brass component'), ratio='4/3', render='fitting:brass') }}
+        {{ m.photo('star-sr16.webp', _('STAR SR 16 automata eszterga esztergált alkatrészekkel', 'STAR SR 16 automatic lathe with turned parts'), '', '4/3', pos='60% 50%', zoom=1) }}
         <div class="tabs__body">
           <h3 class="h3">{{ _('Közép- és nagysorozat nagy pontossággal', 'Medium and large series, high precision') }}</h3>
           <p>{{ _('Alkatrészgyártás CNC automata esztergákon és hosszesztergákon, kiemelten alumínium, sárgaréz és műanyag alkatrészek.', 'Component production on CNC automatic and Swiss-type lathes, with a focus on aluminium, brass and plastic parts.') }}</p>
@@ -178,7 +236,7 @@
         </div>
       </div>
       <div class="tabs__panel" role="tabpanel" id="p-mill" aria-labelledby="t-mill" hidden>
-        {{ m.photo('cnc-maras.jpg', _('Mart alumínium szelepblokk', 'Milled aluminium manifold'), ratio='4/3', render='manifold:alu') }}
+        {{ m.photo('alkatreszek-maras.webp', _('Mart alumínium alkatrészek megmunkálóközpont előtt', 'Milled aluminium parts in front of a machining centre'), '', '4/3', pos='50% 50%', zoom=1) }}
         <div class="tabs__body">
           <h3 class="h3">{{ _('Marási munkák megmunkálóközpontokon', 'Milling on machining centres') }}</h3>
           <p>{{ _('Prizmatikus alkatrészek marása, fúrása, menetkészítése, esztergált alkatrészek utólagos megmunkálása 11 vertikális megmunkálóközponton.', 'Milling, drilling and threading of prismatic parts and secondary machining of turned parts on 11 vertical machining centres.') }}</p>
@@ -190,7 +248,7 @@
         </div>
       </div>
       <div class="tabs__panel" role="tabpanel" id="p-cast" aria-labelledby="t-cast" hidden>
-        {{ m.photo('ontveny.jpg', _('Megmunkált alumínium fedél', 'Machined aluminium cover'), ratio='4/3', render='flange:alu') }}
+        {{ m.photo('alkatreszek-maras.webp', _('Megmunkált alumínium ház', 'Machined aluminium housing'), '', '4/3', pos='18% 62%', zoom=1.7) }}
         <div class="tabs__body">
           <h3 class="h3">{{ _('Alumínium- és sárgaréz-öntvények', 'Aluminium and brass castings') }}</h3>
           <p>{{ _('Öntött nyersdarabok kész méretre munkálása: bázisfelületek, illesztések, furatok és menetek sorozatban.', 'Finish machining of raw castings: datum faces, fits, bores and threads in series.') }}</p>
@@ -198,7 +256,7 @@
         </div>
       </div>
       <div class="tabs__panel" role="tabpanel" id="p-gen" aria-labelledby="t-gen" hidden>
-        {{ m.photo('altalanos.jpg', _('Hőkezelt, köszörült gépalkatrész', 'Hardened and ground machine part'), ratio='4/3', render='spool:steel') }}
+        {{ m.photo('star-sr16.webp', _('Esztergált tengelyek és persely', 'Turned shafts and bushings'), '', '4/3', pos='30% 88%', zoom=1.9) }}
         <div class="tabs__body">
           <h3 class="h3">{{ _('Egyedi, bonyolult geometriájú alkatrészek', 'Custom parts with complex geometry') }}</h3>
           <p>{{ _('Hagyományos gépeken történő fémmegmunkálás; egyedi, kis méretű, de bonyolult geometriájú, hőkezelt, köszörült gépalkatrészek, szerszámok és gépegységek gyártása; mintadarabok és kis sorozatok készítése.', 'Metalworking on conventional machines; custom, small but geometrically complex, heat-treated and ground machine parts, tools and machine assemblies; prototypes and small batches.') }}</p>
@@ -242,20 +300,20 @@
   </div>
 </section>
 
-<section class="section">
-  <div class="wrap feature">
-    {{ m.photo('hc02.jpg', _('Hungarocopter HC-02 helikopter', 'Hungarocopter HC-02 helicopter'), ratio='16/10', render='piston:steel') }}
-    <div class="feature__text">
-      <p class="eyebrow">{{ _('Repülőipar', 'Aerospace') }}</p>
+<section class="section section--dark">
+  <div class="wrap hcband">
+    <div>
+      <p class="eyebrow eyebrow--light">{{ _('Repülőipar', 'Aerospace') }}</p>
       <h2 class="h2">Hungarocopter HC-02</h2>
-      <p>{{ _('Az első magyar fejlesztésű és gyártású kétszemélyes helikopter gyártásában a Hungaro-Copter Kft. partnereként veszünk részt.', 'We manufacture the first Hungarian-designed and built two-seat helicopter as partner of Hungaro-Copter Kft.') }}</p>
-      <dl class="specs specs--inline">
-        <div><dt>{{ _('Hajtómű', 'Engine') }}</dt><dd>Rotax 915 iS3</dd></div>
-        <div><dt>{{ _('Rotor', 'Rotor') }}</dt><dd>Ø 7000 mm</dd></div>
-        <div><dt>{{ _('Utazósebesség', 'Cruise') }}</dt><dd>160 km/h</dd></div>
-      </dl>
-      <a class="link-arrow" href="{{ href('hc02') }}">{{ _('A HC-02 projekt', 'The HC-02 project') }}</a>
+      <p class="lead">{{ _('Az első magyar fejlesztésű és gyártású kétszemélyes helikopter gyártásában a Hungaro-Copter Kft. partnereként veszünk részt.', 'We manufacture the first Hungarian-designed and built two-seat helicopter as partner of Hungaro-Copter Kft.') }}</p>
+      <a class="link-arrow link-arrow--light" href="{{ href('hc02') }}">{{ _('A helikopter projekt', 'The helicopter project') }}</a>
     </div>
+    <dl class="hcband__specs">
+      <div><dt>{{ _('Hajtómű', 'Engine') }}</dt><dd>Rotax 915 iS3</dd></div>
+      <div><dt>{{ _('Teljesítmény', 'Power') }}</dt><dd>141 {{ _('LE', 'hp') }}</dd></div>
+      <div><dt>{{ _('Rotorátmérő', 'Rotor') }}</dt><dd>7000 mm</dd></div>
+      <div><dt>{{ _('Utazósebesség', 'Cruise') }}</dt><dd>160 km/h</dd></div>
+    </dl>
   </div>
 </section>
 

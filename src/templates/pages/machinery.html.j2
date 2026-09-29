@@ -17,11 +17,11 @@
 {{ m.page_head(_('Géppark', 'Machinery'),
    _(totals.all ~ ' gép egy telephelyen', totals.all ~ ' machines on one site'),
    _('CNC automata esztergák, két revolverfejes ellenorsós esztergák és vertikális megmunkálóközpontok – INDEX, STAR, Mori Seiki, Nakamura, Takisawa, Akira Seiki, OKK és Bridgeport gépek Fanuc, Heidenhain, Mitsubishi és Sinumerik vezérlőkkel, amelyeket NC és hagyományos gépek egészítenek ki.', 'CNC automatic lathes, twin-turret sub-spindle lathes and vertical machining centres – INDEX, STAR, Mori Seiki, Nakamura, Takisawa, Akira Seiki, OKK and Bridgeport machines with Fanuc, Heidenhain, Mitsubishi and Sinumerik controls, complemented by NC and conventional machines.'),
-   'geppark.jpg', 'series:alu',
+   'star-sr16.webp', 'bushing:brass',
    [(_('CNC eszterga', 'CNC lathes'), totals.cnc_lathes),
     (_('Megmunkálóközpont', 'Machining centres'), totals.centres),
     (_('NC eszterga', 'NC lathes'), machines[3].total),
-    (_('Hagyományos gép', 'Conventional'), machines[5].total)]) }}
+    (_('Hagyományos gép', 'Conventional'), machines[5].total)], pos='70% 45%') }}
 
 <section class="section">
   <div class="wrap">
@@ -107,11 +107,11 @@
       </div>
     </div>
     <div class="gallery">
-      {{ m.photo('geppark.jpg', _('CNC gyártócsarnok', 'CNC production hall'), 'gallery__wide', '21/9', 'series:brass') }}
-      {{ m.photo('index-gs30.jpg', _('INDEX GS30 automata eszterga', 'INDEX GS30 automatic lathe'), '', '4/3', 'bushing:brass') }}
-      {{ m.photo('star-sr20.jpg', _('STAR SR 20 automata eszterga', 'STAR SR 20 automatic lathe'), '', '4/3', 'spool:steel') }}
-      {{ m.photo('akira-seiki.jpg', _('Akira Seiki megmunkálóközpont', 'Akira Seiki machining centre'), '', '4/3', 'manifold:alu') }}
-      {{ m.photo('nakamura.jpg', _('Nakamura TW két revolverfejes eszterga', 'Nakamura TW twin-turret lathe'), '', '4/3', 'fitting:brass') }}
+      {{ m.photo('star-sr16.webp', _('STAR SR 16 automata eszterga a verpeléti üzemben', 'STAR SR 16 automatic lathe in the Verpelét plant'), 'gallery__wide', '21/9', pos='50% 55%', zoom=1) }}
+      {{ m.photo('star-sr16.webp', _('Fanuc vezérlés', 'Fanuc control'), '', '4/3', pos='30% 20%', zoom=1.9) }}
+      {{ m.photo('star-sr16.webp', _('Esztergált acél és sárgaréz alkatrészek', 'Turned steel and brass parts'), '', '4/3', pos='50% 88%', zoom=1.8) }}
+      {{ m.photo('alkatreszek-maras.webp', _('Vertikális megmunkálóközpont', 'Vertical machining centre'), '', '4/3', pos='28% 18%', zoom=1.7) }}
+      {{ m.photo('alkatreszek-maras.webp', _('Mart alkatrészek', 'Milled parts'), '', '4/3', pos='75% 55%', zoom=1.6) }}
     </div>
   </div>
 </section>

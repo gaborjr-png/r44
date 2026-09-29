@@ -1,14 +1,14 @@
 {# Photo slot. The real photo goes to src/assets/img/<file>. While it is
    missing, site.js replaces it with a real-time 3D studio render
    described by `render` ("kind:material", see assets/js/part3d.js). #}
-{% macro photo(file, alt, cls='', ratio='4/3', render='bushing:brass', caption='') -%}
-<figure class="photo {{ cls }}" style="--ratio: {{ ratio }}">
+{% macro photo(file, alt, cls='', ratio='4/3', render='bushing:brass', caption='', pos='50% 50%', zoom=1) -%}
+<figure class="photo {{ cls }}" style="--ratio: {{ ratio }}; --pos: {{ pos }}; --zoom: {{ zoom }}">
   <img src="{{ asset }}img/{{ file }}" alt="{{ alt }}" loading="lazy" decoding="async" data-render="{{ render }}">
   {% if caption %}<figcaption>{{ caption }}</figcaption>{% endif %}
 </figure>
 {%- endmacro %}
 
-{% macro page_head(eyebrow, title, lead, file='', render='bushing:brass', stats=None) -%}
+{% macro page_head(eyebrow, title, lead, file='', render='bushing:brass', stats=None, pos='50% 50%') -%}
 <section class="page-head">
   <div class="page-head__grid" aria-hidden="true"></div>
   <div class="wrap page-head__inner">
@@ -24,7 +24,7 @@
     </div>
     {% if file %}
     <div class="page-head__visual">
-      <img src="{{ asset }}img/{{ file }}" alt="" data-render="{{ render }}" decoding="async">
+      <img src="{{ asset }}img/{{ file }}" alt="" data-render="{{ render }}" decoding="async" style="object-position: {{ pos }}">
     </div>
     {% endif %}
   </div>

@@ -12,7 +12,7 @@ src/
   assets/css/site.css    – stílus
   assets/js/part3d.js    – valós idejű 3D: esztergálási szimuláció és alkatrész-renderek
   assets/js/site.js      – menü, animációk, fülek, géppark-szűrő, ajánlatkérő varázsló
-  assets/vendor/         – three.js r128 (MIT licenc), helyben tárolva
+  assets/vendor/         – three.js r128 + utófeldolgozó modulok (MIT licenc), helyben tárolva
   assets/img/            – fotók helye (lásd assets/img/README.md)
 public/                  – a kész, feltölthető weboldal (generált)
 ```
@@ -28,8 +28,10 @@ minden összesítést (CNC esztergák, megmunkálóközpontok, összes gép) a b
   hűtő-kenő folyadékkal és forgáccsal. Mellette fut a valódi Fanuc 0i-TF szintaxisú NC program
   (G71 nagyolás, G74 mélyfúrás, G70 simítás, G76 menetvágás) soronkénti kiemeléssel és
   X/Z/S/F/T kijelzővel. Az alkatrész: M20×1,5 menetes sárgaréz persely.
-- Alkatrész-galéria: forgatható 3D dugattyú, szeleptolattyú, hatlapú csatlakozó,
-  munkahenger-fedél, szelepblokk.
+- Filmes utófeldolgozás (bloom, mélységélesség, ACES tónusleképezés, vignetta), 3D Steel Riders
+  fémjelvény a gép hátfalán. A vezérlőpulton élő szerszámpálya-rajz, ciklusidő, darabszámláló,
+  orsóterhelés és modális G-kód.
+- Fotóbemutató: a valódi fotókon pulzáló jelölők, kattintásra információs kártyák.
 - Fotók: amíg egy kép hiányzik az `assets/img/` mappából, a helyén a 3D motor által
   renderelt alkatrészkép jelenik meg. A valódi fotó feltöltése után automatikusan az látszik.
 - Géppark: kategória-, gyártó- és vezérlőszűrő, keresés, gyártónkénti és vezérlőnkénti megoszlás.

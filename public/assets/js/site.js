@@ -8,12 +8,13 @@
 
   /* ---------- Header state + scroll progress ---------- */
   var header = $('#header');
-  var bar = $('#scrollProgress');
+  var bar = $('#scrollProgress'), fab = $('.fab');
   function onScroll() {
     var y = window.scrollY;
     header.classList.toggle('is-scrolled', y > 24);
     var h = document.documentElement.scrollHeight - innerHeight;
     if (bar) bar.style.transform = 'scaleX(' + (h > 0 ? y / h : 0) + ')';
+    if (fab) fab.classList.toggle('is-shown', y > 500);
   }
   addEventListener('scroll', onScroll, { passive: true });
   onScroll();
@@ -100,10 +101,70 @@
         dro.s.textContent = d.s; dro.f.textContent = d.f.toFixed(3);
         dro.t.textContent = d.t; dro.m.textContent = d.m;
         if (fill) fill.style.transform = 'scaleX(' + d.p + ')';
+        meters(d);
+        plot(d);
       }
     };
+
+    /* meters: cycle time, part counter, modal group, spindle load */
+    var mCycle = $('#mCycle'), mParts = $('#mParts'), mModal = $('#mModal'), mLoad = $('#mLoad'), load = 0;
+    function meters(d) {
+      var t = d.time || 0, mm = Math.floor(t / 60), ss = (t - mm * 60).toFixed(1);
+      if (mCycle) mCycle.textContent = String(mm).padStart(2, '0') + ':' + ss.padStart(4, '0');
+      if (mParts) mParts.textContent = String(d.cycle || 1).padStart(4, '0');
+      var target = d.cut ? (d.op === 'rough' ? 72 : d.op === 'drill' ? 58 : d.op === 'cutoff' ? 64 : 38) + Math.random() * 8 : (d.s > 50 ? 6 : 0);
+      load += (target - load) * 0.08;
+      if (mLoad) { mLoad.style.width = load.toFixed(1) + '%'; mLoad.classList.toggle('is-high', load > 60); }
+    }
+    var lastModal = 'G00';
+    var origLine = hud.line;
+    hud.line = function (i) {
+      origLine(i);
+      var src = SR3D.program[i] ? SR3D.program[i][1].replace(/\(.*?\)/g, '') : '';
+      var g = src.match(/G(0[0-4]|7[0-6]|96|97)\b/g);
+      if (g) lastModal = g[g.length - 1];
+      if (mModal) mModal.textContent = lastModal;
+    };
+
+    /* tool path plot: X/Z half-section with finished contour and live trail */
+    var pc = $('#plot'), px = pc && pc.getContext('2d'), trail = [], lastCycle = 0, contourPath = null;
+    function plot(d) {
+      if (!px) return;
+      var W = pc.clientWidth, H = pc.clientHeight, r = Math.min(devicePixelRatio || 1, 2);
+      if (pc.width !== Math.round(W * r)) { pc.width = Math.round(W * r); pc.height = Math.round(H * r); contourPath = null; }
+      px.setTransform(r, 0, 0, r, 0, 0);
+      var z0 = 6, z1 = -58, xmax = 19;
+      var sx = function (z) { return 10 + (z0 - z) / (z0 - z1) * (W - 20); };
+      var sy = function (rad) { return H - 12 - rad / xmax * (H - 24); };
+      if (d.cycle !== lastCycle) { trail = []; lastCycle = d.cycle; }
+      if (!d.index && d.x < 60) { trail.push([d.z, d.x / 2]); if (trail.length > 900) trail.shift(); }
+      px.clearRect(0, 0, W, H);
+      // grid
+      px.strokeStyle = 'rgba(255,255,255,.05)'; px.lineWidth = 1; px.beginPath();
+      for (var gz = 0; gz >= -55; gz -= 5) { px.moveTo(sx(gz), 6); px.lineTo(sx(gz), H - 6); }
+      px.stroke();
+      // axis (centre line)
+      px.setLineDash([6, 3, 1, 3]); px.strokeStyle = 'rgba(159,196,232,.45)'; px.beginPath(); px.moveTo(6, sy(0)); px.lineTo(W - 6, sy(0)); px.stroke(); px.setLineDash([]);
+      // stock outline
+      px.strokeStyle = 'rgba(255,255,255,.14)'; px.strokeRect(sx(0), sy(16), sx(-56) - sx(0), sy(0) - sy(16));
+      // finished contour
+      px.strokeStyle = 'rgba(209,171,98,.9)'; px.lineWidth = 1.2; px.beginPath();
+      for (var z = 0; z >= -50; z -= 0.1) { var yy = sy(SR3D.profile(z)); if (z === 0) px.moveTo(sx(z), yy); else px.lineTo(sx(z), yy); }
+      px.stroke();
+      // bore
+      px.setLineDash([3, 3]); px.strokeStyle = 'rgba(209,171,98,.5)'; px.beginPath(); px.moveTo(sx(0), sy(5)); px.lineTo(sx(-53), sy(5)); px.stroke(); px.setLineDash([]);
+      // trail
+      if (trail.length > 1) {
+        px.strokeStyle = 'rgba(91,208,143,.85)'; px.lineWidth = 1; px.beginPath();
+        trail.forEach(function (p, i) { var X = sx(p[0]), Y = sy(Math.min(p[1], 18)); if (i) px.lineTo(X, Y); else px.moveTo(X, Y); });
+        px.stroke();
+        var lp = trail[trail.length - 1];
+        px.fillStyle = '#9ff0c0'; px.beginPath(); px.arc(sx(lp[0]), sy(Math.min(lp[1], 18)), 3, 0, 6.3); px.fill();
+      }
+    }
+
     var api = null;
-    try { api = SR3D.hero($('#simCanvas'), hud); } catch (e) { api = null; }
+    try { api = SR3D.hero($('#simCanvas'), hud, { lite: innerWidth < 900 }); } catch (e) { api = null; }
     if (api) {
       sim.classList.add('is-live');
       $$('.console__mats button').forEach(function (b) {
@@ -117,6 +178,30 @@
       ops.forEach(function (li) { $('button', li).addEventListener('click', function () { api.seek(li.dataset.op); tg.textContent = tg.dataset.pause; tg.classList.remove('is-held'); }); });
     }
   }
+
+  /* ---------- Photo showcase with hotspots ---------- */
+  $$('[data-showcase]').forEach(function (sc) {
+    var tabs = $$('.showcase__tabs [role="tab"]', sc), scenes = $$('.showcase__scene', sc);
+    tabs.forEach(function (t) {
+      t.addEventListener('click', function () {
+        tabs.forEach(function (x) { x.setAttribute('aria-selected', String(x === t)); });
+        scenes.forEach(function (f) { var on = f.dataset.scene === t.dataset.scene; f.hidden = !on; f.classList.toggle('is-active', on); });
+      });
+    });
+    scenes.forEach(function (f) {
+      var spots = $$('.spot', f), cards = $$('.spot__card', f);
+      function open(i) {
+        spots.forEach(function (s, k) { s.classList.toggle('is-open', k === i); s.setAttribute('aria-expanded', String(k === i)); });
+        cards.forEach(function (c, k) { c.classList.toggle('is-open', k === i); });
+      }
+      spots.forEach(function (s, i) {
+        s.addEventListener('click', function (e) { e.stopPropagation(); open(s.classList.contains('is-open') ? -1 : i); });
+        s.addEventListener('mouseenter', function () { if (matchMedia('(hover: hover)').matches) open(i); });
+      });
+      f.addEventListener('click', function () { open(-1); });
+      open(0);
+    });
+  });
 
   /* ---------- Parts viewer ---------- */
   var viewer = $('#viewer');

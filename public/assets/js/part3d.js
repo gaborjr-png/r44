@@ -417,19 +417,114 @@
     return new T.TubeGeometry(new T.CatmullRomCurve3(pts), n, thick, 5, false);
   }
 
+  /* Steel Riders badge: rounded-triangle plaque, raised rim, polished lettering */
+  function badgeShape(sc, inset) {
+    // outline from the logo (SVG units 48 x 44), y flipped, centred
+    var k = sc * (1 - (inset || 0)), cx = 24, cy = 25;
+    function P(x, y) { return [(x - cx) * k, (cy - y) * k]; }
+    var s = new T.Shape(), a;
+    a = P(24, 2.5); s.moveTo(a[0], a[1]);
+    function C(x1, y1, x2, y2, x, y) { var p1 = P(x1, y1), p2 = P(x2, y2), p3 = P(x, y); s.bezierCurveTo(p1[0], p1[1], p2[0], p2[1], p3[0], p3[1]); }
+    function L(x, y) { var q = P(x, y); s.lineTo(q[0], q[1]); }
+    C(25.6, 2.5, 26.9, 3.3, 27.8, 4.8); L(44.8, 34.0); C(46.7, 37.3, 44.9, 40.2, 41.2, 40.9);
+    C(35.8, 41.9, 30.2, 42.4, 24, 42.4); C(17.8, 42.4, 12.2, 41.9, 6.8, 40.9);
+    C(3.1, 40.2, 1.3, 37.3, 3.2, 34.0); L(20.2, 4.8); C(21.1, 3.3, 22.4, 2.5, 24, 2.5);
+    return s;
+  }
+  function buildBadge(scale) {
+    var g = new T.Group(), S = 2.6 * scale;
+    var steel = partMaterial('steel', 'mill'); steel.roughness = 0.14; steel.color.copy(lin(0xe2e5e8)); steel.normalScale.setScalar(0.15);
+    var dark = partMaterial('steel', 'mill'); dark.color.copy(lin(0x3a3f45)); dark.roughness = 0.36; dark.normalScale.setScalar(0.35);
+    var back = new T.Mesh(extrude(badgeShape(S), 3, 0.6), dark); g.add(back);
+    var rim = badgeShape(S); rim.holes.push(badgeShape(S, 0.1));
+    var rimM = new T.Mesh(extrude(rim, 3, 0.9), steel); rimM.position.z = 3; g.add(rimM);
+    var rim2 = badgeShape(S, 0.15); rim2.holes.push(badgeShape(S, 0.18));
+    var r2 = new T.Mesh(extrude(rim2, 1.2, 0.3), steel); r2.position.z = 3; g.add(r2);
+    // lettering as a polished-metal decal with alpha
+    var c = document.createElement('canvas'); c.width = 1024; c.height = 1024;
+    var x = c.getContext('2d');
+    x.fillStyle = '#fff'; x.textAlign = 'center'; x.textBaseline = 'middle';
+    x.font = '900 196px "Archivo", "Arial Black", Arial, sans-serif';
+    x.fillText('STEEL', 512, 452);
+    x.fillText('RIDERS', 512, 700);
+    x.fillRect(250, 566, 524, 16);
+    x.font = '800 84px "Archivo", "Arial Black", Arial, sans-serif';
+    x.fillText('KFT.', 512, 842);
+    x.fillRect(330, 838, 90, 8); x.fillRect(604, 838, 90, 8);
+    var tex = new T.CanvasTexture(c);
+    var letters = new T.Mesh(new T.PlaneGeometry(48 * S * 0.62, 48 * S * 0.62), new T.MeshStandardMaterial({
+      color: lin(0xeef0f2), metalness: 0.9, roughness: 0.2, alphaMap: tex, transparent: true, envMapIntensity: 1.4,
+      emissive: 0xffffff, emissiveMap: tex, emissiveIntensity: 0.22
+    }));
+    letters.position.set(0, -2 * S, 3.4);
+    g.add(letters);
+    return shadowed(g);
+  }
+
+  /* Final grade: exposure + ACES filmic tone mapping + sRGB + vignette + fine grain */
+  var FINAL_SHADER = {
+    uniforms: { tDiffuse: { value: null }, exposure: { value: 1.35 }, time: { value: 0 } },
+    vertexShader: 'varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }',
+    fragmentShader: [
+      'uniform sampler2D tDiffuse; uniform float exposure; uniform float time; varying vec2 vUv;',
+      'vec3 RRTAndODTFit(vec3 v){ vec3 a = v*(v+0.0245786)-0.000090537; vec3 b = v*(0.983729*v+0.4329510)+0.238081; return a/b; }',
+      'vec3 aces(vec3 c){',
+      '  const mat3 I = mat3(0.59719,0.07600,0.02840, 0.35458,0.90834,0.13383, 0.04823,0.01566,0.83777);',
+      '  const mat3 O = mat3(1.60475,-0.10208,-0.00327, -0.53108,1.10813,-0.07276, -0.07367,-0.00605,1.07602);',
+      '  c *= exposure / 0.6; c = I * c; c = RRTAndODTFit(c); c = O * c; return clamp(c, 0.0, 1.0); }',
+      'float hash(vec2 p){ return fract(sin(dot(p, vec2(12.9898,78.233))) * 43758.5453); }',
+      'void main(){',
+      '  vec4 t = texture2D(tDiffuse, vUv);',
+      '  vec3 c = aces(t.rgb);',
+      '  c = mix(12.92 * c, 1.055 * pow(c, vec3(1.0/2.4)) - 0.055, step(0.0031308, c));',
+      '  vec2 d = vUv - 0.5; float v = smoothstep(0.85, 0.25, length(d * vec2(1.0, 0.85)));',
+      '  c *= mix(0.62, 1.0, v);',
+      '  c += (hash(vUv * 900.0 + time) - 0.5) * 0.018;',
+      '  gl_FragColor = vec4(c, 1.0); }'
+    ].join('\n')
+  };
+
   /* ======================================================================
      HERO – CNC turning simulation
      ====================================================================== */
-  function hero(canvas, hud) {
+  function hero(canvas, hud, opts) {
+    opts = opts || {};
     var wrap = canvas.parentElement;
     var renderer = makeRenderer(canvas);
     var scene = new T.Scene();
     scene.environment = environment(renderer);
+    // painted backdrop so post-processing keeps the machine-interior gradient
+    var bgc = document.createElement('canvas'); bgc.width = bgc.height = 512;
+    var bx = bgc.getContext('2d'), grd = bx.createRadialGradient(230, 230, 20, 256, 256, 420);
+    grd.addColorStop(0, '#2c353e'); grd.addColorStop(0.55, '#171d23'); grd.addColorStop(1, '#0c1014');
+    bx.fillStyle = grd; bx.fillRect(0, 0, 512, 512);
+    var bgTex = new T.CanvasTexture(bgc); bgTex.encoding = T.sRGBEncoding;
+    var finalPass = null;
+    scene.background = bgTex;
     var keyLight = studioLights(scene);
     var cam = new T.PerspectiveCamera(30, 1, 5, 4000);
     var rig = new T.Group(); scene.add(rig);
 
-    var back = new T.Mesh(new T.PlaneGeometry(1200, 600), plain(0x252a30, 0.4, 0.7)); back.position.set(0, 60, -130); back.receiveShadow = true; rig.add(back);
+    var backMat = partMaterial('steel', 'mill'); backMat.color.copy(lin(0x5c646c)); backMat.roughness = 0.55; backMat.metalness = 0.75;
+    var back = new T.Mesh(new T.PlaneGeometry(1200, 600), backMat); back.position.set(0, 60, -130); back.receiveShadow = true; rig.add(back);
+    scene.add(cam);
+
+    // Steel Riders badge on the machine's back wall: extruded metal plaque
+    var badge = buildBadge(0.78);
+    badge.position.set(112, 74, -126); badge.rotation.y = -0.08;
+    rig.add(badge);
+    // LED light bar inside the enclosure (drives the bloom highlight)
+    var led = new T.Mesh(new T.BoxGeometry(420, 2.2, 5), new T.MeshBasicMaterial({ color: new T.Color(3.2, 3.3, 3.6) }));
+    led.position.set(-10, 150, -60); rig.add(led);
+    // Door frame in the foreground, fixed to the camera (seen through the machine door)
+    var frameMat = plain(0x2a2f35, 0.85, 0.32);
+    var doorFrame = new T.Group();
+    var post = new T.Mesh(new T.BoxGeometry(14, 260, 10), frameMat); post.position.set(-7, 0, 0); doorFrame.add(post);
+    var edge = new T.Mesh(new T.BoxGeometry(1.6, 260, 12), plain(0x9aa1a8, 1, 0.22)); edge.position.set(0.6, 0, 0); doorFrame.add(edge);
+    var seal = new T.Mesh(new T.BoxGeometry(3.5, 260, 14), plain(0x0c0d0e, 0, 0.9)); seal.position.set(3, 0, -1); doorFrame.add(seal);
+    doorFrame.position.z = -170;
+    cam.add(doorFrame);
+
     var tray = new T.Mesh(new T.PlaneGeometry(1200, 500), plain(0x121416, 0.2, 0.85)); tray.rotation.x = -PI / 2; tray.position.y = -58; tray.receiveShadow = true; rig.add(tray);
 
     var spindle = new T.Group();
@@ -599,23 +694,45 @@
     });
     function up() { drag = false; }
     canvas.addEventListener('pointerup', up); canvas.addEventListener('pointercancel', up);
-    function resize() { var W = wrap.clientWidth, H = wrap.clientHeight; renderer.setSize(W, H, false); cam.aspect = W / H; cam.updateProjectionMatrix(); }
+    /* Cinematic post-processing: bloom, depth of field, vignette */
+    var composer = null, bokeh = null;
+    if (T.EffectComposer && !opts.noPost) {
+      try {
+        composer = new T.EffectComposer(renderer);
+        composer.addPass(new T.RenderPass(scene, cam));
+        var bloom = new T.UnrealBloomPass(new T.Vector2(256, 256), 0.32, 0.55, 0.86);
+        composer.addPass(bloom);
+        if (!opts.lite) {
+          bokeh = new T.BokehPass(scene, cam, { focus: 285, aperture: 0.00006, maxblur: 0.006, width: 256, height: 256 });
+          composer.addPass(bokeh);
+        }
+        finalPass = new T.ShaderPass(FINAL_SHADER); composer.addPass(finalPass);
+        renderer.toneMapping = T.NoToneMapping;          // tone mapping happens in FINAL_SHADER
+      } catch (err) { composer = null; }
+    }
+    function resize() {
+      var W = wrap.clientWidth, H = wrap.clientHeight;
+      renderer.setSize(W, H, false); cam.aspect = W / H; cam.updateProjectionMatrix();
+      if (composer) { composer.setPixelRatio(renderer.getPixelRatio()); composer.setSize(W, H); }
+      doorFrame.visible = cam.aspect > 1.1;
+      doorFrame.position.x = -Math.tan(cam.fov * PI / 360) * 170 * cam.aspect + 9;
+    }
     window.addEventListener('resize', resize);
     var visible = true;
     if ('IntersectionObserver' in window) new IntersectionObserver(function (e) { visible = e[0].isIntersecting; }).observe(canvas);
 
     var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
-    var t = 0, playing = true, last = performance.now(), spin = 0, rpmNow = 0, lastOp = -1, lastLine = -1, dropT = 0;
+    var cycle = 1, t = 0, playing = true, last = performance.now(), spin = 0, rpmNow = 0, lastOp = -1, lastLine = -1, dropT = 0;
     var turretAngle = 0, turretPos = new T.Vector3(120, 160, 0), tip = new T.Vector3(), target = new T.Vector3(-6, 16, 0);
     var home = new T.Vector3(100, 160, 0);
     reset();
 
     function frame(now, forced) {
       if (!forced) requestAnimationFrame(frame);
-      var dt = forced || Math.min(0.05, (now - last) / 1000); last = now;
+      var dt = forced || clamp((now - last) / 1000, 0, 0.05); last = now;
       if (!forced && (!visible || document.hidden)) return;
       if (playing && !reduce) t += dt;
-      if (t >= TOTAL) { t = 0; reset(); }
+      if (t >= TOTAL) { t = 0; reset(); cycle++; }
 
       var o = opAt(t), op = OPS[o.i], key = op[0], station = op[2];
       if (o.i === 0 && o.local < 0.05 && rad[0] < SIM.stock) reset();
@@ -688,10 +805,13 @@
         if (li !== lastLine) { lastLine = li; if (hud.line) hud.line(li); }
         if (hud.dro) hud.dro({
           x: station >= 0 && !inIndex ? X : 200, z: station >= 0 && !inIndex ? Z : 150, s: Math.round(rpmNow),
-          f: station >= 0 ? op[5] : 0, t: station >= 0 ? TOOL_NAMES[station] : 'T0000', m: coolOn ? 'M08' : 'M09', p: t / TOTAL
+          f: station >= 0 ? op[5] : 0, t: station >= 0 ? TOOL_NAMES[station] : 'T0000', m: coolOn ? 'M08' : 'M09', p: t / TOTAL,
+          time: t, total: TOTAL, cut: cut, op: key, index: inIndex, cycle: cycle
         });
       }
-      renderer.render(scene, cam);
+      if (bokeh) bokeh.uniforms.focus.value = cam.position.distanceTo(tipW.lengthSq() > 0 ? tipW : target);
+      if (finalPass) finalPass.uniforms.time.value = t;
+      if (composer) composer.render(); else renderer.render(scene, cam);
     }
 
     function emitChips(dt, key) {
@@ -900,7 +1020,7 @@
     var last = performance.now();
     function frame(now) {
       requestAnimationFrame(frame);
-      var dt = Math.min(0.05, (now - last) / 1000); last = now;
+      var dt = clamp((now - last) / 1000, 0, 0.05); last = now;
       if (!visible || document.hidden || !current) return;
       idle += dt; if (!drag && idle > 2.5) tYaw += dt * 0.3;
       intro = Math.min(1, intro + dt * 1.6);
@@ -914,5 +1034,5 @@
     return { show: show };
   }
 
-  window.SR3D = { hero: hero, gallery: gallery, still: still, program: PROGRAM };
+  window.SR3D = { hero: hero, gallery: gallery, still: still, program: PROGRAM, profile: finalRadius, contour: contour };
 })();
