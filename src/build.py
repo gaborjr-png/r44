@@ -29,7 +29,36 @@ PAGES = [
     ("hc02",      "helikopter.html",    "helicopter.html",   "Helikopter",     "Helicopter"),
     ("careers",   "karrier.html",       "careers.html",      "Karrier",        "Careers"),
     ("contact",   "kapcsolat.html",     "contact.html",      "Kapcsolat",      "Contact"),
+    ("imprint",   "impresszum.html",    "imprint.html",      "Impresszum",     "Imprint"),
+    ("notfound",  "404.html",           "404.html",          "404",            "404"),
 ]
+HIDDEN = {"home", "imprint", "notfound"}          # not in the main navigation
+NO_INDEX = {"notfound"}                           # not in the sitemap
+
+# Search / share descriptions per page (hu, en)
+DESCRIPTIONS = {
+    "home": ("Steel Riders Kft. – CNC forgácsolt fém alkatrészek gyártása 1997 óta Verpeléten. Közép- és nagysorozatú esztergált és mart alkatrészek alumíniumból, sárgarézből, acélból és műanyagból.",
+             "Steel Riders Kft. – CNC machined metal components since 1997 in Verpelét, Hungary. Medium and large series of turned and milled parts in aluminium, brass, steel and plastics."),
+    "about": ("A Steel Riders Kft. története: családi vállalkozás 1997 óta, 50 munkatárs, 27 000 m²-es saját telephely, 3 műszakos gyártás Verpeléten.",
+              "The history of Steel Riders Kft.: a family business since 1997 with 50 employees, a 27,000 m² own site and 3-shift production in Verpelét, Hungary."),
+    "services": ("CNC esztergálás, CNC marás, öntvény-megmunkálás, általános fémforgácsolás és sorozatgyártás – nézze meg, hogyan készül egy esztergált alkatrész.",
+                 "CNC turning, CNC milling, casting machining, general metal cutting and series production – see how a turned part is made."),
+    "machinery": ("A Steel Riders géppark: CNC automata esztergák (INDEX, STAR), ellenorsós esztergák, vertikális megmunkálóközpontok, NC és hagyományos gépek vezérlőkkel.",
+                  "The Steel Riders machine park: CNC automatic lathes (INDEX, STAR), sub-spindle lathes, vertical machining centres, NC and conventional machines with controls."),
+    "quality": ("ISO 9001 és ISO 14001, klimatizált mérőszoba 3D koordináta-mérőgéppel és optikai mérőrendszerrel, SAP alapú nyomon követés.",
+                "ISO 9001 and ISO 14001, an air-conditioned measuring room with a 3D coordinate measuring machine and optical measuring system, SAP-based traceability."),
+    "projects": ("A Steel Riders Kft. fejlesztései és pályázati projektjei: Irinyi Terv, új gyártócsarnok, Hungarocopter HC-02.",
+                 "Developments and funded projects of Steel Riders Kft.: Irinyi Plan, new production hall, Hungarocopter HC-02."),
+    "hc02": ("Hungarocopter HC-02 – az első magyar fejlesztésű és gyártású kétszemélyes helikopter, amelyet a Hungaro-Copter Kft. és a Steel Riders Kft. közösen gyárt.",
+             "Hungarocopter HC-02 – the first Hungarian-designed and built two-seat helicopter, manufactured jointly by Hungaro-Copter Kft. and Steel Riders Kft."),
+    "careers": ("Karrier a Steel Riders Kft.-nél: CNC gépkezelő munkatársakat keresünk verpeléti üzemünkbe.",
+                "Careers at Steel Riders Kft.: we are hiring CNC machine operators for our plant in Verpelét."),
+    "contact": ("Kapcsolat és ajánlatkérés: Steel Riders Kft., 3351 Verpelét, Kossuth út 64. Tel.: +36 36 494 183.",
+                "Contact and quotation requests: Steel Riders Kft., Kossuth út 64, 3351 Verpelét, Hungary. Phone: +36 36 494 183."),
+    "imprint": ("A Steel Riders Kft. cégadatai: székhely, adószám, cégjegyzékszám, elérhetőségek.",
+                "Company details of Steel Riders Kft.: registered office, VAT number, company registration number, contacts."),
+    "notfound": ("Az oldal nem található.", "Page not found."),
+}
 
 # Machine park – official list supplied by Steel Riders Kft.
 # (model, description HU, description EN, controller, quantity)
@@ -155,12 +184,15 @@ def render():
 
             nav = [
                 {"key": p[0], "href": href(p[0]), "label": p[3] if lang == "hu" else p[4]}
-                for p in PAGES if p[0] not in ("home",)
+                for p in PAGES if p[0] not in HIDDEN
             ]
             ctx = dict(
                 _=_, lang=lang, page=key, href=href, nav=nav,
                 root=root, asset=root + "assets/",
                 alt_href=other_root + (en_file if lang == "hu" else hu_file),
+                description=DESCRIPTIONS[key][0 if lang == "hu" else 1],
+                noindex=key in NO_INDEX,
+                site_url=SITE_URL,
                 hu_url=f"{SITE_URL}/{'' if hu_file == 'index.html' else hu_file}",
                 en_url=f"{SITE_URL}/en/{'' if en_file == 'index.html' else en_file}",
                 machines=MACHINES, totals=TOTALS,
@@ -173,5 +205,29 @@ def render():
             print("built", dest.relative_to(OUT))
 
 
+def write_sitemap():
+    today = date.today().isoformat()
+    rows = []
+    for key, hu_file, en_file, *_ in PAGES:
+        if key in NO_INDEX:
+            continue
+        hu = f"{SITE_URL}/{'' if hu_file == 'index.html' else hu_file}"
+        en = f"{SITE_URL}/en/{'' if en_file == 'index.html' else en_file}"
+        for loc in (hu, en):
+            rows.append(
+                f"  <url><loc>{loc}</loc><lastmod>{today}</lastmod>"
+                f'<xhtml:link rel="alternate" hreflang="hu" href="{hu}"/>'
+                f'<xhtml:link rel="alternate" hreflang="en" href="{en}"/></url>'
+            )
+    (OUT / "sitemap.xml").write_text(
+        '<?xml version="1.0" encoding="UTF-8"?>\n'
+        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" '
+        'xmlns:xhtml="http://www.w3.org/1999/xhtml">\n' + "\n".join(rows) + "\n</urlset>\n",
+        encoding="utf-8")
+    (OUT / "robots.txt").write_text(f"User-agent: *\nAllow: /\n\nSitemap: {SITE_URL}/sitemap.xml\n", encoding="utf-8")
+    print("built sitemap.xml, robots.txt")
+
+
 if __name__ == "__main__":
     render()
+    write_sitemap()

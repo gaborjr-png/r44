@@ -1,0 +1,25 @@
+{% extends "base.html.j2" %}
+{% import "_macros.html.j2" as m with context %}
+{% block title %}{{ _('Impresszum', 'Imprint') }}{% endblock %}
+{% block content %}
+
+{{ m.page_head(_('Impresszum', 'Imprint'), _('Cégadatok', 'Company details'), _('A weboldal üzemeltetőjének adatai.', 'Details of the website operator.')) }}
+
+<section class="section">
+  <div class="wrap">
+    <div class="imprint">
+      <dl class="datasheet imprint__sheet">
+        <div><dt>{{ _('Cégnév', 'Company name') }}</dt><dd>Steel Riders Kft.</dd></div>
+        <div><dt>{{ _('Székhely', 'Registered office') }}</dt><dd>3351 Verpelét, Kossuth út 64.</dd></div>
+        <div><dt>{{ _('Adószám', 'VAT number') }}</dt><dd>11174864-2-10</dd></div>
+        <div><dt>{{ _('Cégjegyzékszám', 'Company reg. no.') }}</dt><dd>10-09-022629</dd></div>
+        <div><dt>{{ _('Nyilvántartó cégbíróság', 'Registry court') }}</dt><dd>{{ _('Egri Törvényszék Cégbírósága', 'Court of Registration of the Eger Regional Court') }}</dd></div>
+        <div><dt>{{ _('Ügyvezető', 'Managing director') }}</dt><dd>Farkas Gábor</dd></div>
+        <div><dt>{{ _('Telefon', 'Phone') }}</dt><dd><a href="tel:+3636494183">+36 36 494 183</a></dd></div>
+        <div><dt>E-mail</dt><dd><a href="mailto:info1@steelriderskft.hu">info1@steelriderskft.hu</a></dd></div>
+      </dl>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

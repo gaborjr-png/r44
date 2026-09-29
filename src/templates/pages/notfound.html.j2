@@ -1,0 +1,17 @@
+{% extends "base.html.j2" %}
+{% block title %}{{ _('Az oldal nem található', 'Page not found') }}{% endblock %}
+{% block content %}
+<section class="nf">
+  <div class="hero__grid" aria-hidden="true"></div>
+  <div class="wrap nf__inner">
+    <p class="nf__code" aria-hidden="true">404</p>
+    <p class="eyebrow eyebrow--light">{{ _('Tűrésen kívül', 'Out of tolerance') }}</p>
+    <h1 class="page-head__title">{{ _('Ez az oldal nem található.', 'This page could not be found.') }}</h1>
+    <p class="page-head__lead">{{ _('Lehet, hogy a link elavult, vagy az oldal új helyre került.', 'The link may be outdated or the page may have moved.') }}</p>
+    <div class="hero__actions">
+      <a class="btn btn--brass btn--lg" href="{{ href('home') }}">{{ _('Vissza a főoldalra', 'Back to the home page') }}</a>
+      <a class="btn btn--ghost-light btn--lg" href="{{ href('contact') }}">{{ _('Kapcsolat', 'Contact') }}</a>
+    </div>
+  </div>
+</section>
+{% endblock %}
