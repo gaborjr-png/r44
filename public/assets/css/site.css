@@ -1018,3 +1018,22 @@ a:hover .photo img, .photo:hover img { transform: scale(calc(var(--zoom, 1) * 1.
 @media (max-width: 700px) {
   .hero--photo::before { background: linear-gradient(180deg, rgba(10,13,16,.72) 0%, rgba(10,13,16,.84) 45%, rgba(10,13,16,.96) 100%); }
 }
+
+/* v9 – HC-02 photo band */
+.hcphoto { position: relative; overflow: hidden; isolation: isolate; background: #9fb0bf; color: var(--white); }
+.hcphoto__media { position: absolute; inset: 0; z-index: -1; }
+.hcphoto__media img { width: 100%; height: 100%; object-fit: cover; object-position: 30% 45%; }
+.hcphoto__media::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(10,13,16,0) 30%, rgba(10,13,16,.55) 58%, rgba(10,13,16,.88) 100%); }
+.hcphoto .hcband { grid-template-columns: 1fr minmax(0, 520px); padding-block: clamp(96px, 13vw, 180px); }
+.hcphoto .hcband > div:first-child { grid-column: 2; }
+.hcphoto .hcband__specs { grid-column: 2; background: rgba(255,255,255,.14); border-color: rgba(255,255,255,.14); backdrop-filter: blur(12px); }
+.hcphoto .hcband__specs div { background: rgba(10,13,16,.55); }
+.hcphoto .h2 { color: var(--white); }
+.hcphoto .lead { color: var(--alu-200); }
+@media (max-width: 900px) {
+  .hcphoto { background: var(--ink-900); }
+  .hcphoto__media { position: relative; aspect-ratio: 3 / 2; }
+  .hcphoto__media::after { background: linear-gradient(180deg, rgba(10,13,16,0) 60%, var(--ink-900)); }
+  .hcphoto .hcband { grid-template-columns: 1fr; padding-block: 8px 64px; }
+  .hcphoto .hcband > div:first-child, .hcphoto .hcband__specs { grid-column: 1; }
+}
