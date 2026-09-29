@@ -445,6 +445,10 @@
         if (f.classList.contains('is-invalid')) { f.classList.remove('is-invalid'); f.removeAttribute('aria-invalid'); status.textContent = ''; }
       });
     });
+    try {
+      var pre = new URLSearchParams(location.search).get('meret');
+      if (pre && !form.elements.message.value) form.elements.message.value = pre + '\n';
+    } catch (e) {}
     show(1);
 
     $$('[data-next]', form).forEach(function (b) { b.addEventListener('click', function () { if (valid(steps[current - 1])) show(current + 1, true); }); });
@@ -500,6 +504,66 @@
       var sel = function () { var r = document.createRange(); r.selectNodeContents(text); var s = getSelection(); s.removeAllRanges(); s.addRange(r); };
       if (navigator.clipboard) navigator.clipboard.writeText(text.textContent).then(ok, sel); else sel();
     });
+  }
+
+  /* ---------- Feasibility check (capabilities) ---------- */
+  var fit = $('#fit');
+  if (fit) {
+    var envs = JSON.parse($('#fitData').textContent), fd = fit.dataset, kind = 'rot';
+    var svg = $('#fitSvg'), flist = $('#fitList'), cta = $('#fitCta');
+    var NS = 'http://www.w3.org/2000/svg';
+    function el(tag, attrs, text) {
+      var e = document.createElementNS(NS, tag);
+      for (var k in attrs) e.setAttribute(k, attrs[k]);
+      if (text) e.textContent = text;
+      svg.appendChild(e); return e;
+    }
+    function val(d) { var v = parseFloat(($('[data-dim="' + d + '"]', fit).value || '').replace(',', '.')); return isFinite(v) && v > 0 ? v : 0; }
+    function fmt(n) { return String(Math.round(n * 10) / 10).replace('.', ','); }
+    function update() {
+      var a = kind === 'rot' ? val('d') : val('x'), b = kind === 'rot' ? val('l') : val('y');
+      var res = envs.filter(function (e) { return e.kind === kind; }).map(function (e) {
+        var ok = kind === 'rot' ? (a >= e.dmin && a <= e.dmax && b <= e.lmax) : (Math.max(a, b) <= e.xmax && Math.min(a, b) <= e.ymax);
+        return { e: e, ok: ok && a > 0 && b > 0 };
+      });
+      flist.innerHTML = '';
+      res.forEach(function (r) {
+        var li = document.createElement('li');
+        li.className = r.ok ? 'is-ok' : 'is-no';
+        li.innerHTML = '<span class="fit__mark"></span><span><b></b><small></small></span><em></em>';
+        li.querySelector('b').textContent = r.e.name;
+        li.querySelector('small').textContent = r.e.mach + ' · ' + (kind === 'rot' ? 'Ø ' + (r.e.dmin ? r.e.dmin + '–' : '≤ ') + r.e.dmax + ' × L ≤ ' + r.e.lmax + ' mm' : r.e.xmax + ' × ' + r.e.ymax + ' mm');
+        li.querySelector('em').textContent = r.ok ? fd.msgOk : fd.msgNo;
+        flist.appendChild(li);
+      });
+      if (!res.some(function (r) { return r.ok; })) {
+        var li = document.createElement('li'); li.className = 'fit__none'; li.textContent = fd.msgNone; flist.appendChild(li);
+      }
+      // scaled drawing: best envelope vs part
+      var env = (res.filter(function (r) { return r.ok; })[0] || res[res.length - 1]).e;
+      var ew = kind === 'rot' ? env.lmax : env.xmax, eh = kind === 'rot' ? env.dmax : env.ymax;
+      var pw = kind === 'rot' ? b : Math.max(a, b), ph = kind === 'rot' ? a : Math.min(a, b);
+      var W = 280, H = 118, sc = Math.min(W / Math.max(ew, pw || 1), H / Math.max(eh, ph || 1));
+      svg.innerHTML = '';
+      var ox = 20, oy = 22 + (H - eh * sc) / 2;
+      el('rect', { x: ox, y: oy, width: ew * sc, height: eh * sc, class: 'fit__env', rx: 3 });
+      el('text', { x: ox, y: oy - 5, class: 'fit__envlbl' }, env.name + ' · ' + (kind === 'rot' ? 'L ' + ew + ' × Ø ' + eh : ew + ' × ' + eh) + ' mm');
+      var py = 22 + (H - ph * sc) / 2;
+      if (pw && ph) el('rect', { x: ox, y: py, width: Math.max(pw * sc, 2), height: Math.max(ph * sc, 2), class: 'fit__part ' + (res.some(function (r) { return r.ok; }) ? 'is-ok' : 'is-no'), rx: kind === 'rot' ? 1 : 2 });
+      el('text', { x: ox, y: 162, class: 'fit__partlbl' }, (kind === 'rot' ? 'Ø ' + fmt(a) + ' × ' + fmt(b) : fmt(a) + ' × ' + fmt(b)) + ' mm');
+      var label = (kind === 'rot' ? fd.msgRot + ': Ø ' + fmt(a) + ' × ' + fmt(b) : fd.msgPri + ': ' + fmt(a) + ' × ' + fmt(b)) + ' mm';
+      cta.href = fd.href + '?meret=' + encodeURIComponent(label) + '#ajanlatkeres';
+    }
+    $$('.fit__seg button', fit).forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        kind = btn.dataset.kind;
+        $$('.fit__seg button', fit).forEach(function (x) { x.setAttribute('aria-checked', String(x === btn)); });
+        $$('.fit__fields', fit).forEach(function (f) { f.hidden = f.dataset.for !== kind; });
+        update();
+      });
+    });
+    $$('input', fit).forEach(function (inp) { inp.addEventListener('input', update); });
+    update();
   }
 
   /* ---------- Cookie consent, analytics, map ---------- */

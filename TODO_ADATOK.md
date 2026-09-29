@@ -8,7 +8,7 @@ majd futtassuk a `python3 src/build.py` parancsot.
 | 1 | Tárhelyszolgáltató neve, címe, e-mailje (Impresszum – kötelező, Ektv. 4. §) | `src/build.py` → `SITE["host"]` | Rackhost Zrt., Szeged |
 | 1 | Adatkezelési tájékoztató: hatálybalépés, megőrzési idők, adatfeldolgozók (könyvelő, IT) – jogásszal átnézetni | `src/templates/pages/privacy.html.j2` | általános GDPR-sablon |
 | 2 | Ajánlatkérő űrlap címzett és feladó (a feladó a saját domainen legyen) | `src/api/config.php` | info1@ / weboldal@steelriderskft.hu |
-| 3 | Technológiai paraméterek (rúdátmérők, munkaterek, tűrés, érdesség, átfutás) | `src/templates/pages/services.html.j2` → `#parameterek` | Ø1–32, Ø250, Ø630, 1020×510 mm, ±0,01 mm, Ra 0,4 |
+| 3 | Technológiai paraméterek – a Ø4–35, Ø630 és 1350×750 mm valós; mintaadat: hosszak (320 / 400 mm), Ø65 rúd, 600 kg, tűrés, érdesség, átfutás | `src/templates/pages/services.html.j2` → `#parameterek` | lásd bal oldalt |
 | 4 | Válaszidő ajánlatkérésre | `src/build.py` → `SITE["response_hours"]`; GYIK: `contact.html.j2` | 48 óra; ajánlat 3–5 / 5–10 munkanap |
 | 5 | ISO tanúsítványok: tanúsító, szám, érvényesség + **valós PDF-ek** | `SITE["certs"]`; fájlok: `src/assets/docs/iso-9001.pdf`, `iso-14001.pdf` | SGS Hungária Kft., 2027-06-30, „MINTA” PDF |
 | 6 | Referenciák (iparág, alkatrész, számok) – vagy partnerlogók írásos engedéllyel | `src/templates/pages/home.html.j2` → `#referenciak` | 3 kitalált esettanulmány |
