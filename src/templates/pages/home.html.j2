@@ -5,7 +5,7 @@
 
 <section class="hero hero--photo" id="hero">
   <div class="hero__bg" aria-hidden="true">
-    <img src="{{ asset }}img/star-sr16.webp" alt="" fetchpriority="high" width="1448" height="1086">
+    <img src="{{ asset }}img/csarnok.webp" alt="" fetchpriority="high" width="1774" height="887">
   </div>
   <div class="wrap hero__content">
     <p class="eyebrow eyebrow--light">{{ _('CNC forgácsolt fém alkatrészek gyártása · 1997 óta', 'CNC machined metal components · since 1997') }}</p>
@@ -232,7 +232,7 @@
         </div>
       </div>
       <div class="tabs__panel" role="tabpanel" id="p-mill" aria-labelledby="t-mill" hidden>
-        {{ m.photo('alkatreszek-maras.webp', _('Mart alumínium alkatrészek megmunkálóközpont előtt', 'Milled aluminium parts in front of a machining centre'), '', '4/3', pos='50% 50%', zoom=1) }}
+        {{ m.photo('maras-munka.webp', _('Megmunkálóközpont munka közben, több befogóval', 'Machining centre at work with multiple vices'), '', '4/3', pos='45% 50%') }}
         <div class="tabs__body">
           <h3 class="h3">{{ _('Marási munkák megmunkálóközpontokon', 'Milling on machining centres') }}</h3>
           <p>{{ _('Prizmatikus alkatrészek marása, fúrása, menetkészítése, esztergált alkatrészek utólagos megmunkálása 11 vertikális megmunkálóközponton.', 'Milling, drilling and threading of prismatic parts and secondary machining of turned parts on 11 vertical machining centres.') }}</p>
@@ -259,6 +259,26 @@
           <a class="link-arrow" href="{{ href('services') }}#altalanos">{{ _('Részletek', 'Details') }}</a>
         </div>
       </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section--dark metro">
+  <div class="wrap metro__grid">
+    <figure class="metro__photo reveal">
+      <img src="{{ asset }}img/meroszoba.webp" alt="{{ _('Optikai mérőrendszer: automatikus méretellenőrzés, minden méret megfelelt', 'Optical measuring system: automatic dimensional check, all dimensions passed') }}" loading="lazy" width="1448" height="1086">
+      <figcaption class="metro__ok"><span>OK</span>{{ _('Automatikus mérés · 7/7 méret tűrésen belül', 'Automatic measurement · 7/7 dimensions in tolerance') }}</figcaption>
+    </figure>
+    <div>
+      <p class="eyebrow eyebrow--light">{{ _('Mérőszoba', 'Metrology') }}</p>
+      <h2 class="h2">{{ _('Minden méret mérve, minden eredmény dokumentálva', 'Every dimension measured, every result documented') }}</h2>
+      <p class="lead">{{ _('Saját mérőszobánkban optikai mérőrendszerrel ellenőrizzük az első darabokat és a sorozatból vett mintákat – másodpercek alatt, a teljes méretsorra.', 'In our own measuring room, first articles and series samples are checked with an optical measuring system – the full set of dimensions in seconds.') }}</p>
+      <ul class="checks checks--light">
+        <li>{{ _('Első darab jóváhagyás a sorozat indítása előtt', 'First-article approval before series release') }}</li>
+        <li>{{ _('Gyártásközi mintavétel és mérés', 'In-process sampling and measurement') }}</li>
+        <li>{{ _('Mérési jegyzőkönyv kérésre, tételhez rendelve', 'Inspection reports on request, linked to the lot') }}</li>
+      </ul>
+      <a class="link-arrow link-arrow--light" href="{{ href('quality') }}">{{ _('Minőségügy', 'Quality') }}</a>
     </div>
   </div>
 </section>
