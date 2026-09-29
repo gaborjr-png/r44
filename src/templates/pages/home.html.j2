@@ -56,6 +56,56 @@
   </div>
 </section>
 
+<section class="section chain-sec" id="ertekLanc">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <p class="eyebrow">{{ _('Egy kézben', 'Single source') }}</p>
+        <h2 class="h2">{{ _('Az alapanyagtól a kiszállításig', 'From raw material to delivery') }}</h2>
+      </div>
+      <p>{{ _('A teljes értékláncot házon belül tartjuk: nincs alvállalkozói lánc, nincs információvesztés – egy kapcsolattartó, egy felelős.', 'We keep the whole value chain in-house: no subcontractor chain, no loss of information – one contact, one responsible partner.') }}</p>
+    </div>
+    <ol class="chain">
+      <li class="chain__item reveal">
+        <img src="{{ asset }}img/alapanyag-raktar.webp" alt="{{ _('Alapanyagraktár sárgaréz, alumínium és acél rudakkal', 'Raw material store with brass, aluminium and steel bars') }}" loading="lazy" width="1448" height="1086" style="object-position: 30% 50%">
+        <div class="chain__body">
+          <span class="chain__n">01</span>
+          <h3 class="h3">{{ _('Alapanyag', 'Raw material') }}</h3>
+          <p>{{ _('Beszerzés, bizonylatolás és raktározás – a rúdanyag már nálunk van, amikor a gyártás indul.', 'Sourcing, certification and storage – the bar stock is already here when production starts.') }}</p>
+          <a href="{{ href('services') }}#anyagok">{{ _('Anyagok', 'Materials') }} →</a>
+        </div>
+      </li>
+      <li class="chain__item reveal">
+        <img src="{{ asset }}img/star-sr32.webp" alt="{{ _('STAR hosszeszterga gyártás közben', 'STAR Swiss-type lathe in production') }}" loading="lazy" style="object-position: 42% 50%">
+        <div class="chain__body">
+          <span class="chain__n">02</span>
+          <h3 class="h3">{{ _('Gyártás', 'Machining') }}</h3>
+          <p>{{ _(totals.cnc ~ ' CNC és NC gép, 3 műszak – esztergálás Ø 4–630 mm, marás 1350 × 750 mm-ig.', totals.cnc ~ ' CNC and NC machines, 3 shifts – turning Ø 4–630 mm, milling up to 1350 × 750 mm.') }}</p>
+          <a href="{{ href('services') }}#parameterek">{{ _('Paraméterek', 'Capabilities') }} →</a>
+        </div>
+      </li>
+      <li class="chain__item reveal">
+        <img src="{{ asset }}img/meres-tolomero.webp" alt="{{ _('Esztergált alkatrész mérése a rajz alapján', 'Measuring a turned part against the drawing') }}" loading="lazy" width="1086" height="1448" style="object-position: 50% 40%">
+        <div class="chain__body">
+          <span class="chain__n">03</span>
+          <h3 class="h3">{{ _('Mérés', 'Inspection') }}</h3>
+          <p>{{ _('Első darab, gyártásközi és végellenőrzés – klimatizált mérőszobában, 3D mérőgéppel.', 'First-article, in-process and final inspection – in an air-conditioned room with a 3D CMM.') }}</p>
+          <a href="{{ href('quality') }}">{{ _('Minőségügy', 'Quality') }} →</a>
+        </div>
+      </li>
+      <li class="chain__item reveal">
+        <img src="{{ asset }}img/szallitas.webp" alt="{{ _('Csomagolt alkatrészek kiszállítás előtt', 'Packed parts ready for delivery') }}" loading="lazy" style="object-position: 50% 55%">
+        <div class="chain__body">
+          <span class="chain__n">04</span>
+          <h3 class="h3">{{ _('Kiszállítás', 'Delivery') }}</h3>
+          <p>{{ _('Tételazonosított csomagolás és ütemezett szállítás, keretszerződéses hívással is.', 'Lot-labelled packaging and scheduled delivery, including blanket-order call-offs.') }}</p>
+          <a href="{{ href('contact') }}#ajanlatkeres">{{ _('Ajánlatkérés', 'Request a quote') }} →</a>
+        </div>
+      </li>
+    </ol>
+  </div>
+</section>
+
 <section class="section section--dark aerial" id="telephely">
   <div class="wrap aerial__grid">
     <figure class="aerial__hero reveal">
@@ -303,6 +353,34 @@
       <li class="reveal"><span class="industries__code">06</span><strong>{{ _('Repülőgépipar', 'Aerospace') }}</strong><span>{{ _('Többek között a HC-02 helikopter', 'Including the HC-02 helicopter') }}</span></li>
       <li class="reveal"><span class="industries__code">07</span><strong>{{ _('Orvosi és vegyipar', 'Medical & chemical') }}</strong><span>{{ _('Orvosi és vegyipari berendezések', 'Medical and chemical equipment') }}</span></li>
     </ul>
+  </div>
+</section>
+
+<section class="section devs" id="fejlesztesek">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <p class="eyebrow">{{ _('Folyamatos fejlesztés', 'Continuous investment') }}</p>
+        <h2 class="h2">{{ _(grants|length ~ ' támogatott beruházás 2012 óta', grants|length ~ ' funded investments since 2012') }}</h2>
+      </div>
+      <p>{{ _('Új CNC gépek, mérőgépek, gyártócsarnok, SAP és napelemes energia – rendszeresen fejlesztünk, hogy a partnereink igényei előtt járjunk.', 'New CNC machines, measuring machines, a production hall, SAP and solar power – we invest continuously to stay ahead of our partners’ needs.') }}</p>
+    </div>
+    <ol class="devs__line reveal">
+      {% for g in grants|reverse %}
+      <li><a href="{{ href('projects') }}#{{ g.id }}"><b>{{ g.year }}</b><span>{{ _(g.tag[0], g.tag[1]) }}</span></a></li>
+      {% endfor %}
+    </ol>
+    <div class="devs__cards">
+      {% for g in grants[:3] %}
+      <a class="devs__card reveal" href="{{ href('projects') }}#{{ g.id }}">
+        <span class="devs__year">{{ g.year }}</span>
+        <strong>{{ _(g.title[0], g.title[1]) }}</strong>
+        <span class="devs__item">{{ _(g['items'][0][0], g['items'][0][1]) }}</span>
+        {% for k, v in g.facts if k[0] == 'Támogatás mértéke' %}<span class="devs__rate">{{ _(k[0], k[1]) }}: {{ _(v[0], v[1]) }}</span>{% endfor %}
+      </a>
+      {% endfor %}
+    </div>
+    <a class="link-arrow" href="{{ href('projects') }}">{{ _('Mind a ' ~ grants|length ~ ' projekt', 'All ' ~ grants|length ~ ' projects') }}</a>
   </div>
 </section>
 
