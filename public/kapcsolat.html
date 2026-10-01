@@ -23,7 +23,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,500..800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap">
-  <link rel="stylesheet" href="assets/css/site.css">
+  <link rel="stylesheet" href="assets/css/site.css?v=ccaa1174">
   <script>document.documentElement.classList.replace('no-js', 'js');</script>
   <script>
   /* New page → start at the top (keeps #anchor links and Back/Forward position) */
@@ -242,13 +242,37 @@
         Magyarország
       </address>
       <p class="visit__note">Verpelét Heves megyében, Eger és Gyöngyös között található.</p>
-      <div class="mapbox" id="mapbox" data-src="https://www.google.com/maps?q=Steel+Riders+Kft,+Verpel%C3%A9t,+Kossuth+%C3%BAt+64&output=embed">
-        <button class="mapbox__load" type="button" id="mapLoad">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21Z" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="9.5" r="2.5" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
-          <b>Térkép megjelenítése</b>
-          <small>A Google Térkép betöltésével a Google sütiket helyezhet el.</small>
-        </button>
-      </div>
+      <a class="locmap" href="https://www.google.com/maps/search/?api=1&query=Steel+Riders+Kft+Verpel%C3%A9t+Kossuth+%C3%BAt+64" target="_blank" rel="noopener" aria-label="Steel Riders Kft. Verpeléten – megnyitás a Google Térképen">
+        <svg viewBox="0 0 400 250" role="img" aria-hidden="true">
+          <defs>
+            <pattern id="lmGrid" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M20 0H0V20" fill="none" stroke="#e3e7ec" stroke-width=".6"/></pattern>
+            <radialGradient id="lmMatra" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#c9d3cc"/><stop offset="1" stop-color="#c9d3cc" stop-opacity="0"/></radialGradient>
+            <radialGradient id="lmBukk" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#c9d3cc"/><stop offset="1" stop-color="#c9d3cc" stop-opacity="0"/></radialGradient>
+          </defs>
+          <rect width="400" height="250" fill="#f6f7f8"/>
+          <rect width="400" height="250" fill="url(#lmGrid)"/>
+          <ellipse cx="110" cy="88" rx="95" ry="48" fill="url(#lmMatra)"/>
+          <ellipse cx="330" cy="20" rx="90" ry="40" fill="url(#lmBukk)"/>
+          <text x="96" y="78" class="lm-region">MÁTRA</text>
+          <text x="318" y="22" class="lm-region">BÜKK</text>
+          <path d="M-5 206 C 60 200, 120 204, 180 201 S 300 196, 405 192" class="lm-motorway"/>
+          <text x="20" y="224" class="lm-road">M3</text>
+          <path d="M64 167 C 120 150, 180 125, 230 108" class="lm-roadline"/>
+          <path d="M230 108 C 262 92, 290 74, 312 61" class="lm-roadline"/>
+          <path d="M230 108 C 234 140, 238 168, 239 199" class="lm-roadline"/>
+          <path d="M312 61 C 322 110, 330 160, 333 196" class="lm-roadline"/>
+          <circle cx="312" cy="61" r="4.5" class="lm-town"/><text x="322" y="65" class="lm-label">Eger</text>
+          <circle cx="64" cy="167" r="4.5" class="lm-town"/><text x="38" y="186" class="lm-label">Gyöngyös</text>
+          <circle cx="333" cy="196" r="3.5" class="lm-town"/><text x="342" y="185" class="lm-label lm-label--s">Füzesabony</text>
+          <circle cx="239" cy="199" r="3.5" class="lm-town"/><text x="246" y="186" class="lm-label lm-label--s">Kápolna</text>
+          <circle cx="230" cy="108" r="22" class="lm-pulse"/>
+          <circle cx="230" cy="108" r="11" class="lm-halo"/>
+          <path d="M230 108 l-9 -16 a10.5 10.5 0 1 1 18 0 z" class="lm-pin" transform="translate(0 -6)"/>
+          <circle cx="230" cy="88" r="3.6" fill="#fff"/>
+          <g class="lm-callout"><path d="M206 120 l8 -6 v12 z"/><rect x="82" y="108" width="124" height="36" rx="5"/><text x="92" y="123" class="lm-co1">Steel Riders Kft.</text><text x="92" y="136" class="lm-co2">Verpelét, Kossuth út 64.</text></g>
+        </svg>
+        <span class="locmap__cta">Megnyitás a Google Térképen ↗</span>
+      </a>
       <a class="btn btn--outline btn--block" href="https://www.google.com/maps/search/?api=1&query=Steel+Riders+Kft+Verpel%C3%A9t+Kossuth+%C3%BAt+64" target="_blank" rel="noopener">Útvonaltervezés</a>
       <dl class="visit__data">
         <div><dt>Cégnév</dt><dd>Steel Riders Kft.</dd></div>
@@ -362,12 +386,11 @@
   <div class="cookie" id="cookie" role="dialog" aria-labelledby="ckTitle" aria-live="polite" hidden>
     <div class="cookie__main">
       <p class="cookie__title" id="ckTitle">Sütik a weboldalon</p>
-      <p>A weboldal működéséhez szükséges sütiket mindig használjuk. Az Ön hozzájárulásával látogatottsági statisztikát is készítünk, és betöltjük a Google Térképet. <a href="adatvedelem.html#sutik">Részletek</a></p>
+      <p>A weboldal működéséhez szükséges sütiket mindig használjuk. Az Ön hozzájárulásával anonim látogatottsági statisztikát is készítünk. <a href="adatvedelem.html#sutik">Részletek</a></p>
     </div>
     <div class="cookie__detail">
       <label class="check check--on"><input type="checkbox" checked disabled> <span><b>Szükséges</b> — nyelv, beállítások mentése</span></label>
       <label class="check"><input type="checkbox" id="ckStats"> <span><b>Statisztika</b> — Google Analytics, anonimizált IP-címmel</span></label>
-      <label class="check"><input type="checkbox" id="ckMaps"> <span><b>Külső tartalom</b> — beágyazott Google Térkép</span></label>
     </div>
     <div class="cookie__actions">
       <button class="btn btn--text" type="button" id="ckMore">Beállítások</button>
@@ -379,7 +402,7 @@
 
   <script src="assets/vendor/three.min.js" defer></script>
   <script src="assets/vendor/three-post.js" defer></script>
-  <script src="assets/js/part3d.js" defer></script>
-  <script src="assets/js/site.js" defer></script>
+  <script src="assets/js/part3d.js?v=ccaa1174" defer></script>
+  <script src="assets/js/site.js?v=ccaa1174" defer></script>
 </body>
 </html>

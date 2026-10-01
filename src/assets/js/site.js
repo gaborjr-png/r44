@@ -581,38 +581,25 @@
     window.gtag('js', new Date());
     window.gtag('config', id, { anonymize_ip: true });
   }
-  function loadMap() {
-    var box = $('#mapbox');
-    if (!box || $('iframe', box)) return;
-    var f = document.createElement('iframe');
-    f.src = box.dataset.src; f.loading = 'lazy'; f.title = 'Google Maps'; f.referrerPolicy = 'no-referrer-when-downgrade';
-    box.innerHTML = ''; box.appendChild(f); box.classList.add('is-loaded');
-  }
   function applyConsent(c) {
     if (c && c.stats) loadAnalytics();
-    if (c && c.maps) loadMap();
   }
   var cb = $('#cookie');
   if (cb) {
-    var boxes = { stats: $('#ckStats'), maps: $('#ckMaps') };
+    var boxes = { stats: $('#ckStats') };
     var openCookie = function (detail) {
       var c = getConsent() || {};
-      boxes.stats.checked = !!c.stats; boxes.maps.checked = !!c.maps;
+      boxes.stats.checked = !!c.stats;
       cb.classList.toggle('is-detail', !!detail);
       cb.hidden = false;
     };
     var save = function (c) { c.t = Date.now(); setConsent(c); cb.hidden = true; applyConsent(c); };
-    $('#ckAll').addEventListener('click', function () { save({ stats: true, maps: true }); });
-    $('#ckNone').addEventListener('click', function () { save({ stats: false, maps: false }); });
+    $('#ckAll').addEventListener('click', function () { save({ stats: true }); });
+    $('#ckNone').addEventListener('click', function () { save({ stats: false }); });
     $('#ckMore').addEventListener('click', function () { cb.classList.add('is-detail'); });
-    $('#ckSave').addEventListener('click', function () { save({ stats: boxes.stats.checked, maps: boxes.maps.checked }); });
+    $('#ckSave').addEventListener('click', function () { save({ stats: boxes.stats.checked }); });
     $$('[data-cookie-settings]').forEach(function (a) { a.addEventListener('click', function (e) { e.preventDefault(); openCookie(true); }); });
     var c0 = getConsent();
     if (c0) applyConsent(c0); else openCookie(false);
   }
-  var ml = $('#mapLoad');
-  if (ml) ml.addEventListener('click', function () {
-    var c = getConsent() || { stats: false };
-    c.maps = true; c.t = Date.now(); setConsent(c); loadMap();
-  });
 })();

@@ -8,7 +8,10 @@ English into public/en/.
 
 Usage:  python3 src/build.py
 """
+import hashlib
 import shutil
+import sys
+import zipfile
 from datetime import date
 from pathlib import Path
 
@@ -73,11 +76,12 @@ SITE = {
     "rfq_email": "info1@steelriderskft.hu",
     "response_hours": 48,                                   # PLACEHOLDER
     # Hosting provider – legally required in the imprint (Ektv. 4. §)
-    "host": {                                               # PLACEHOLDER
-        "name": "Rackhost Zrt.",
-        "address": "6722 Szeged, Tisza Lajos krt. 41.",
-        "email": "info@rackhost.hu",
-        "web": "https://www.rackhost.hu",
+    "host": {
+        "name": "Rackforest Zrt.",
+        "address": "1132 Budapest, Victor Hugo utca 11. 5. em. B05001",
+        "email": "info@rackforest.hu",
+        "web": "https://rackforest.com",
+        "phone": "+36 1 211 0044",
     },
     # Google Analytics 4 measurement ID – loaded only after cookie consent.
     # Leave as "G-XXXXXXXXXX" to disable analytics entirely.
@@ -85,7 +89,6 @@ SITE = {
     # Google Business Profile
     "maps_url": "https://www.google.com/maps/search/?api=1&query=Steel+Riders+Kft+Verpel%C3%A9t+Kossuth+%C3%BAt+64",
     "review_url": "https://www.google.com/maps/search/?api=1&query=Steel+Riders+Kft+Verpel%C3%A9t",  # PLACEHOLDER: g.page/r/…/review
-    "maps_embed": "https://www.google.com/maps?q=Steel+Riders+Kft,+Verpel%C3%A9t,+Kossuth+%C3%BAt+64&output=embed",
     # Certificates (PDFs in src/assets/docs/)
     "certs": [                                              # PLACEHOLDER
         {"std": "ISO 9001:2015", "hu": "Minőségirányítási rendszer", "en": "Quality management system",
@@ -204,6 +207,10 @@ def render():
         shutil.rmtree(OUT)
     shutil.copytree(SRC / "assets", OUT / "assets")
     shutil.copytree(SRC / "api", OUT / "api")
+    shutil.copytree(SRC / "static", OUT, dirs_exist_ok=True)   # .htaccess etc.
+    # cache-busting version for CSS/JS
+    ver = hashlib.md5(b"".join((SRC / "assets" / f).read_bytes() for f in
+                               ("css/site.css", "js/site.js", "js/part3d.js"))).hexdigest()[:8]
 
     for lang in ("hu", "en"):
         root = "" if lang == "hu" else "../"
@@ -231,7 +238,7 @@ def render():
                 site_url=SITE_URL,
                 hu_url=f"{SITE_URL}/{'' if hu_file == 'index.html' else hu_file}",
                 en_url=f"{SITE_URL}/en/{'' if en_file == 'index.html' else en_file}",
-                machines=MACHINES, totals=TOTALS, site=SITE, grants=GRANTS,
+                machines=MACHINES, totals=TOTALS, site=SITE, grants=GRANTS, ver=ver,
                 year=date.today().year, years=date.today().year - 1997,
             )
             html = env.get_template(f"pages/{key}.html.j2").render(**ctx)
@@ -264,6 +271,20 @@ def write_sitemap():
     print("built sitemap.xml, robots.txt")
 
 
+def package(dest):
+    """Zip the finished site for upload (cPanel: extract into public_html)."""
+    dest = Path(dest).resolve()
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    with zipfile.ZipFile(dest, "w", zipfile.ZIP_DEFLATED) as z:
+        for f in sorted(OUT.rglob("*")):
+            if f.is_file() and f.name != "README.md":
+                z.write(f, f.relative_to(OUT).as_posix())
+    print("packaged", dest)
+
+
 if __name__ == "__main__":
     render()
     write_sitemap()
+    if "--zip" in sys.argv:
+        i = sys.argv.index("--zip")
+        package(sys.argv[i + 1] if len(sys.argv) > i + 1 else SRC.parent / "dist" / "steelriders-weboldal.zip")

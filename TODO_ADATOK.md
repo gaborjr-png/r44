@@ -5,7 +5,7 @@ majd futtassuk a `python3 src/build.py` parancsot.
 
 | # | Mi | Hol javítandó | Jelenlegi mintaadat |
 |---|----|---------------|---------------------|
-| 1 | Tárhelyszolgáltató neve, címe, e-mailje (Impresszum – kötelező, Ektv. 4. §) | `src/build.py` → `SITE["host"]` | Rackhost Zrt., Szeged |
+| 1 | Tárhelyszolgáltató neve, címe, e-mailje (Impresszum – kötelező, Ektv. 4. §) | `src/build.py` → `SITE["host"]` | ✓ Rackforest Zrt. (1132 Budapest, Victor Hugo u. 11.) – kész |
 | 1 | Adatkezelési tájékoztató: hatálybalépés, megőrzési idők, adatfeldolgozók (könyvelő, IT) – jogásszal átnézetni | `src/templates/pages/privacy.html.j2` | általános GDPR-sablon |
 | 2 | Ajánlatkérő űrlap címzett és feladó (a feladó a saját domainen legyen) | `src/api/config.php` | info1@ / weboldal@steelriderskft.hu |
 | 3 | Technológiai paraméterek – a Ø4–35, Ø630 és 1350×750 mm valós; mintaadat: hosszak (320 / 400 mm), Ø65 rúd, 600 kg, tűrés, érdesség, átfutás | `src/templates/pages/services.html.j2` → `#parameterek` | lásd bal oldalt |

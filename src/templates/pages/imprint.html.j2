@@ -23,6 +23,7 @@
       <dl class="datasheet imprint__sheet">
         <div><dt>{{ _('Név', 'Name') }}</dt><dd>{{ site.host.name }}</dd></div>
         <div><dt>{{ _('Cím', 'Address') }}</dt><dd>{{ site.host.address }}</dd></div>
+        <div><dt>{{ _('Telefon', 'Phone') }}</dt><dd>{{ site.host.phone }}</dd></div>
         <div><dt>E-mail</dt><dd><a href="mailto:{{ site.host.email }}">{{ site.host.email }}</a></dd></div>
         <div><dt>Web</dt><dd><a href="{{ site.host.web }}" target="_blank" rel="noopener">{{ site.host.web | replace('https://', '') }}</a></dd></div>
       </dl>

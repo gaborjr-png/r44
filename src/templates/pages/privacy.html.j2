@@ -50,7 +50,7 @@
       <h2 class="h3" id="feldolgozok">3. {{ _('Adatfeldolgozók és címzettek', 'Processors and recipients') }}</h2>
       <ul class="checks">
         <li><b>{{ site.host.name }}</b> ({{ site.host.address }}) – {{ _('tárhelyszolgáltatás, e-mail továbbítás', 'web hosting, e-mail delivery') }}</li>
-        <li><b>Google Ireland Ltd.</b> (Gordon House, Barrow Street, Dublin 4, {{ _('Írország', 'Ireland') }}) – {{ _('Google Analytics és Google Térkép, csak hozzájárulás esetén', 'Google Analytics and Google Maps, only with consent') }}</li>
+        <li><b>Google Ireland Ltd.</b> (Gordon House, Barrow Street, Dublin 4, {{ _('Írország', 'Ireland') }}) – {{ _('Google Analytics, csak hozzájárulás esetén', 'Google Analytics, only with consent') }}</li>
         <li>{{ _('Könyvelő és informatikai szolgáltató – szerződéses titoktartás mellett, kizárólag a feladatuk ellátásához szükséges mértékben', 'Accountant and IT service provider – under contractual confidentiality, only as far as needed for their tasks') }}</li>
       </ul>
       <p>{{ _('Személyes adatait nem adjuk el, és harmadik félnek marketingcélra nem továbbítjuk.', 'We do not sell your personal data or pass it on to third parties for marketing.') }}</p>
@@ -63,7 +63,6 @@
         <tbody>
           <tr><td>{{ _('Szükséges', 'Necessary') }}</td><td class="mono">sr-consent</td><td>{{ _('süti-beállításainak megjegyzése (helyi tároló)', 'remembers your cookie choice (local storage)') }}</td><td>{{ _('törlésig', 'until deleted') }}</td></tr>
           <tr><td>{{ _('Statisztika', 'Statistics') }}</td><td class="mono">_ga, _ga_*</td><td>{{ _('Google Analytics – látogatók megkülönböztetése', 'Google Analytics – distinguishes visitors') }}</td><td>{{ _('14 hónap', '14 months') }}</td></tr>
-          <tr><td>{{ _('Külső tartalom', 'External content') }}</td><td class="mono">NID, AEC</td><td>{{ _('Google Térkép beágyazás', 'embedded Google Maps') }}</td><td>{{ _('6 hónap', '6 months') }}</td></tr>
         </tbody>
       </table>
       </div>
