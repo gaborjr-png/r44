@@ -9,11 +9,13 @@ ErrorDocument 404 /404.html
 <IfModule mod_rewrite.c>
   RewriteEngine On
 
-  # Always use HTTPS and the address without "www"
+  # Always use HTTPS and the address without "www" (works on any domain,
+  # e.g. teszt.steelriderskft.hu as well as steelriderskft.hu)
+  RewriteCond %{HTTP_HOST} ^www\.(.+)$ [NC]
+  RewriteRule ^ https://%1%{REQUEST_URI} [L,R=301]
   RewriteCond %{HTTPS} !=on
-  RewriteRule ^ https://steelriderskft.hu%{REQUEST_URI} [L,R=301]
-  RewriteCond %{HTTP_HOST} ^www\. [NC]
-  RewriteRule ^ https://steelriderskft.hu%{REQUEST_URI} [L,R=301]
+  RewriteCond %{HTTP:X-Forwarded-Proto} !=https
+  RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
   # Old website addresses → new pages (keeps Google rankings and old links)
   RewriteRule ^hu/?$ / [L,R=301]
