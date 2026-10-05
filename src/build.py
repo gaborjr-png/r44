@@ -278,7 +278,10 @@ def package(dest):
     with zipfile.ZipFile(dest, "w", zipfile.ZIP_DEFLATED) as z:
         for f in sorted(OUT.rglob("*")):
             if f.is_file() and f.name != "README.md":
-                z.write(f, f.relative_to(OUT).as_posix())
+                info = zipfile.ZipInfo.from_file(f, f.relative_to(OUT).as_posix())
+                info.external_attr = 0o100644 << 16      # world-readable for the web server
+                info.compress_type = zipfile.ZIP_DEFLATED
+                z.writestr(info, f.read_bytes())
     print("packaged", dest)
 
 
