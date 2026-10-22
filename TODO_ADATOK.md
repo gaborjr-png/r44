@@ -10,7 +10,7 @@ majd futtassuk a `python3 src/build.py` parancsot.
 | 2 | Ajánlatkérő űrlap címzett és feladó (a feladó a saját domainen legyen) | `src/api/config.php` | info1@ / weboldal@steelriderskft.hu |
 | 3 | Technológiai paraméterek – a Ø4–35, Ø630 és 1350×750 mm valós; mintaadat: hosszak (320 / 400 mm), Ø65 rúd, 600 kg, tűrés, érdesség, átfutás | `src/templates/pages/services.html.j2` → `#parameterek` | lásd bal oldalt |
 | 4 | Válaszidő ajánlatkérésre | `src/build.py` → `SITE["response_hours"]`; GYIK: `contact.html.j2` | 48 óra; ajánlat 3–5 / 5–10 munkanap |
-| 5 | ISO tanúsítványok – **kész, valós** (International Cert Hungary Kft.). ⚠ ISO 14001 érvényesség: a magyar tanúsítványon 2026.11.06., a németen 2028.11.06. – egyeztetni; az oldalon a korábbi dátum szerepel. Az ISO 9001 2026.11.20-án lejár – megújítás után a képeket/PDF-et cserélni | `SITE["certs"]`; `src/assets/docs/`, `src/assets/img/cert-*` | – |
+| 5 | ISO tanúsítványok – **kész, valós** (International Cert Hungary Kft.). Az ISO 9001 2026.11.20-án lejár – megújítás után a képeket/PDF-et cserélni | `SITE["certs"]`; `src/assets/docs/`, `src/assets/img/cert-*` | – |
 | 6 | Referenciák (iparág, alkatrész, számok) – vagy partnerlogók írásos engedéllyel | `src/templates/pages/home.html.j2` → `#referenciak` | 3 kitalált esettanulmány |
 | 7 | Pályázatok – **kész, valós adatok** (`src/grants.py`). Hiányzik: a 2017-es, a napelemes és az Irinyi projekt azonosítója/összege, ha kell | `src/grants.py` | – |
 | 7 | Széchenyi 2020 infoblokk: a rajzolt változatot a **hivatalos képfájlra** cserélni | `src/templates/_infoblokk.html.j2` | HTML/SVG utánzat |

@@ -103,8 +103,7 @@ SITE = {
          "body": "International Cert Hungary Kft.", "acc": "NAH-4-0060/2022", "no": "ICH 131001",
          "scope": ("Alkatrészgyártás fémből", "Manufacture of metal components"),
          "issued": ("2025. november 3.", "3 November 2025"), "audit": ("2025. október 20–21.", "20–21 October 2025"),
-         # NOTE: the Hungarian certificate says 2026-11-06, the German one 2028-11-06 – confirm with the company
-         "valid": "2026-11-06", "valid_txt": ("2026. november 6.", "6 November 2026")},
+         "valid": "2028-11-06", "valid_txt": ("2028. november 6.", "6 November 2028")},
     ],
 }
 
