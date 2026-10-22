@@ -90,11 +90,21 @@ SITE = {
     "maps_url": "https://www.google.com/maps/search/?api=1&query=Steel+Riders+Kft+Verpel%C3%A9t+Kossuth+%C3%BAt+64",
     "review_url": "https://www.google.com/maps/search/?api=1&query=Steel+Riders+Kft+Verpel%C3%A9t",  # PLACEHOLDER: g.page/r/…/review
     # Certificates (PDFs in src/assets/docs/)
-    "certs": [                                              # PLACEHOLDER
-        {"std": "ISO 9001:2015", "hu": "Minőségirányítási rendszer", "en": "Quality management system",
-         "body": "SGS Hungária Kft.", "no": "HU25/000000", "valid": "2027-06-30", "file": "iso-9001.pdf"},
-        {"std": "ISO 14001:2015", "hu": "Környezetirányítási rendszer", "en": "Environmental management system",
-         "body": "SGS Hungária Kft.", "no": "HU25/000001", "valid": "2027-06-30", "file": "iso-14001.pdf"},
+    # Certificates issued by International Cert Hungary Kft. (scans in src/assets/docs + img/cert-*)
+    "certs": [
+        {"slug": "iso-9001", "num": "9001", "std": "MSZ EN ISO 9001:2015",
+         "title": ("Minőségirányítási rendszer", "Quality management system"),
+         "body": "International Cert Hungary Kft.", "acc": "NAH-4-0059/2021", "no": "ICH 051105",
+         "scope": ("Alkatrészgyártás fémből", "Manufacture of metal components"),
+         "issued": ("2023. november 16.", "16 November 2023"),
+         "valid": "2026-11-20", "valid_txt": ("2026. november 20.", "20 November 2026")},
+        {"slug": "iso-14001", "num": "14001", "std": "MSZ EN ISO 14001:2015",
+         "title": ("Környezetirányítási rendszer", "Environmental management system"),
+         "body": "International Cert Hungary Kft.", "acc": "NAH-4-0060/2022", "no": "ICH 131001",
+         "scope": ("Alkatrészgyártás fémből", "Manufacture of metal components"),
+         "issued": ("2025. november 3.", "3 November 2025"), "audit": ("2025. október 20–21.", "20–21 October 2025"),
+         # NOTE: the Hungarian certificate says 2026-11-06, the German one 2028-11-06 – confirm with the company
+         "valid": "2026-11-06", "valid_txt": ("2026. november 6.", "6 November 2026")},
     ],
 }
 
@@ -239,7 +249,7 @@ def render():
                 hu_url=f"{SITE_URL}/{'' if hu_file == 'index.html' else hu_file}",
                 en_url=f"{SITE_URL}/en/{'' if en_file == 'index.html' else en_file}",
                 machines=MACHINES, totals=TOTALS, site=SITE, grants=GRANTS, ver=ver,
-                year=date.today().year, years=date.today().year - 1997,
+                year=date.today().year, years=date.today().year - 1997, today=date.today().isoformat(),
             )
             html = env.get_template(f"pages/{key}.html.j2").render(**ctx)
             dest = OUT / ("" if lang == "hu" else "en") / file

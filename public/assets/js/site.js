@@ -566,6 +566,27 @@
     update();
   }
 
+  /* ---------- Lightbox (certificates) ---------- */
+  var lbTriggers = $$('[data-lightbox]');
+  if (lbTriggers.length) {
+    var lb = document.createElement('div');
+    lb.className = 'lightbox'; lb.hidden = true;
+    lb.setAttribute('role', 'dialog'); lb.setAttribute('aria-modal', 'true');
+    lb.innerHTML = '<button class="lightbox__close" type="button" aria-label="Close">×</button><figure><img alt=""><figcaption></figcaption></figure>';
+    document.body.appendChild(lb);
+    var lbImg = $('img', lb), lbCap = $('figcaption', lb), lbClose = $('.lightbox__close', lb), lbFrom = null;
+    var closeLb = function () { lb.hidden = true; document.documentElement.style.overflow = ''; if (lbFrom) lbFrom.focus(); };
+    lbTriggers.forEach(function (t) {
+      t.addEventListener('click', function () {
+        lbFrom = t; lbImg.src = t.dataset.lightbox; lbImg.alt = t.dataset.caption || ''; lbCap.textContent = t.dataset.caption || '';
+        lb.hidden = false; document.documentElement.style.overflow = 'hidden'; lbClose.focus();
+      });
+    });
+    lbClose.addEventListener('click', closeLb);
+    lb.addEventListener('click', function (e) { if (e.target === lb || e.target.tagName === 'FIGURE') closeLb(); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !lb.hidden) closeLb(); });
+  }
+
   /* ---------- Cookie consent, analytics, map ---------- */
   var KEY = 'sr-consent';
   function getConsent() { try { return JSON.parse(localStorage.getItem(KEY)); } catch (e) { return null; } }
