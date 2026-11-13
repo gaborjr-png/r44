@@ -1,5 +1,13 @@
-{# Official Széchenyi 2020 infoblokk (Magyarország Kormánya · Európai Unió ERFA · Befektetés a jövőbe).
-   With infoblokk_float: fixed to the bottom-right corner of the home page, visible without scrolling. #}
-<a class="infoblokk{{ ' infoblokk--float' if infoblokk_float is defined else '' }}" href="{{ href('projects') }}#szechenyi">
-  <img src="{{ asset }}img/infoblokk-szechenyi2020.webp" width="800" height="560" alt="{{ _('Széchenyi 2020 – Magyarország Kormánya, Európai Unió, Európai Regionális Fejlesztési Alap. Befektetés a jövőbe.', 'Széchenyi 2020 – Government of Hungary, European Union, European Regional Development Fund. Investing in your future.') }}"{% if infoblokk_float is defined %} fetchpriority="high"{% else %} loading="lazy"{% endif %}>
+{# Official Széchenyi 2020 infoblokk, transparent background.
+   With infoblokk_float: floats in the bottom-right corner of the home page (visible without scrolling);
+   site.js switches to the negative version while it sits over a dark section. #}
+{% if infoblokk_float is defined %}
+<a class="infoblokk infoblokk--float is-on-dark" href="{{ href('projects') }}#szechenyi">
+  <img class="infoblokk__light" src="{{ asset }}img/infoblokk-szechenyi2020.webp" width="800" height="560" alt="{{ _('Széchenyi 2020 – Magyarország Kormánya, Európai Unió, Európai Regionális Fejlesztési Alap. Befektetés a jövőbe.', 'Széchenyi 2020 – Government of Hungary, European Union, European Regional Development Fund. Investing in your future.') }}">
+  <img class="infoblokk__dark" src="{{ asset }}img/infoblokk-szechenyi2020-negativ.webp" width="800" height="560" alt="" aria-hidden="true" fetchpriority="high">
 </a>
+{% else %}
+<a class="infoblokk" href="{{ href('projects') }}#szechenyi">
+  <img src="{{ asset }}img/infoblokk-szechenyi2020.webp" width="800" height="560" alt="{{ _('Széchenyi 2020 – Magyarország Kormánya, Európai Unió, Európai Regionális Fejlesztési Alap. Befektetés a jövőbe.', 'Széchenyi 2020 – Government of Hungary, European Union, European Regional Development Fund. Investing in your future.') }}" loading="lazy">
+</a>
+{% endif %}
