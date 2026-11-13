@@ -1,5 +1,5 @@
 {# Official Széchenyi 2020 infoblokk (Magyarország Kormánya · Európai Unió ERFA · Befektetés a jövőbe).
    With infoblokk_float: fixed to the bottom-right corner of the home page, visible without scrolling. #}
 <a class="infoblokk{{ ' infoblokk--float' if infoblokk_float is defined else '' }}" href="{{ href('projects') }}#szechenyi">
-  <img src="{{ asset }}img/infoblokk-szechenyi2020.webp" width="900" height="622" alt="{{ _('Széchenyi 2020 – Magyarország Kormánya, Európai Unió, Európai Regionális Fejlesztési Alap. Befektetés a jövőbe.', 'Széchenyi 2020 – Government of Hungary, European Union, European Regional Development Fund. Investing in your future.') }}"{% if infoblokk_float is defined %} fetchpriority="high"{% else %} loading="lazy"{% endif %}>
+  <img src="{{ asset }}img/infoblokk-szechenyi2020.webp" width="760" height="514" alt="{{ _('Széchenyi 2020 – Magyarország Kormánya, Európai Unió, Európai Regionális Fejlesztési Alap. Befektetés a jövőbe.', 'Széchenyi 2020 – Government of Hungary, European Union, European Regional Development Fund. Investing in your future.') }}"{% if infoblokk_float is defined %} fetchpriority="high"{% else %} loading="lazy"{% endif %}>
 </a>

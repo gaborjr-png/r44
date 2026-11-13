@@ -1408,7 +1408,10 @@ a:hover .photo img, .photo:hover img { transform: scale(calc(var(--zoom, 1) * 1.
 /* v19: official Széchenyi 2020 infoblokk */
 .infoblokk { display: block; line-height: 0; }
 .infoblokk img { display: block; width: 100%; height: auto; }
+.grant .infoblokk { padding: 16px; background: #fff; }
 .grant .infoblokk { width: min(420px, 100%); border-radius: 6px; overflow: hidden; box-shadow: 0 16px 40px rgba(15,20,25,.12); }
-/* home: fixed in the bottom-right corner, visible without scrolling on every device */
-.infoblokk--float { position: fixed; right: 0; bottom: 0; z-index: 140; width: clamp(170px, 22vw, 320px); background: #fff; box-shadow: -6px -6px 30px rgba(0,0,0,.18); border-top-left-radius: 4px; }
+/* home: floating card in the bottom-right corner, visible without scrolling */
+.infoblokk--float { position: fixed; right: clamp(12px, 1.6vw, 24px); bottom: calc(clamp(12px, 1.6vw, 24px) + env(safe-area-inset-bottom, 0px)); z-index: 140; width: clamp(168px, 17vw, 250px); padding: clamp(8px, .8vw, 12px); background: #fff; border-radius: 12px; box-shadow: 0 18px 44px rgba(10,13,16,.28), 0 2px 6px rgba(10,13,16,.12); outline: 1px solid rgba(15,20,25,.06); transition: transform .35s var(--ease), box-shadow .35s var(--ease); animation: fadeUp .7s .4s var(--ease) both; }
+.infoblokk--float img { border-radius: 4px; }
+.infoblokk--float:hover { transform: translateY(-3px); box-shadow: 0 24px 56px rgba(10,13,16,.34), 0 2px 6px rgba(10,13,16,.12); }
 .page-home .fab { right: auto; left: 16px; }
