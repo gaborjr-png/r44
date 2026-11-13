@@ -36,3 +36,4 @@ Csere után futtassa: `python3 src/build.py`
 - `meres-tolomero.webp` – tolómérős mérés a rajz mellett (Minőségügy → Ellenőrzés)
 - `alapanyag-raktar.webp` – alapanyagraktár (Tevékenységek → Anyagok)
 - `mikrometer.webp` – digitális mikrométer mérőállványon (Minőségügy → Mérőeszközeink)
+- `infoblokk-szechenyi2020.webp` – hivatalos Széchenyi 2020 infoblokk (főoldal jobb alsó sarok, Projektek)

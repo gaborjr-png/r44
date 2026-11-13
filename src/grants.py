@@ -37,12 +37,16 @@ GRANTS = [
     {
         "id": "napelem-2021", "year": 2021,
         "title": ("Napelemes rendszer telepítése a Steel Riders Kft.-nél", "Solar PV system at Steel Riders Kft."),
-        "tag": ("Energetika", "Energy"),
+        "tag": ("GINOP – energetika", "GINOP – energy"),
         "facts": [
+            (("Projektazonosító", "Project ID"), ("GINOP-4.1.4-19-2019-00141", "GINOP-4.1.4-19-2019-00141")),
+            (("Támogatás összege", "Grant amount"), ("7 810 000 Ft", "HUF 7,810,000")),
             (("Támogatás mértéke", "Aid intensity"), ("55,00%", "55.00%")),
-            (("Fizikai befejezés", "Physical completion"), ("2021. március 22.", "22 March 2021")),
+            (("Tényleges befejezés", "Actual completion"), ("2021. augusztus 4.", "4 August 2021")),
             (("Teljesítmény", "Capacity"), ("48,96 kWp", "48.96 kWp")),
         ],
+        "extra": [(("Kedvezményezett", "Beneficiary"), ("STEEL RIDERS Kereskedelmi és Szolgáltató Korlátolt Felelősségű Társaság", "STEEL RIDERS Kereskedelmi és Szolgáltató Korlátolt Felelősségű Társaság")),
+                  (("Szerződött támogatás", "Contracted grant"), ("7 810 000 Ft", "HUF 7,810,000"))],
         "lead": ("Egyszerű energetikai fejlesztés: 48,96 kWp-s napelemes rendszer telepítése, amely csökkenti a vállalkozás rezsiköltségeit.",
                  "A straightforward energy project: installation of a 48.96 kWp solar PV system that reduces the company’s utility costs."),
         "items": [("144 db JA Solar 340 W(m) napelempanel", "144 × JA Solar 340 W(m) PV panels"),

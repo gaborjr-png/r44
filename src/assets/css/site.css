@@ -1177,17 +1177,6 @@ a:hover .photo img, .photo:hover img { transform: scale(calc(var(--zoom, 1) * 1.
 
 .grant { display: grid; grid-template-columns: minmax(0, 1.3fr) auto; gap: clamp(28px, 5vw, 72px); align-items: center; }
 @media (max-width: 800px) { .grant { grid-template-columns: 1fr; } }
-.infoblokk { display: grid; gap: 8px; width: 250px; padding: 14px 16px 12px; background: #fff; color: #1b2b4b; text-decoration: none; border-radius: 4px; box-shadow: 0 16px 40px rgba(15,20,25,.16), 0 0 0 1px rgba(15,20,25,.06); font-family: var(--font-body); }
-.infoblokk__brand { font: 700 1.25rem/1 var(--font-display); letter-spacing: -.01em; color: #1b2b4b; }
-.infoblokk__brand b { color: #3a8fd0; margin-left: 2px; }
-.infoblokk__row { display: flex; gap: 8px; align-items: center; font-size: 0.72rem; font-weight: 600; line-height: 1.2; }
-.infoblokk__row small { display: block; font-weight: 400; font-size: 0.64rem; color: #4b5a73; }
-.infoblokk__flag { width: 30px; height: 20px; flex-shrink: 0; box-shadow: 0 0 0 1px rgba(0,0,0,.08); }
-.infoblokk__motto { margin-top: 2px; padding-top: 6px; border-top: 1px solid #e3e7ee; font: 600 0.62rem/1 var(--font-mono); letter-spacing: .14em; text-transform: uppercase; color: #3a8fd0; }
-.infoblokk--float { width: 212px; }
-.hero__grant { position: absolute; right: max(16px, calc((100vw - 1224px) / 2)); bottom: 150px; z-index: 3; }
-.hero__grant .infoblokk { box-shadow: 0 20px 50px rgba(0,0,0,.35); }
-@media (max-width: 1100px) { .hero__grant { position: static; display: flex; justify-content: center; padding: 20px 16px 24px; background: rgba(11,15,19,.55); } }
 
 .hostel { overflow: hidden; }
 .hostel__grid { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: clamp(32px, 5vw, 80px); align-items: center; }
@@ -1415,3 +1404,11 @@ a:hover .photo img, .photo:hover img { transform: scale(calc(var(--zoom, 1) * 1.
 .lightbox figcaption { color: var(--alu-300); font: 500 0.85rem var(--font-mono); text-align: center; }
 .lightbox__close { position: absolute; top: 16px; right: 16px; width: 44px; height: 44px; border-radius: 50%; border: 1px solid rgba(255,255,255,.2); background: rgba(255,255,255,.08); color: #fff; font-size: 1.4rem; cursor: pointer; }
 .lightbox__close:hover { background: rgba(255,255,255,.18); }
+
+/* v19: official Széchenyi 2020 infoblokk */
+.infoblokk { display: block; line-height: 0; }
+.infoblokk img { display: block; width: 100%; height: auto; }
+.grant .infoblokk { width: min(420px, 100%); border-radius: 6px; overflow: hidden; box-shadow: 0 16px 40px rgba(15,20,25,.12); }
+/* home: fixed in the bottom-right corner, visible without scrolling on every device */
+.infoblokk--float { position: fixed; right: 0; bottom: 0; z-index: 140; width: clamp(170px, 22vw, 320px); background: #fff; box-shadow: -6px -6px 30px rgba(0,0,0,.18); border-top-left-radius: 4px; }
+.page-home .fab { right: auto; left: 16px; }

@@ -111,6 +111,8 @@
   </section>
   {% endif %}
 
+  {% if page == 'home' %}{% with infoblokk_float = true %}{% include "_infoblokk.html.j2" %}{% endwith %}{% endif %}
+
   <footer class="footer">
     <div class="wrap footer__grid">
       <div class="footer__brand">

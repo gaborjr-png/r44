@@ -13,7 +13,7 @@ majd futtassuk a `python3 src/build.py` parancsot.
 | 5 | ISO tanúsítványok – **kész, valós** (International Cert Hungary Kft.). Az ISO 9001 2026.11.20-án lejár – megújítás után a képeket/PDF-et cserélni | `SITE["certs"]`; `src/assets/docs/`, `src/assets/img/cert-*` | – |
 | 6 | Referenciák (iparág, alkatrész, számok) – vagy partnerlogók írásos engedéllyel | `src/templates/pages/home.html.j2` → `#referenciak` | 3 kitalált esettanulmány |
 | 7 | Pályázatok – **kész, valós adatok** (`src/grants.py`). Hiányzik: a 2017-es, a napelemes és az Irinyi projekt azonosítója/összege, ha kell | `src/grants.py` | – |
-| 7 | Széchenyi 2020 infoblokk: a rajzolt változatot a **hivatalos képfájlra** cserélni | `src/templates/_infoblokk.html.j2` | HTML/SVG utánzat |
+| 7 | Széchenyi 2020 infoblokk – **kész**, hivatalos kép a főoldal jobb alsó sarkában | – | – |
 | 8 | Google Analytics 4 mérési azonosító | `SITE["ga4"]` | `G-XXXXXXXXXX` (így a mérés ki van kapcsolva) |
 | 8 | Google Cégprofil értékelési link (`g.page/r/…/review`) | `SITE["review_url"]` | Google Térkép keresés |
 | – | Alapanyagraktár állításai (3.1 bizonylat minden kötegnél, SAP tételkövetés) és a mikrométer 0,001 mm felbontása – ellenőrizni | `services.html.j2` → `#anyagok`; `quality.html.j2` | ahogy a képek alapján feltételeztük |
