@@ -566,29 +566,6 @@
     update();
   }
 
-  /* ---------- Infoblokk: light/negative version depending on the background under it ---------- */
-  var ibk = $('.infoblokk--float');
-  if (ibk) {
-    var lum = function (c) { var m = c.match(/[\d.]+/g); if (!m || (m[3] !== undefined && +m[3] < 0.5)) return null; return 0.2126 * m[0] + 0.7152 * m[1] + 0.0722 * m[2]; };
-    var ibCheck = function () {
-      var r = ibk.getBoundingClientRect(), dark = true;
-      ibk.style.visibility = 'hidden';
-      var el = document.elementFromPoint(Math.max(0, r.left + r.width * 0.55), Math.max(0, r.top + r.height * 0.5));
-      ibk.style.visibility = '';
-      for (; el && el !== document.documentElement; el = el.parentElement) {
-        if (el.tagName === 'IMG' || el.tagName === 'CANVAS') { dark = true; break; }
-        var l = lum(getComputedStyle(el).backgroundColor);
-        if (l !== null) { dark = l < 140; break; }
-      }
-      ibk.classList.toggle('is-on-dark', dark);
-    };
-    var ibTick = false;
-    window.addEventListener('scroll', function () { if (!ibTick) { ibTick = true; requestAnimationFrame(function () { ibTick = false; ibCheck(); }); } }, { passive: true });
-    window.addEventListener('resize', ibCheck);
-    window.addEventListener('load', ibCheck);
-    ibCheck();
-  }
-
   /* ---------- Lightbox (certificates) ---------- */
   var lbTriggers = $$('[data-lightbox]');
   if (lbTriggers.length) {
